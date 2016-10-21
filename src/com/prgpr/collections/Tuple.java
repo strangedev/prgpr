@@ -1,4 +1,4 @@
-package com.prgpr;
+package com.prgpr.collections;
 
 /**
  * Created by strange on 10/21/16.
