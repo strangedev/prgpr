@@ -36,8 +36,8 @@ public class PageFactory {
     private String tmpTitle;
     private Page tmpPage = null;
 
-    private Page createProtoPageInstance(int namespaceId, String title) {
-        return new Page(namespaceId, title);
+    private Page createProtoPageInstance(int namespaceId, String title, long id) {
+        return new Page(id, namespaceId, title);
     }
 
     private void encounterLine(String line) throws MalformedWikidataException{
