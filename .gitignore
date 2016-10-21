@@ -1,6 +1,7 @@
 ## Our own stuff
 
 res/outfile/*
+res/infile/*
 external_files/personal_stash/*
 lib/*
 
