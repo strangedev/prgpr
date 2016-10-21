@@ -4,7 +4,7 @@ res/outfile/*
 res/infile/*
 external_files/personal_stash/*
 lib/*
-
+src/com/prgpr/mock/*
 
 # Created by https://www.gitignore.io/api/intellij
 
