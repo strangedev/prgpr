@@ -43,3 +43,10 @@ Die Bewertung der Abgabe ist wie folgt:
 
 Für die Gewichtung des Milestones in der Gesamtbewertung werden 3 Wochen angesetzt. 
 Die Aufgabenstellung ist für alle Gruppenkonstellationen gleich, d.h. es sind hier keine Aufgabenteile optional.
+
+Responsibilities:
+-----------------
+
+* Kyle: Page, PageExport
+* Lissie: LinkExtraction
+* Noah: PageFactory
