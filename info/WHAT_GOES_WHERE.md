@@ -1,6 +1,3 @@
-TODO
-====
-
 WHAT GOES WHERE?
 ================
 
@@ -21,11 +18,13 @@ Contents
 
 5. Code examples
 
-6. General info
+6. Project info
 
 7. Toolchain
 
 8. External Files
+
+9. Mock classes
 
 1 Source code
 -------------
@@ -43,8 +42,8 @@ Libraries are located in lib/.
 New libraries are NOT installed by hand, but imported as maven
 dependencies. They should always include source and javadocs.
 
-3 Supporting source code
-------------------------
+3 Configuration
+---------------
 
 Supporting source code goes into support/
 
@@ -60,13 +59,44 @@ Resources go into res/
 Resources like image files, configuration files, etc. should
 reside in their own directory.
 
-5 General info
+5 Code Examples
+---------------
+
+Code example go into examples/
+
+If there's a good code example you just did/found online,
+put it in here for other people to see.
+
+6 Project info
 --------------
 
-General info goes into info/
+Project info goes into info/
 
-Things like todo lists, general info for other people involved in
+Things like todo lists, Project info for other people involved in
 the project or notes should be placed here.
+
+7 Toolchain
+-----------
+
+Tools go into tools/
+
+This directory is for all the little scripts and tools needed for
+development, testing, packaging, etc. Which cannot be included with
+the IDE.
+
+
+8 External Files
+----------------
+
+Files that don't fit anywhere else go into external_files/
+
+The subdirectory personal_stash is also excluded from git.
+Put your "private pics" here.
+
+9 Mock classes
+--------------
+
+See MOCK.md
 
 
 
