@@ -3,15 +3,17 @@ package com.prgpr;
 import java.util.Set;
 
 public class Page {
+    private long id;
+
     private int namespaceID;
     private String title;
     private Set<String> categories;
-
     /**
      * @param namespaceID
      * @param title
      */
-    public Page(int namespaceID, String title) {
+    public Page(long id, int namespaceID, String title) {
+        this.id = id;
         this.namespaceID = namespaceID;
         this.title = title;
     }
@@ -21,10 +23,18 @@ public class Page {
      * @param title
      * @param categories
      */
-    public Page(int namespaceID, String title, Set<String> categories) {
+    public Page(long id, int namespaceID, String title, Set<String> categories) {
+        this.id = id;
         this.namespaceID = namespaceID;
         this.title = title;
         this.categories = categories;
+    }
+
+    /**
+     * @return long
+     */
+    public long getId() {
+        return id;
     }
 
     /**
@@ -58,7 +68,7 @@ public class Page {
     /**
      *
      * @param Object o
-     * @return bool
+     * @return boolean
      */
     @Override
     public boolean equals(Object o) {
@@ -77,4 +87,5 @@ public class Page {
     public int hashCode() {
         return (31 * namespaceID) + ((title != null) ? title.hashCode() : 0);
     }
+
 }
