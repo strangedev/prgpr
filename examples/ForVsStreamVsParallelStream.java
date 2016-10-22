@@ -1,6 +1,5 @@
 import java.util.ArrayList;
 import java.util.ListIterator;
-import java.util.stream.Stream;
 
 /**
  * Created by strange on 10/22/16.
@@ -19,7 +18,7 @@ import java.util.stream.Stream;
  */
 public class ForVsStreamVsParallelStream {
 
-    public static String someTimeIntesiveFunction(String input) {
+    private static String someTimeIntensiveFunction(String input) {
 
         for(int i = 0; i < 2000; i++) {
 
@@ -67,7 +66,7 @@ public class ForVsStreamVsParallelStream {
         for (ListIterator<String> iter = sampleInput.listIterator(); iter.hasNext();) {
             String element = iter.next();
 
-            element = someTimeIntesiveFunction(element);
+            element = someTimeIntensiveFunction(element);
 
         }
 
@@ -76,14 +75,14 @@ public class ForVsStreamVsParallelStream {
         // Stream API
         startOfStreamBenchmark = System.currentTimeMillis();
 
-        sampleInput.stream().forEach(ForVsStreamVsParallelStream::someTimeIntesiveFunction);
+        sampleInput.stream().forEach(ForVsStreamVsParallelStream::someTimeIntensiveFunction);
 
         endOfStreamBenchmark = System.currentTimeMillis();
 
         //Using .parallelStream()
         startOfParallelStreamBenchmark = System.currentTimeMillis();
 
-        sampleInput.parallelStream().forEach(ForVsStreamVsParallelStream::someTimeIntesiveFunction);
+        sampleInput.parallelStream().forEach(ForVsStreamVsParallelStream::someTimeIntensiveFunction);
 
         endOfParallelStreamBenchmark = System.currentTimeMillis();
 
