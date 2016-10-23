@@ -19,10 +19,8 @@ public class PageFactoryTest {
     public void extractPages() throws Exception {
 
         Set<Page> pagesContained = PageFactory.extractPages("res/infile/wikipedia_de_prgpr_subset.txt");
-        System.out.print("Found: ");
-        System.out.print(pagesContained.size());
-        System.out.print(" pages.");
-
+        Set<Page> pagesContained2 = PageFactory.extractPages("res/infile/wikipedia_de_prgpr_subset.txt");
+        assertTrue(pagesContained.size() == pagesContained2.size());
 
     }
 
