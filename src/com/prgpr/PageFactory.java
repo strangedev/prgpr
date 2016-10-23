@@ -22,8 +22,9 @@ import com.prgpr.mock.LinkExtraction;
 public class PageFactory {
 
     private static final Logger log = LogManager.getFormatterLogger(PageFactory.class);
-    private static final int chunkSize = 1000; // @todo create config file, tweak this number
-    
+    private static final int chunkSize = 10; // @todo create config file, tweak this number
+                                             // @todo change back
+
     public Set<Page> extractPages(String infilePath) throws MalformedWikidataException{
 
         Set<Page> setToReturn = new LinkedHashSet<>();
