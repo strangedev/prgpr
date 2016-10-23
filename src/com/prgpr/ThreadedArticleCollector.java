@@ -9,26 +9,23 @@ import java.nio.file.Files;
 import java.nio.file.Paths;
 import java.util.Iterator;
 import java.util.Stack;
+import java.util.concurrent.Semaphore;
 import java.util.stream.Stream;
 import java.util.ArrayList;
 import java.util.concurrent.locks.ReentrantLock;
 
-import com.prgpr.WikiPageParser;
-import com.prgpr.collections.Tuple;
-import com.prgpr.Page;
-
 /**
  * Created by strange on 10/22/16.
- *
+ *z
  */
 public class ThreadedArticleCollector implements Runnable, Iterator<ArrayList<Tuple<Page, String>>>{
 
     private Thread t;
 
-    private final ReentrantLock lock = new ReentrantLock();
+    private final ReentrantLock mutex = new ReentrantLock();
+    private final Semaphore chunksAvailable = new Semaphore(0, true); // Creates a fair semaphore with initial value of 0
 
     private int chunkSize;
-    private boolean allLinesParsed = true;
     private String infilePath;
     private WikiPageParser pageParser;
     private ArrayList<Tuple<Page, String>> nextArticleChunk;
@@ -49,9 +46,9 @@ public class ThreadedArticleCollector implements Runnable, Iterator<ArrayList<Tu
         pageParser = new WikiPageParser();
         this.nextArticleChunk = new ArrayList<>(this.chunkSize);
 
-        lock.lock();
+        mutex.lock();
         articleChunks = new Stack<>();
-        lock.unlock();
+        mutex.unlock();
 
     }
 
@@ -81,9 +78,11 @@ public class ThreadedArticleCollector implements Runnable, Iterator<ArrayList<Tu
 
             if (nextArticleChunk.size() >= chunkSize) { // check if chunk has been filled - if so, add to ArrayList
 
-                lock.lock();
+                mutex.lock();
                 articleChunks.push(nextArticleChunk);
-                lock.unlock();
+                mutex.unlock();
+
+                chunksAvailable.release(); // Signal that a chunk is available to another thread.
 
                 nextArticleChunk.clear(); // clear next chunk, we'll be filling it again
 
@@ -101,7 +100,6 @@ public class ThreadedArticleCollector implements Runnable, Iterator<ArrayList<Tu
         log.info("Thread running.");
 
         // Do the deed.
-        allLinesParsed = false;
 
         try (Stream<String> stream = Files.lines(Paths.get(infilePath))) {
             stream.forEachOrdered(this::delegateParseLine);
@@ -114,13 +112,22 @@ public class ThreadedArticleCollector implements Runnable, Iterator<ArrayList<Tu
 
         // No more lines to fill next chunk, take it as it is.
         if (nextArticleChunk.size() > 0) {
-            lock.lock();
+            mutex.lock();
             articleChunks.push(nextArticleChunk);
-            lock.unlock();
+            mutex.unlock();
         }
-        allLinesParsed = true;
 
-        log.info("Thread stopped.");
+        while (true) {
+            mutex.lock();
+            boolean noMoreData = articleChunks.empty();
+            mutex.unlock();
+
+            if (noMoreData) break;
+
+        }
+
+        log.info("Thread stopping.");
+        this.t.interrupt();
 
     }
 
@@ -148,26 +155,24 @@ public class ThreadedArticleCollector implements Runnable, Iterator<ArrayList<Tu
         return chunkSize;
     }
 
-    public boolean hasNextPromise() {
-        return !allLinesParsed;
-    }
-
     @Override
     public boolean hasNext() {
 
-        lock.lock();
-        boolean ret = articleChunks.size() > 0; // @todo is .size() really O(1)?
-        lock.unlock();
+        try {
+            chunksAvailable.acquire();
+            return true;
+        } catch (InterruptedException exception) {
+            return false;
+        }
 
-        return ret;
     }
 
     @Override
     public ArrayList<Tuple<Page, String>> next() {
 
-        lock.lock();
+        mutex.lock();
         ArrayList<Tuple<Page, String>> ret = articleChunks.pop();
-        lock.unlock();
+        mutex.unlock();
 
         return ret;
     }
