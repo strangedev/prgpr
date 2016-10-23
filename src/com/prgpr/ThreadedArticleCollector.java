@@ -28,6 +28,7 @@ public class ThreadedArticleCollector implements Runnable, Iterator<ArrayList<Tu
     private final ReentrantLock lock = new ReentrantLock();
 
     private int chunkSize;
+    private boolean allLinesParsed = true;
     private String infilePath;
     private WikiPageParser pageParser;
     private ArrayList<Tuple<Page, String>> nextArticleChunk;
@@ -100,6 +101,7 @@ public class ThreadedArticleCollector implements Runnable, Iterator<ArrayList<Tu
         log.info("Thread running.");
 
         // Do the deed.
+        allLinesParsed = false;
 
         try (Stream<String> stream = Files.lines(Paths.get(infilePath))) {
             stream.forEachOrdered(this::delegateParseLine);
@@ -109,6 +111,14 @@ public class ThreadedArticleCollector implements Runnable, Iterator<ArrayList<Tu
             log.error("Couldn't get lines of file: " + infilePath);
 
         }
+
+        // No more lines to fill next chunk, take it as it is.
+        if (nextArticleChunk.size() > 0) {
+            lock.lock();
+            articleChunks.push(nextArticleChunk);
+            lock.unlock();
+        }
+        allLinesParsed = true;
 
         log.info("Thread stopped.");
 
@@ -138,10 +148,13 @@ public class ThreadedArticleCollector implements Runnable, Iterator<ArrayList<Tu
         return chunkSize;
     }
 
+    public boolean hasNextPromise() {
+        return !allLinesParsed;
+    }
 
     @Override
     public boolean hasNext() {
-        // @todo synchronize
+
         lock.lock();
         boolean ret = articleChunks.size() > 0; // @todo is .size() really O(1)?
         lock.unlock();
@@ -151,7 +164,7 @@ public class ThreadedArticleCollector implements Runnable, Iterator<ArrayList<Tu
 
     @Override
     public ArrayList<Tuple<Page, String>> next() {
-        // @todo synchronize
+
         lock.lock();
         ArrayList<Tuple<Page, String>> ret = articleChunks.pop();
         lock.unlock();
