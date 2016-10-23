@@ -3,6 +3,7 @@
     <properties maven-id="javax.xml:jaxp-api:1.4.2" />
     <CLASSES>
       <root url="jar://$MAVEN_REPOSITORY$/javax/xml/jaxp-api/1.4.2/jaxp-api-1.4.2.jar!/" />
+      <root url="jar://$MAVEN_REPOSITORY$/javax/xml/jaxp-api/1.4.2/jaxp-api-1.4.2.jar!/" />
     </CLASSES>
     <JAVADOC />
     <SOURCES />
