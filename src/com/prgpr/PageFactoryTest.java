@@ -41,13 +41,13 @@ public class PageFactoryTest {
 
         System.out.println("Best time was: " + best_time + ", best chunkSize was: " + best_i);
         */
-        long test = Benchmark.run(() -> {
+        /*long test = Benchmark.run(() -> {
 
             Set<Page> pagesContained = PageFactory.extractPages("res/infile/wikipedia_de_prgpr_subset.txt");
 
-        });
-        //Set<Page> pagesContained = PageFactory.extractPages("res/infile/wikipedia_de_prgpr_subset.txt");
-        System.out.println("Test took: " + test);
+        });*/
+        Set<Page> pagesContained = PageFactory.extractPages("res/infile/wikipedia_de_prgpr_subset.txt");
+        //System.out.println("Test took: " + test);
 
         //int i = 0;
 
@@ -65,7 +65,7 @@ public class PageFactoryTest {
 
         }*/
 
-        //assertTrue(pagesContained.size() == 50560);
+        assertTrue(pagesContained.size() == 50560);
 
 
         /*or (int i = 0; i < 10; i++) {
