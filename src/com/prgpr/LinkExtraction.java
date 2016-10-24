@@ -28,7 +28,7 @@ public class LinkExtraction {
 
             Elements links = articles.select("div#catlinks li a");
             for (Element link :links){
-                System.out.println(link.text());
+                //System.out.println(link.text());
                 categories.add(link.text());
             }
         }

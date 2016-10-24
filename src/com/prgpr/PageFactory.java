@@ -9,8 +9,6 @@ import java.util.Set;
 import java.util.LinkedHashSet;
 
 import com.prgpr.exceptions.MalformedWikidataException;
-// import com.prgpr.LinkExtraction;
-import com.prgpr.mock.LinkExtraction;
 
 /**
  * Created by strange on 10/21/16.
@@ -22,6 +20,7 @@ public class PageFactory {
 
     private static final Logger log = LogManager.getFormatterLogger(PageFactory.class);
     private static final int CHUNK_SIZE = 1000; // TODO create config file, tweak this number
+    private static final int MAX_CHUNKS = 100; // TODO create config file, tweak this number
 
     /**
      * Extracts a Set of pages from a file of wikidata.
@@ -33,7 +32,7 @@ public class PageFactory {
     public static Set<Page> extractPages(String infilePath) throws MalformedWikidataException{
 
         Set<Page> setToReturn = new LinkedHashSet<>();
-        ThreadedArticleCollector articleCollector = new ThreadedArticleCollector(infilePath, CHUNK_SIZE);
+        ThreadedArticleCollector articleCollector = new ThreadedArticleCollector(infilePath, CHUNK_SIZE, MAX_CHUNKS);
         articleCollector.start();
 
         while (articleCollector.hasNext()) { // We're reading input in chunks of articles to cap memory usage
