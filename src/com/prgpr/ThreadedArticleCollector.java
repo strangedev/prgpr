@@ -17,22 +17,22 @@ import java.util.concurrent.locks.ReentrantLock;
 
 /**
  * Created by strange on 10/22/16.
- *z
+ *
  */
 public class ThreadedArticleCollector implements Runnable, Iterator<ArrayList<Tuple<Page, String>>>{
 
     private Thread t;
-
     private final ReentrantLock mutex = new ReentrantLock();
     private AtomicBoolean threadCanEnd = new AtomicBoolean(false);
-
     private Semaphore chunksAvailable;
 
+    private WikiPageParser pageParser;
     private int chunkSize;
     private String infilePath;
-    private WikiPageParser pageParser;
+
     private ArrayList<Tuple<Page, String>> nextArticleChunk;
     private Stack<ArrayList<Tuple<Page, String>>> articleChunks;
+
     private static final Logger log = LogManager.getFormatterLogger(ThreadedArticleCollector.class);
 
     /**
@@ -124,16 +124,7 @@ public class ThreadedArticleCollector implements Runnable, Iterator<ArrayList<Tu
             chunksAvailable.release();
         }
 
-        while (true) {
-            mutex.lock();
-            boolean noMoreData = articleChunks.empty(); // TODO: 10/24/16 refactor to use atomicBoolean
-            threadCanEnd.set(true);
-            mutex.unlock();
-
-            if (noMoreData) break;
-
-        }
-
+        threadCanEnd.set(true);
         log.info("All lines parsed.");
 
     }

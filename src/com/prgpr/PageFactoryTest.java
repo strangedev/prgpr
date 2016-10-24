@@ -18,9 +18,19 @@ public class PageFactoryTest {
     @Test
     public void extractPages() throws Exception {
 
+        // Set<Page> pagesContained = PageFactory.extractPages("res/infile/shortened.txt");
         Set<Page> pagesContained = PageFactory.extractPages("res/infile/wikipedia_de_prgpr_subset.txt");
-        Set<Page> pagesContained2 = PageFactory.extractPages("res/infile/wikipedia_de_prgpr_subset.txt");
-        assertTrue(pagesContained.size() == pagesContained2.size());
+        System.out.println(pagesContained.size());
+        assertTrue(pagesContained.size() == 50560);
+
+        for (int i = 0; i < 10; i++) {
+
+            System.out.println("Run no.: " + i);
+            // Set<Page> pagesContained2 = PageFactory.extractPages("res/infile/shortened.txt");
+            Set<Page> pagesContained2 = PageFactory.extractPages("res/infile/wikipedia_de_prgpr_subset.txt");
+            assertTrue(pagesContained.size() == pagesContained2.size());
+
+        }
 
     }
 
