@@ -1,57 +1,54 @@
 package com.prgpr;
 
-import java.io.IOException;
-import java.util.LinkedList;
-import java.util.Set;
-import java.util.LinkedHashSet;
-import java.util.stream.Stream;
-import java.nio.file.Files;
-import java.nio.file.Paths;
-
 import com.prgpr.collections.Tuple;
-import com.prgpr.exceptions.MalformedWikidataException;
-// import com.prgpr.LinkExtraction;
-import com.prgpr.mock.LinkExtraction;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 
+import java.util.ArrayList;
+import java.util.Set;
+import java.util.LinkedHashSet;
+
+import com.prgpr.exceptions.MalformedWikidataException;
+// import com.prgpr.LinkExtraction;
+import com.prgpr.mock.LinkExtraction;
+
 /**
  * Created by strange on 10/21/16.
+ * @author Noah Hummel
  *
+ * A Factory class which creates a Set of Page objects from parsing a file of wikidata.
  */
 public class PageFactory {
 
     private static final Logger log = LogManager.getFormatterLogger(PageFactory.class);
-    
-    public Set<Page> extractPages(String infilePath) throws MalformedWikidataException{
+    private static final int CHUNK_SIZE = 1000; // TODO create config file, tweak this number
+
+    /**
+     * Extracts a Set of pages from a file of wikidata.
+     *
+     * @param infilePath The path to the file of wikidata.
+     * @return A Set of contained Pages.
+     * @throws MalformedWikidataException If the input is malformed.
+     */
+    public static Set<Page> extractPages(String infilePath) throws MalformedWikidataException{
 
         Set<Page> setToReturn = new LinkedHashSet<>();
+        ThreadedArticleCollector articleCollector = new ThreadedArticleCollector(infilePath, CHUNK_SIZE);
+        articleCollector.start();
 
-        WikiPageParser pageParser = new WikiPageParser();
+        while (articleCollector.hasNext()) { // We're reading input in chunks of articles to cap memory usage
 
-        try (Stream<String> stream = Files.lines(Paths.get(infilePath))) {
-            stream.forEachOrdered(pageParser::parseLine);
+            ArrayList<Tuple<Page, String>> nextChunk = articleCollector.next();
 
-        }
-        catch (IOException exception) {
-            log.error("Couldn't get lines of file: " + infilePath);
+            nextChunk.parallelStream() // chunks are processed in parallel to increase throughput.
+                     .forEach(tuple -> tuple.x.setCategories(LinkExtraction.extractCategories(tuple.y)));
 
-        }
-
-        if(pageParser.aggregatedProtoPages.size() > 0) {
-
-            pageParser.aggregatedProtoPages.parallelStream()
-                    .forEach(tuple -> tuple.x.setCategories(
-                            LinkExtraction.extractCategories(tuple.y)
-                    ));
-
-            pageParser.aggregatedProtoPages.parallelStream()
-                                .forEach(tuple -> setToReturn.add(tuple.x));
+            nextChunk.forEach(tuple -> setToReturn.add(tuple.x)); // TODO Memory bottleneck here!
 
         }
 
         return setToReturn;
-
+        
     }
 
 }
