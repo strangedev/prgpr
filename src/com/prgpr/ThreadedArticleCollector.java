@@ -14,30 +14,38 @@ import java.util.concurrent.atomic.AtomicBoolean;
 import java.util.stream.Stream;
 import java.util.ArrayList;
 import java.util.concurrent.locks.ReentrantLock;
-
+// TODO: 10/24/16 complete docstrings
+// TODO: implement MAX_CHUNKS to cap memory usage.
 /**
  * Created by strange on 10/22/16.
+ * @author Noah Hummel
  *
+ * A thread which uses WikiPageParser to read articles from a file of wikidata.
+ * It reads in data line by line and makes data available in chunks of articles.
+ * It also implements the Iterator interface to iterate through all of the chunks.
+ * The iterator hides the asynchronous nature of this class - hasNext() will only return false
+ * if all possible chunks have been processed by the consumer.
  */
 public class ThreadedArticleCollector implements Runnable, Iterator<ArrayList<Tuple<Page, String>>>{
 
     private Thread t;
-    private final ReentrantLock mutex = new ReentrantLock();
-    private AtomicBoolean threadCanEnd = new AtomicBoolean(false);
-    private Semaphore chunksAvailable;
+    private final ReentrantLock mutex = new ReentrantLock(); // used to synchronize access to articleChunks
+    private AtomicBoolean threadCanEnd = new AtomicBoolean(false); // used to signal hasNext() that all data is parsed
+    private Semaphore chunksAvailable; // used to signal hasNext() to permit the consumer to use next()
 
     private WikiPageParser pageParser;
     private int chunkSize;
     private String infilePath;
 
-    private ArrayList<Tuple<Page, String>> nextArticleChunk;
-    private Stack<ArrayList<Tuple<Page, String>>> articleChunks;
+    private ArrayList<Tuple<Page, String>> nextArticleChunk;  // a chunk is filled before adding it to articleChunks
+    private Stack<ArrayList<Tuple<Page, String>>> articleChunks;  // holds all available chunks of articles
 
     private static final Logger log = LogManager.getFormatterLogger(ThreadedArticleCollector.class);
 
     /**
      * Constructor.
      *
+     * @param infilePath The path to the file of wikidata.
      * @param chunkSize The amount of articles to be collected before making them available
      *                  For streaming to another thread.
      */
@@ -48,10 +56,14 @@ public class ThreadedArticleCollector implements Runnable, Iterator<ArrayList<Tu
         this.infilePath = infilePath;
         pageParser = new WikiPageParser();
         this.nextArticleChunk = new ArrayList<>(this.chunkSize);
-        chunksAvailable = new Semaphore(Integer.MAX_VALUE, true);   // Creates a fair semaphore with the maximum value possible
-        chunksAvailable.drainPermits();                             // Set the semaphore to 0 in the beginning
-                                                                    // This is necessary, because javas semaphores are capped.
-                                                                    // TODO: 10/23/16 Find a better way to do this.
+        chunksAvailable = new Semaphore(Integer.MAX_VALUE, true);  // Creates a fair semaphore with maximum value
+
+        /*
+         | Set the semaphore to 0 in the beginning. his is necessary, because javas semaphores are capped and start out
+         | set to their maximum value. Yet another case of Java making things too easy.
+         | TODO: 10/23/16 Find a better way to do this.
+         */
+        chunksAvailable.drainPermits();
         mutex.lock();
         articleChunks = new Stack<>();
         mutex.unlock();
@@ -68,29 +80,27 @@ public class ThreadedArticleCollector implements Runnable, Iterator<ArrayList<Tu
 
         boolean articleComplete = pageParser.parseLine(line);
 
-        if (articleComplete) { // add to current chunk
+        if (articleComplete) {  // add to current chunk
 
             try {
-
                 Tuple<Page, String> protoPage = pageParser.getProtoPage();
                 nextArticleChunk.add(protoPage);
 
             } catch (IllegalAccessException exception) {
-
                 log.error(exception.getMessage());
                 // @todo how to handle this properly?
 
             }
 
-            if (nextArticleChunk.size() >= chunkSize) { // check if chunk has been filled - if so, add to ArrayList
+            if (nextArticleChunk.size() >= chunkSize) {  // check if chunk has been filled - if so, add to ArrayList
 
                 mutex.lock();
                 articleChunks.push(new ArrayList<>(nextArticleChunk));
                 mutex.unlock();
 
-                chunksAvailable.release(); // Signal that a chunk is available to another thread.
+                chunksAvailable.release();  // Signal that a chunk is available to another thread.
 
-                nextArticleChunk.clear(); // clear next chunk, we'll be filling it again
+                nextArticleChunk.clear();  // clear next chunk, we'll be filling it again
 
             }
 
@@ -116,12 +126,13 @@ public class ThreadedArticleCollector implements Runnable, Iterator<ArrayList<Tu
 
         }
 
-        // No more lines to fill next chunk, take it as it is.
-        if (nextArticleChunk.size() > 0) {
+
+        if (nextArticleChunk.size() > 0) {  // No more lines to fill next chunk, take it as it is.
             mutex.lock();
             articleChunks.push(new ArrayList<>(nextArticleChunk));
             mutex.unlock();
             chunksAvailable.release();
+
         }
 
         threadCanEnd.set(true);
@@ -153,17 +164,20 @@ public class ThreadedArticleCollector implements Runnable, Iterator<ArrayList<Tu
         return chunkSize;
     }
 
+    // TODO figure out if JDoc uses docstring of interface
     @Override
     public boolean hasNext() {
 
-        if(threadCanEnd.get()) return chunksAvailable.tryAcquire(); // There might be data left.
+        if(threadCanEnd.get()) return chunksAvailable.tryAcquire(); // Data might be left, but no more is coming in.
 
         try {
             chunksAvailable.acquire();
             return true;
+
         } catch (InterruptedException exception) {
             log.error("Interrupted while acquiring semaphore: " + exception.getMessage());
             return false;
+
         }
 
     }
@@ -176,6 +190,7 @@ public class ThreadedArticleCollector implements Runnable, Iterator<ArrayList<Tu
         mutex.unlock();
 
         return ret;
+
     }
 
 }
