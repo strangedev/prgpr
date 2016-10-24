@@ -10,26 +10,29 @@ import java.nio.file.Paths;
 import java.util.Iterator;
 import java.util.Stack;
 import java.util.concurrent.Semaphore;
+import java.util.concurrent.atomic.AtomicBoolean;
 import java.util.stream.Stream;
 import java.util.ArrayList;
 import java.util.concurrent.locks.ReentrantLock;
 
 /**
  * Created by strange on 10/22/16.
- *z
+ *
  */
 public class ThreadedArticleCollector implements Runnable, Iterator<ArrayList<Tuple<Page, String>>>{
 
     private Thread t;
-
     private final ReentrantLock mutex = new ReentrantLock();
-    private final Semaphore chunksAvailable = new Semaphore(0, true); // Creates a fair semaphore with initial value of 0
+    private AtomicBoolean threadCanEnd = new AtomicBoolean(false);
+    private Semaphore chunksAvailable;
 
+    private WikiPageParser pageParser;
     private int chunkSize;
     private String infilePath;
-    private WikiPageParser pageParser;
+
     private ArrayList<Tuple<Page, String>> nextArticleChunk;
     private Stack<ArrayList<Tuple<Page, String>>> articleChunks;
+
     private static final Logger log = LogManager.getFormatterLogger(ThreadedArticleCollector.class);
 
     /**
@@ -45,7 +48,10 @@ public class ThreadedArticleCollector implements Runnable, Iterator<ArrayList<Tu
         this.infilePath = infilePath;
         pageParser = new WikiPageParser();
         this.nextArticleChunk = new ArrayList<>(this.chunkSize);
-
+        chunksAvailable = new Semaphore(Integer.MAX_VALUE, true);   // Creates a fair semaphore with the maximum value possible
+        chunksAvailable.drainPermits();                             // Set the semaphore to 0 in the beginning
+                                                                    // This is necessary, because javas semaphores are capped.
+                                                                    // TODO: 10/23/16 Find a better way to do this.
         mutex.lock();
         articleChunks = new Stack<>();
         mutex.unlock();
@@ -79,7 +85,7 @@ public class ThreadedArticleCollector implements Runnable, Iterator<ArrayList<Tu
             if (nextArticleChunk.size() >= chunkSize) { // check if chunk has been filled - if so, add to ArrayList
 
                 mutex.lock();
-                articleChunks.push(nextArticleChunk);
+                articleChunks.push(new ArrayList<>(nextArticleChunk));
                 mutex.unlock();
 
                 chunksAvailable.release(); // Signal that a chunk is available to another thread.
@@ -113,21 +119,13 @@ public class ThreadedArticleCollector implements Runnable, Iterator<ArrayList<Tu
         // No more lines to fill next chunk, take it as it is.
         if (nextArticleChunk.size() > 0) {
             mutex.lock();
-            articleChunks.push(nextArticleChunk);
+            articleChunks.push(new ArrayList<>(nextArticleChunk));
             mutex.unlock();
+            chunksAvailable.release();
         }
 
-        while (true) {
-            mutex.lock();
-            boolean noMoreData = articleChunks.empty();
-            mutex.unlock();
-
-            if (noMoreData) break;
-
-        }
-
-        log.info("Thread stopping.");
-        this.t.interrupt();
+        threadCanEnd.set(true);
+        log.info("All lines parsed.");
 
     }
 
@@ -158,10 +156,13 @@ public class ThreadedArticleCollector implements Runnable, Iterator<ArrayList<Tu
     @Override
     public boolean hasNext() {
 
+        if(threadCanEnd.get()) return chunksAvailable.tryAcquire(); // There might be data left.
+
         try {
             chunksAvailable.acquire();
             return true;
         } catch (InterruptedException exception) {
+            log.error("Interrupted while acquiring semaphore: " + exception.getMessage());
             return false;
         }
 

@@ -13,9 +13,10 @@ public class WikiPageParser {
     private static final Logger log = LogManager.getFormatterLogger(WikiPageParser.class);
     private static final Character articleDelimiter = '¤';
 
-    private boolean delimiterEncountered = false;
+    private boolean insideArticle = false;
 
     private ArrayList<String> aggregatedLines = new ArrayList<>();
+    private Tuple<Page, String> protoPage;
     private Page tmpPage = null;
 
     public Tuple<Page, String> getProtoPage() throws IllegalAccessException {
@@ -26,15 +27,15 @@ public class WikiPageParser {
         return protoPage;
     }
 
-    private Tuple<Page, String> protoPage;
-
     public boolean parseLine(String line) throws MalformedWikidataException {
 
         if(line.length() > 0) {
 
             if(line.charAt(0) == articleDelimiter){ // Delimiter encountered.
 
-                if(delimiterEncountered) { // There was already a delimiter in a previous line, the article is complete.
+                if(insideArticle) { // There was already a delimiter in a previous line, the article is complete.
+
+                    insideArticle = false; // Flip the flag!
 
                     if(tmpPage == null){ // If there was an error before, we can't complete this article.
                         log.error("Malformed article encountered");
@@ -53,11 +54,14 @@ public class WikiPageParser {
 
                     }
 
+                    aggregatedLines.clear();
 
                     // A complete article has been parsed.
                     return true;
 
                 } else { // This is a new delimiter, negate delimiterEncountered and parse some info.
+
+                    insideArticle = true; // Flip the flag!
 
                     String[] attributeStrings = line.split("\\s+"); // strip whitespace from attributes line
 
@@ -83,19 +87,21 @@ public class WikiPageParser {
                         throw new MalformedWikidataException("Page attribute 'namespaceId' is malformed");
                     }
 
-                    String title = attributeStrings[3];
+                    String title = "";
+                    for (int i = 3; i < attributeStrings.length; i++) {
+                        title += " " + attributeStrings[i]; // TODO: 10/23/16 retain original whitespace
+                    }
+
                     tmpPage = new Page(pageId, namespaceId, title); // prepare page object, this will be given to other
                                                                     // parsers alongside with the article contents.
                                                                     // @todo Fix responsibilities
                 }
 
-                delimiterEncountered = !delimiterEncountered; // Flip the flag!
-
             }
 
         }
 
-        if(delimiterEncountered){ // If we're inside of an article, aggregate all teh linez.
+        if(insideArticle){ // If we're inside of an article, aggregate all teh linez.
             aggregatedLines.add(line);
 
         }

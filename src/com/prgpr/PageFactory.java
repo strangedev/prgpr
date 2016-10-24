@@ -4,9 +4,7 @@ import com.prgpr.collections.Tuple;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 
-import java.io.IOException;
 import java.util.ArrayList;
-import java.util.Iterator;
 import java.util.Set;
 import java.util.LinkedHashSet;
 
@@ -23,11 +21,12 @@ public class PageFactory {
 
     private static final Logger log = LogManager.getFormatterLogger(PageFactory.class);
     private static final int chunkSize = 1000; // @todo create config file, tweak this number
-    
-    public Set<Page> extractPages(String infilePath) throws MalformedWikidataException{
+
+    public static Set<Page> extractPages(String infilePath) throws MalformedWikidataException{
 
         Set<Page> setToReturn = new LinkedHashSet<>();
         ThreadedArticleCollector articleCollector = new ThreadedArticleCollector(infilePath, chunkSize);
+        articleCollector.start();
 
         while (articleCollector.hasNext()) {
 
@@ -36,8 +35,7 @@ public class PageFactory {
             nextChunk.parallelStream()
                      .forEach(tuple -> tuple.x.setCategories(LinkExtraction.extractCategories(tuple.y)));
 
-            nextChunk.parallelStream()
-                     .forEach(tuple -> setToReturn.add(tuple.x)); // @todo Memory bottleneck here!
+            nextChunk.forEach(tuple -> setToReturn.add(tuple.x)); // @todo Memory bottleneck here!
 
         }
 
