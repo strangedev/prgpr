@@ -1,5 +1,6 @@
 package com.prgpr;
 
+import java.util.LinkedHashSet;
 import java.util.Set;
 
 public class Page {
@@ -16,6 +17,7 @@ public class Page {
         this.id = id;
         this.namespaceID = namespaceID;
         this.title = title;
+        this.categories = new LinkedHashSet<>();
     }
 
     /**

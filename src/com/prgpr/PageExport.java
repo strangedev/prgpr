@@ -10,24 +10,10 @@ import javax.xml.transform.Transformer;
 import javax.xml.transform.TransformerFactory;
 import javax.xml.transform.dom.DOMSource;
 import javax.xml.transform.stream.StreamResult;
+import java.io.File;
 import java.util.Set;
 
 public class PageExport {
-
-    /*
-     <?xml version="1.0" encoding="UTF-8"?>
-     <pages>
-     <page pageID="17724" namespaceID="0" title="Amiga 500">
-     <categories>
-     <category name="Amiga-Computer"/>
-     <category name="Heimcomputer"/>
-     </categories>
-     </page>
-     <page>
-     <!-- ... -->
-     </page>
-     </pages>
-     */
 
     /**
      * @param pages
@@ -43,17 +29,15 @@ public class PageExport {
             Element root = doc.createElement("pages");
             doc.appendChild(root);
 
-            for (Page p : pages) {
-                addPage(doc, root, p);
-            }
+            pages.parallelStream().forEach((page) -> addPage(doc, root, page));
 
-            //@TODO: write to file instead of System.out
             // output DOM XML to console
             Transformer transformer = TransformerFactory.newInstance().newTransformer();
             transformer.setOutputProperty(OutputKeys.INDENT, "yes");
             DOMSource source = new DOMSource(doc);
-            StreamResult console = new StreamResult(System.out);
-            transformer.transform(source, console);
+            //StreamResult console = new StreamResult(System.out);
+            StreamResult output = new StreamResult(new File(path));
+            transformer.transform(source, output);
         } catch (Exception e) {
             e.printStackTrace();
         }
@@ -66,15 +50,18 @@ public class PageExport {
      */
     private static void addPage(Document doc, Element parent, Page p){
         Element page = doc.createElement("page");
-        page.setAttribute("pageId", Long.toString(p.getId()));
+
         page.setAttribute("namespaceID", Integer.toString(p.getNamespaceID()));
+        page.setAttribute("pageId", Long.toString(p.getId()));
         page.setAttribute("title", p.getTitle());
 
-        for(String name : p.getCategories()){
+        Element categories = doc.createElement("categories");
+        p.getCategories().forEach((name) -> {
             Element category = doc.createElement("category");
             category.setAttribute("name", name);
-            page.appendChild(category);
-        }
+            categories.appendChild(category);
+        });
+        page.appendChild(categories);
 
         parent.appendChild(page);
     }
