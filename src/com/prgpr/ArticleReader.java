@@ -14,12 +14,12 @@ import java.util.stream.Stream;
 /**
  * Created by kito on 10/26/16.
  */
-public class ArticleReader extends Producer {
+public class ArticleReader extends Producer<ProtoPage> {
 
     private static final Logger log = LogManager.getFormatterLogger(ArticleReader.class);
     private boolean insideArticle = false;
-    private Page current;
-    private StringBuilder current_document = new StringBuilder();
+    private ProtoPage current;
+    private StringBuilder currentDocument = new StringBuilder();
     private String wikiFilePath;
 
     ArticleReader(String wikiFilePath){
@@ -28,33 +28,33 @@ public class ArticleReader extends Producer {
 
     public void run(){
         try (Stream<String> stream = Files.lines(Paths.get(wikiFilePath))) {
-            stream.forEachOrdered(this::delegateParseLine);
+            stream.forEachOrdered(this::parseLine);
         }
         catch (IOException exception) {
             log.error("Couldn't get lines of file: " + wikiFilePath);
         }
     }
 
-    private void delegateParseLine(String line) {
-        if(line.isEmpty()) return;
+    private void parseLine(String line) {
+        if(line.isEmpty()) return;  // Ignores empty lines
 
-        switch(line.charAt(0)){
+        switch(line.charAt(0)){  // Check for delimiter
             case '¤':
                 if(this.insideArticle){
                     this.insideArticle = false;
 
-                    if(line.length() > 1){
+                    if(line.length() > 1){  // If an opening delimiter is encountered before a closing one
                         this.current = null;
-                        this.current_document = null;
+                        this.currentDocument = null;
                         return;
                     }
-                    // emit
+                    this.current.setHtmlData(this.currentDocument.toString());
+                    this.emit(new Consumable<>(this.current));  // Notify subscribers
+
                     return;
                 }
 
-                Pattern r = Pattern.compile("\\s+([0-9]+)\\s+([0-9])\\s+(.*)");
-
-                // Now create matcher object.
+                Pattern r = Pattern.compile("\\s+([0-9]+)\\s+([0-9]+)\\s+(.*)");  // Regex for metadata in first line
                 Matcher m = r.matcher(line);
 
                 long id;
@@ -64,19 +64,21 @@ public class ArticleReader extends Producer {
                     try {
                         id = Long.parseLong(m.group(1));
                         namespaceId = Integer.parseInt(m.group(2));
-                    } catch (Exception e){
+                    } catch (Exception e){  // first line had malformed metadata
                         throw new MalformedWikidataException(e.getMessage());
                     }
-                } else {
+                } else {  // first line had no metadata
                     throw new MalformedWikidataException();
                 }
-
-                this.current = new Page(id, namespaceId, m.group(3));
-                this.current_document = new StringBuilder();
+                this.current = new ProtoPage(  // Start parsing lines of article
+                        new Page(id, namespaceId, m.group(3))
+                );
+                this.currentDocument = new StringBuilder();
                 this.insideArticle = true;
                 break;
+
             default:
-                this.current_document.append(line);
+                this.currentDocument.append(line);
                 break;
         }
     }
