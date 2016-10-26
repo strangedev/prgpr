@@ -34,11 +34,8 @@ public abstract class Producer {
     }
 
     public void parallelEmit(Consumable consumable) {
-
-        this.subscribers.parallelStream().forEach((subscriber) -> {
-            subscriber.consume(consumable);
-        });
-
+        this.subscribers.parallelStream()
+                        .forEach((subscriber) -> subscriber.consume(consumable));
     }
 
 }

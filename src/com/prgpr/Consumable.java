@@ -5,7 +5,7 @@ package com.prgpr;
  */
 public class Consumable<T> {
 
-    protected T data;
+    private T data;
 
     public Consumable(T data) {
 
