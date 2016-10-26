@@ -5,7 +5,7 @@ import java.util.LinkedHashSet;
 /**
  * Created by strange on 10/26/16.
  */
-public abstract class Producer {
+public abstract class Producer implements Runnable {
 
     private LinkedHashSet<Consumer> subscribers;
 
