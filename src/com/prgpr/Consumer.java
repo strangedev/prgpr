@@ -5,7 +5,7 @@ package com.prgpr;
  */
 public interface Consumer<T> {
 
-    void consume(Consumable<T> consumable);
+    void consume(T consumable);
 
     default void subscribeTo(Producer<T> producer) {
         producer.subscribe(this);

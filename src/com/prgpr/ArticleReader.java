@@ -50,7 +50,7 @@ public class ArticleReader extends Producer<ProtoPage> {
                         return;
                     }
                     this.current.setHtmlData(this.currentDocument.toString());
-                    this.emit(new Consumable<>(this.current));  // Notify subscribers
+                    this.emit(this.current);  // Notify subscribers
 
                     return;
                 }

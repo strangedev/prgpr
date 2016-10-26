@@ -96,8 +96,8 @@ public class PageExport implements Consumer<Page>{
     }
 
     @Override
-    public void consume(Consumable<Page> consumable) {
-        this.pages.add(consumable.get());
+    public void consume(Page consumable) {
+        this.pages.add(consumable);
 
         if(this.pages.size() % batchSize == 0) {
             this.exportToXml(this.pages);

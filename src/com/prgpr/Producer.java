@@ -28,7 +28,7 @@ public abstract class Producer<T> implements Runnable {
 
     }
 
-    public void emit(Consumable<T> consumable) {
+    public void emit(T consumable) {
 
         this.subscribers.forEach((subscriber) -> {
             subscriber.consume(consumable);
@@ -44,7 +44,7 @@ public abstract class Producer<T> implements Runnable {
 
     }
 
-    public void parallelEmit(Consumable<T> consumable) {
+    public void parallelEmit(T consumable) {
         this.subscribers.parallelStream()
                         .forEach((subscriber) -> subscriber.consume(consumable));
     }

@@ -1,6 +1,5 @@
 package com.prgpr.helpers;
 
-import com.prgpr.Consumable;
 import com.prgpr.Consumer;
 import com.prgpr.Page;
 
@@ -14,8 +13,8 @@ public class PageConsumer implements Consumer<Page> {
     private LinkedHashSet<Page> pages = new LinkedHashSet<>();
 
     @Override
-    public void consume(Consumable<Page> consumable) {
-        pages.add(consumable.get());
-        System.out.println(pages.size() + " | " + consumable.get().getTitle());
+    public void consume(Page consumable) {
+        pages.add(consumable);
+        System.out.println(pages.size() + " | " + consumable.getTitle());
     }
 }

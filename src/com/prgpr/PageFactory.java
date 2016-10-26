@@ -23,16 +23,16 @@ import com.prgpr.exceptions.MalformedWikidataException;
 public class PageFactory extends Producer<Page> implements Consumer<ProtoPage> {
 
     @Override
-    public void consume(Consumable<ProtoPage> consumable) {
+    public void consume(ProtoPage consumable) {
 
-        ProtoPage protoPage = consumable.get();
+        ProtoPage protoPage = consumable;
         protoPage.getInstance()
                  .setCategories(
                          LinkExtraction.extractCategories(
                                  protoPage.getHtmlData()
                          )
                  );
-        this.emit(new Consumable<>(protoPage.getInstance()));
+        this.emit(protoPage.getInstance());
 
     }
 
