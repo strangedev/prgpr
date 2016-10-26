@@ -33,6 +33,7 @@ public class ArticleReader extends Producer<ProtoPage> {
         catch (IOException exception) {
             log.error("Couldn't get lines of file: " + wikiFilePath);
         }
+        this.done();
     }
 
     private void parseLine(String line) {

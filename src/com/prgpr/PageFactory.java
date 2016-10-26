@@ -35,4 +35,9 @@ public class PageFactory extends Producer<Page> implements Consumer<ProtoPage> {
         this.emit(new Consumable<>(protoPage.getInstance()));
 
     }
+
+    @Override
+    public void unsubscribed(Producer<ProtoPage> producer) {
+        this.done();
+    }
 }

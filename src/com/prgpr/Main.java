@@ -8,14 +8,13 @@ public class Main {
 
         ArticleReader articleReader = new ArticleReader("res/infile/wikipedia_de_prgpr_subset.txt");
         PageFactory pageFactory = new PageFactory();
-        PageConsumer pageConsumer = new PageConsumer();
+        PageExport pageExport = new PageExport("res/outfile/output.xml");
 
-        pageConsumer.subscribeTo(pageFactory);
+        pageExport.subscribeTo(pageFactory);
+        //new PageConsumer().subscribeTo(pageFactory);
         pageFactory.subscribeTo(articleReader);
-        //articleReader.subscribe(pageFactory);
-        //pageFactory.subscribe(pageConsumer);
 
-        long test = Benchmark.run(articleReader::run);
+        long test = Benchmark.run(articleReader);
 
         System.out.println("Test took: " + test);
 

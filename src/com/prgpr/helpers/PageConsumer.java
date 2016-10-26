@@ -11,13 +11,11 @@ import java.util.LinkedHashSet;
  */
 public class PageConsumer implements Consumer<Page> {
 
-    //private long articlesConsumed = 0;
     private LinkedHashSet<Page> pages = new LinkedHashSet<>();
 
     @Override
     public void consume(Consumable<Page> consumable) {
         pages.add(consumable.get());
-        //rticlesConsumed++;
-        //System.out.println(articlesConsumed + " | " + consumable.get().getTitle());
+        System.out.println(pages.size() + " | " + consumable.get().getTitle());
     }
 }
