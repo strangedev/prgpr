@@ -5,7 +5,7 @@ package com.prgpr.framework;
  */
 public abstract class ConsumerProducer<T,T1> extends Producer<T> implements Consumer<T1> {
     @Override
-    public void unsubscribed(Producer<T1> producer) {
+    public void onUnsubscribed(Producer<T1> producer) {
         this.done();
     }
 }

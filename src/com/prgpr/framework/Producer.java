@@ -19,12 +19,14 @@ public abstract class Producer<T> implements Runnable {
     public void subscribe(Consumer<T> subscriber) {
 
         this.subscribers.add(subscriber);
+        subscriber.onSubscribe(this);
 
     }
 
     public void unsubscribe(Consumer<T> subscriber) {
 
         this.subscribers.remove(subscriber);
+        subscriber.onUnsubscribed(this);
 
     }
 
@@ -38,9 +40,7 @@ public abstract class Producer<T> implements Runnable {
 
     public void done() {
 
-        new LinkedHashSet<>(this.subscribers).forEach((subscriber) -> {
-            subscriber.unsubscribeFrom(this);
-        });
+        new LinkedHashSet<>(this.subscribers).forEach(this::unsubscribe);
 
     }
 

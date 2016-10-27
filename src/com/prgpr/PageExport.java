@@ -108,7 +108,7 @@ public class PageExport implements Consumer<Page> {
     }
 
     @Override
-    public void unsubscribed(Producer<Page> producer) {
+    public void onUnsubscribed(Producer<Page> producer) {
         this.exportToXml(this.pages);
     }
 }

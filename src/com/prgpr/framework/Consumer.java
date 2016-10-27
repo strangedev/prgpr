@@ -13,9 +13,10 @@ public interface Consumer<T> {
 
     default void unsubscribeFrom(Producer<T> producer) {
         producer.unsubscribe(this);
-        this.unsubscribed(producer);
     }
 
-    default void unsubscribed(Producer<T> producer){};
+    default void onSubscribe(Producer<T> producer){};
+
+    default void onUnsubscribed(Producer<T> producer){};
 
 }
