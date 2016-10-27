@@ -1,7 +1,7 @@
 package com.prgpr.helpers;
 
-import com.prgpr.Consumer;
-import com.prgpr.Page;
+import com.prgpr.framework.Consumer;
+import com.prgpr.data.Page;
 
 import java.util.LinkedHashSet;
 

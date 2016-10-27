@@ -1,18 +1,10 @@
 package com.prgpr;
 
-import com.prgpr.collections.Tuple;
-import org.apache.logging.log4j.LogManager;
-import org.apache.logging.log4j.Logger;
-
-import java.util.ArrayList;
-import java.util.Set;
-import java.util.LinkedHashSet;
-import java.io.FileInputStream;
-import java.io.IOException;
-import java.io.InputStream;
-import java.util.Properties;
-
-import com.prgpr.exceptions.MalformedWikidataException;
+import com.prgpr.data.Page;
+import com.prgpr.data.ProtoPage;
+import com.prgpr.framework.Consumer;
+import com.prgpr.framework.ConsumerProducer;
+import com.prgpr.framework.Producer;
 
 /**
  * Created by strange on 10/21/16.
@@ -20,7 +12,7 @@ import com.prgpr.exceptions.MalformedWikidataException;
  *
  * A Factory class which creates a Set of Page objects from parsing a file of wikidata.
  */
-public class PageFactory extends Producer<Page> implements Consumer<ProtoPage> {
+public class PageFactory extends ConsumerProducer<Page, ProtoPage> {
 
     @Override
     public void consume(ProtoPage consumable) {
@@ -29,15 +21,10 @@ public class PageFactory extends Producer<Page> implements Consumer<ProtoPage> {
         protoPage.getInstance()
                  .setCategories(
                          LinkExtraction.extractCategories(
-                                 protoPage.getHtmlData()
+                                 protoPage.getHtmlData().toString()
                          )
                  );
         this.emit(protoPage.getInstance());
 
-    }
-
-    @Override
-    public void unsubscribed(Producer<ProtoPage> producer) {
-        this.done();
     }
 }

@@ -10,9 +10,9 @@ public class Main {
         PageFactory pageFactory = new PageFactory();
         PageExport pageExport = new PageExport("res/outfile/output.xml");
 
-        pageExport.subscribeTo(pageFactory);
-        //new PageConsumer().subscribeTo(pageFactory);
         pageFactory.subscribeTo(articleReader);
+        pageExport.subscribeTo(pageFactory);
+        pageFactory.subscribe(new PageConsumer());
 
         long test = Benchmark.run(articleReader);
 

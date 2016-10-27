@@ -1,6 +1,9 @@
 package com.prgpr;
 
+import com.prgpr.data.Page;
+import com.prgpr.data.ProtoPage;
 import com.prgpr.exceptions.MalformedWikidataException;
+import com.prgpr.framework.Producer;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 
@@ -49,9 +52,11 @@ public class ArticleReader extends Producer<ProtoPage> {
                         this.currentDocument = null;
                         return;
                     }
-                    this.current.setHtmlData(this.currentDocument.toString());
-                    this.emit(this.current);  // Notify subscribers
 
+                    this.current.setHtmlData(this.currentDocument);
+                    this.emit(this.current);  // Notify subscribers
+                    this.current = null;
+                    this.currentDocument = null;
                     return;
                 }
 

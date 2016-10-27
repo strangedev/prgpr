@@ -1,5 +1,8 @@
 package com.prgpr;
 
+import com.prgpr.data.Page;
+import com.prgpr.framework.Consumer;
+import com.prgpr.framework.Producer;
 import org.w3c.dom.Document;
 import org.w3c.dom.Element;
 
@@ -16,7 +19,7 @@ import java.io.FileOutputStream;
 import java.util.LinkedHashSet;
 import java.util.Set;
 
-public class PageExport implements Consumer<Page>{
+public class PageExport implements Consumer<Page> {
 
     private Set<Page> pages;
     private static final int batchSize = 100;

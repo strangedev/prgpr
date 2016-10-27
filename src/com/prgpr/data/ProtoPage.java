@@ -1,4 +1,4 @@
-package com.prgpr;
+package com.prgpr.data;
 
 /**
  * Created by strange on 10/26/16.
@@ -6,23 +6,23 @@ package com.prgpr;
 public class ProtoPage {
 
     private Page instance;
-    private String htmlData;
+    private StringBuilder htmlData;
 
-    public ProtoPage(Page instance, String htmlData) {
+    public ProtoPage(Page instance, StringBuilder htmlData) {
         this.instance = instance;
         this.htmlData = htmlData;
     }
 
     public ProtoPage(Page instance) {
         this.instance = instance;
-        this.htmlData = "";
+        this.htmlData = new StringBuilder();
     }
 
     public Page getInstance() {
         return instance;
     }
 
-    public String getHtmlData() {
+    public StringBuilder getHtmlData() {
         return htmlData;
     }
 
@@ -30,7 +30,8 @@ public class ProtoPage {
         this.instance = instance;
     }
 
-    public void setHtmlData(String htmlData) {
+    public void setHtmlData(StringBuilder htmlData) {
+        this.htmlData = null;
         this.htmlData = htmlData;
     }
 
