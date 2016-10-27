@@ -5,29 +5,25 @@ package com.prgpr.data;
  */
 public class ProtoPage {
 
-    private Page instance;
+    private Page page;
     private StringBuilder htmlData;
 
     public ProtoPage(Page instance, StringBuilder htmlData) {
-        this.instance = instance;
+        this.page = instance;
         this.htmlData = htmlData;
     }
 
     public ProtoPage(Page instance) {
-        this.instance = instance;
+        this.page = instance;
         this.htmlData = new StringBuilder();
     }
 
-    public Page getInstance() {
-        return instance;
+    public Page getPage() {
+        return page;
     }
 
     public StringBuilder getHtmlData() {
         return htmlData;
-    }
-
-    public void setInstance(Page instance) {
-        this.instance = instance;
     }
 
     public void setHtmlData(StringBuilder htmlData) {
@@ -42,13 +38,12 @@ public class ProtoPage {
 
         ProtoPage protoPage = (ProtoPage) o;
 
-        return htmlData.equals(protoPage.htmlData);
-
+        return page.equals(protoPage.page);
     }
 
     @Override
     public int hashCode() {
-        return htmlData.hashCode();
+        return page.hashCode();
     }
 
 }

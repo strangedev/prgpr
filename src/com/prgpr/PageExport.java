@@ -40,8 +40,6 @@ public class PageExport implements Consumer<Page> {
             }
 
             this.outputFile = new FileOutputStream(f, true);
-        } catch (FileNotFoundException e) {
-            e.printStackTrace();
         } catch (Exception e) {
             e.printStackTrace();
         }
