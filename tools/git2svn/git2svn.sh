@@ -8,5 +8,7 @@ git checkout Production
 cd ../
 mv ./prgpr/* ./
 rm -rf ./prgpr
-
+svn add ./*
+svn commit -m $2
+svn update
 
