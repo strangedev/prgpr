@@ -1,7 +1,6 @@
 package com.prgpr;
 
-import com.prgpr.helpers.Benchmark;
-import com.prgpr.helpers.PageConsumer;
+import com.prgpr.helpers.PageStatistics;
 
 public class Main {
     public static void main(String[] args) {
@@ -12,11 +11,8 @@ public class Main {
 
         pageFactory.subscribeTo(articleReader);
         pageExport.subscribeTo(pageFactory);
-        pageFactory.subscribe(new PageConsumer());
+        new PageStatistics().subscribeTo(pageFactory);
 
-        long test = Benchmark.run(articleReader);
-
-        System.out.println("Test took: " + test);
-
+        articleReader.run();
     }
 }
