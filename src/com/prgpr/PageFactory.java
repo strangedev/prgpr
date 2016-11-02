@@ -18,7 +18,7 @@ public class PageFactory extends ConsumerProducer<Page, ProtoPage> {
         consumable.getPage()
                  .setCategories(
                          LinkExtraction.extractCategories(
-                                 consumable.getHtmlData().toString()
+                                 consumable.getHtmlData()
                          )
                  );
         this.emit(consumable.getPage());

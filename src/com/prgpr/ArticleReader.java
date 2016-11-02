@@ -21,6 +21,7 @@ import java.util.stream.Stream;
 public class ArticleReader extends Producer<ProtoPage> {
 
     private static final Logger log = LogManager.getFormatterLogger(ArticleReader.class);
+    private final Pattern regex;
     private boolean insideArticle = false;
     private ProtoPage current;
     private StringBuilder currentDocument = new StringBuilder();
@@ -28,6 +29,7 @@ public class ArticleReader extends Producer<ProtoPage> {
 
     ArticleReader(String wikiFilePath){
         this.wikiFilePath = wikiFilePath;
+        this.regex = Pattern.compile("\\s+([0-9]+)\\s+([0-9]+)\\s+(.*)");
     }
 
     public void run(){
@@ -61,8 +63,8 @@ public class ArticleReader extends Producer<ProtoPage> {
                     return;
                 }
 
-                Pattern r = Pattern.compile("\\s+([0-9]+)\\s+([0-9]+)\\s+(.*)");  // Regex for metadata in first line
-                Matcher m = r.matcher(line);
+
+                Matcher m = this.regex.matcher(line);
 
                 long id;
                 int namespaceId;
