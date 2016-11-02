@@ -22,6 +22,5 @@ public class PageFactory extends ConsumerProducer<Page, ProtoPage> {
                          )
                  );
         this.emit(consumable.getPage());
-
     }
 }

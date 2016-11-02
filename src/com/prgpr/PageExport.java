@@ -2,7 +2,9 @@ package com.prgpr;
 
 import com.prgpr.data.Page;
 import com.prgpr.framework.Consumer;
+import com.prgpr.framework.ConsumerInterface;
 import com.prgpr.framework.Producer;
+import com.prgpr.framework.ProducerInterface;
 import org.w3c.dom.Document;
 import org.w3c.dom.Element;
 
@@ -14,12 +16,11 @@ import javax.xml.transform.TransformerFactory;
 import javax.xml.transform.dom.DOMSource;
 import javax.xml.transform.stream.StreamResult;
 import java.io.File;
-import java.io.FileNotFoundException;
 import java.io.FileOutputStream;
 import java.util.LinkedHashSet;
 import java.util.Set;
 
-public class PageExport implements Consumer<Page> {
+public class PageExport extends Consumer<Page> {
 
     private Set<Page> pages;
     private static final int batchSize = 100;
@@ -48,7 +49,7 @@ public class PageExport implements Consumer<Page> {
     /**
      * @param pages
      */
-    public void exportToXml(Set<Page> pages){
+    public synchronized void exportToXml(Set<Page> pages){
         if(this.outputFile == null){
             this.createOutputFile();
         }
@@ -106,7 +107,7 @@ public class PageExport implements Consumer<Page> {
     }
 
     @Override
-    public void onUnsubscribed(Producer<Page> producer) {
+    public void onComplete() {
         this.exportToXml(this.pages);
     }
 }

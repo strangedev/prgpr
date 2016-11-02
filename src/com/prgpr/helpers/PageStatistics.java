@@ -1,8 +1,10 @@
 package com.prgpr.helpers;
 
 import com.prgpr.framework.Consumer;
+import com.prgpr.framework.ConsumerInterface;
 import com.prgpr.data.Page;
 import com.prgpr.framework.Producer;
+import com.prgpr.framework.ProducerInterface;
 
 import java.util.LinkedHashSet;
 import java.util.Set;
@@ -11,7 +13,7 @@ import java.util.concurrent.atomic.LongAdder;
 /**
  * Created by strange on 10/26/16.
  */
-public class PageStatistics implements Consumer<Page> {
+public class PageStatistics extends Consumer<Page> {
 
     private int consumedPages = 0;
     private long lastTime = 0;
@@ -33,13 +35,13 @@ public class PageStatistics implements Consumer<Page> {
     }
 
     @Override
-    public void onSubscribe(Producer<Page> producer) {
+    public void onStart() {
         this.lastTime = System.currentTimeMillis();
         this.articlesPerSecond = new LinkedHashSet<>();
     }
 
     @Override
-    public void onUnsubscribed(Producer<Page> producer) {
+    public void onComplete() {
         LongAdder adder = new LongAdder();
         int numArticlesPerSecond = articlesPerSecond.size();
         articlesPerSecond.parallelStream().forEach(adder::add);
