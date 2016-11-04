@@ -2,8 +2,9 @@ package com.prgpr;
 
 import com.prgpr.data.ProtoPage;
 import com.prgpr.data.Page;
-import com.prgpr.helpers.PageStatistics;
 import com.prgpr.helpers.ProducerLogger;
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
 
 /**
  * @author Elizaveta Kovalevskaya
@@ -12,6 +13,8 @@ import com.prgpr.helpers.ProducerLogger;
  */
 public class Main {
 
+    private static final Logger log = LogManager.getFormatterLogger(Main.class);
+
     /**
      * creates instances of the classes and subscribes them to each other so that the program runs in the right order
      *
@@ -19,19 +22,66 @@ public class Main {
      */
     public static void main(String[] args) {
 
-        ArticleReader articleReader = new ArticleReader("res/infile/wikipedia_de_prgpr_subset.txt");
+        boolean logAll = true;
+        String infilePath = "";
+        String outfilePath = "";
+
+        switch (args.length){
+            case 1:
+                if (args[0].equals("help"))
+                    System.exit(0);
+                 else {
+                    log.error(
+                            "Invalid argument: " + args[0] +
+                            "\nPlease refer to README.txt for info on how to use."
+                    );
+                    System.exit(1);
+                 }
+
+            case 2:
+
+                infilePath = args[0];
+                outfilePath = args[1];
+                break;
+
+            case 3:
+
+                infilePath = args[0];
+                outfilePath = args[1];
+
+                try {
+
+                    logAll = Boolean.parseBoolean(args[2]);
+
+                } catch (Exception e) {
+                    log.error("Invalid argument " + args[2] +  " for option log-all.");
+                    System.exit(1);
+                }
+                break;
+
+            default:
+                log.error("Invalid number of arguments. \nPlease refer to README.txt for info on how to use.");
+                System.exit(1);
+        }
+
+        // Data processing units
+        ArticleReader articleReader = new ArticleReader(infilePath);
         PageFactory pageFactory = new PageFactory();
-        PageExport pageExport = new PageExport("res/outfile/output.xml");
+        PageExport pageExport = new PageExport(outfilePath);
 
-        ProducerLogger<ProtoPage> protoPageProducerLogger = new ProducerLogger<>(true);
-        ProducerLogger<Page> pageProducerLogger = new ProducerLogger<>(true);
+        // Logging units
+        ProducerLogger<ProtoPage> articleReaderLogger = new ProducerLogger<>(logAll);
+        ProducerLogger<Page> pageFactoryLogger = new ProducerLogger<>(logAll);
 
-        protoPageProducerLogger.subscribeTo(articleReader);
+        // Setup
         pageFactory.subscribeTo(articleReader);
-        pageProducerLogger.subscribeTo(pageFactory);
         pageExport.subscribeTo(pageFactory);
 
+        articleReaderLogger.subscribeTo(articleReader);
+        pageFactoryLogger.subscribeTo(pageFactory);
 
+        // Execute
         articleReader.run();
+
     }
 }

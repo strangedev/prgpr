@@ -99,6 +99,8 @@ public class ProducerLogger<T> implements Consumer<T> {
         int numConsumablesPerSecond = consumablesPerSecond.size();
         consumablesPerSecond.parallelStream().forEach(adder::add);  // adds all data points for averaging
 
+        if (numConsumablesPerSecond < 1) return;
+
         log.info(
                 "Final performance record for " +
                         this.producerName +

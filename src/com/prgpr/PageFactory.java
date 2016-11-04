@@ -18,6 +18,19 @@ public class PageFactory extends ConsumerProducer<Page, ProtoPage> {
      * Uses LinkExtraction to extract categories from the ProtoPage's
      * htmlData and emits the final Page.
      *
+     * Deviation from assignment:
+     * PageFactory is not responsible for reading the input file.
+     * A separate class ArticleReader is responsible for performing I/O and
+     * reading the metadata line for each article.
+     *
+     * Reasoning:
+     * Decoupling Page creation from parsing is necessary to keep a clear
+     * distinction between class responsibilities.
+     * As this project progresses, PageFactory will have to invoke more
+     * extraction methods and grow in functionality. Performing all of
+     * the I/O as well would lead to a god-object which can't be understood
+     * by others anymore.
+     *
      * @param consumable A ProtoPage object with missing category data.
      */
     @Override
@@ -29,6 +42,7 @@ public class PageFactory extends ConsumerProducer<Page, ProtoPage> {
                                  consumable.getHtmlData().toString()  // Uses StringBuilder class
                          )
                  );
+
         this.emit(consumable.getPage());  // only emit the resulting Page object
 
     }
