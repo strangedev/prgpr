@@ -16,6 +16,9 @@ import java.util.stream.Stream;
 
 /**
  * Created by kito on 10/26/16.
+ * @author Kyle Rinfreschi
+ *
+ * An Article Reader getting the text of the Wikidatas
  */
 public class ArticleReader extends Producer<ProtoPage> {
 
@@ -29,6 +32,9 @@ public class ArticleReader extends Producer<ProtoPage> {
         this.wikiFilePath = wikiFilePath;
     }
 
+    /**
+     * streams the lines to the parser "parseLine"
+     */
     public void run(){
         try (Stream<String> stream = Files.lines(Paths.get(wikiFilePath))) {
             stream.forEachOrdered(this::parseLine);
@@ -39,6 +45,11 @@ public class ArticleReader extends Producer<ProtoPage> {
         this.done();
     }
 
+    /**
+     * gets lines and looks up where an article starts to create a ProtoPage
+     *
+     * @param line a String with the text of a line of the input file
+     */
     private void parseLine(String line) {
         if(line.isEmpty()) return;  // Ignores empty lines
 

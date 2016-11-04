@@ -16,21 +16,27 @@ import org.apache.logging.log4j.Logger;
 
 /**
  * Created by lisa on 10/24/16.
+ * @author Elizaveta Kovalevskaya
+ *
+ * A LinkExtraction class which provied static methods for extracting informations from wikiarticles.
  */
 public class LinkExtraction {
 
     private static final Logger log = LogManager.getFormatterLogger(PageFactory.class);
 
+    /**
+     * gets the categories from an article
+     *
+     * @param article A String of html-formated text
+     * @return a LinkedHashSet of categories extended from the article
+     */
     public static Set<String> extractCategories(String article){
         Set<String> categories = new LinkedHashSet<>();
         try{
             Document articles = Jsoup.parse(article);
 
             Elements links = articles.select("div#catlinks li a");
-            for (Element link :links){
-                //System.out.println(link.text());
-                categories.add(link.text());
-            }
+            links.forEach(link -> categories.add(link.text()));
         }
 
         catch (Exception except){

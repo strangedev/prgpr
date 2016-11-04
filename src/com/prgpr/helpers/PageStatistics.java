@@ -10,6 +10,9 @@ import java.util.concurrent.atomic.LongAdder;
 
 /**
  * Created by strange on 10/26/16.
+ * @author Noah Hummel
+ *
+ * A Class to count the progress
  */
 public class PageStatistics implements Consumer<Page> {
 

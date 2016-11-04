@@ -19,6 +19,11 @@ import java.io.FileOutputStream;
 import java.util.LinkedHashSet;
 import java.util.Set;
 
+/**
+ * @author Kyle Rinfreschi
+ *
+ * An Export Class for creating xml-syntax and writing it into the export file
+ */
 public class PageExport implements Consumer<Page> {
 
     private Set<Page> pages;
@@ -31,6 +36,9 @@ public class PageExport implements Consumer<Page> {
         this.pages = new LinkedHashSet<>();
     }
 
+    /**
+     * creates a new file if the old one is deleted
+     */
     private void createOutputFile(){
         try {
             File f = new File(this.path);
@@ -46,7 +54,9 @@ public class PageExport implements Consumer<Page> {
     }
 
     /**
-     * @param pages
+     * builds Documents with xml-Pages and outputs them in the console
+     *
+     * @param pages Set of pages which were created by the PageFactory
      */
     public void exportToXml(Set<Page> pages){
         if(this.outputFile == null){
@@ -78,6 +88,13 @@ public class PageExport implements Consumer<Page> {
         }
     }
 
+    /**
+     * creates xml-Elements of Pages
+     *
+     * @param doc Document with xml-syntax with Pages
+     * @param parent parent of the Page
+     * @param p a Page
+     */
     private void addPage(Document doc, Element parent, Page p){
         Element page = doc.createElement("page");
 
@@ -96,6 +113,11 @@ public class PageExport implements Consumer<Page> {
         parent.appendChild(page);
     }
 
+    /**
+     * writes into the output file as soon as the batchSize is reached
+     *
+     * @param consumable Page from PageFactory
+     */
     @Override
     public void consume(Page consumable) {
         this.pages.add(consumable);
@@ -105,6 +127,11 @@ public class PageExport implements Consumer<Page> {
         }
     }
 
+    /**
+     * finishes the method by unsubscribing and writes the last pages into the output file
+     *
+     * @param producer The producer this was subscribed to.
+     */
     @Override
     public void onUnsubscribed(Producer<Page> producer) {
         this.exportToXml(this.pages);
