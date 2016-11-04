@@ -1,6 +1,9 @@
 package com.prgpr;
 
+import com.prgpr.data.ProtoPage;
+import com.prgpr.data.Page;
 import com.prgpr.helpers.PageStatistics;
+import com.prgpr.helpers.ProducerLogger;
 
 /**
  * @author Elizaveta Kovalevskaya
@@ -20,9 +23,14 @@ public class Main {
         PageFactory pageFactory = new PageFactory();
         PageExport pageExport = new PageExport("res/outfile/output.xml");
 
+        ProducerLogger<ProtoPage> protoPageProducerLogger = new ProducerLogger<>(true);
+        ProducerLogger<Page> pageProducerLogger = new ProducerLogger<>(true);
+
+        protoPageProducerLogger.subscribeTo(articleReader);
         pageFactory.subscribeTo(articleReader);
+        pageProducerLogger.subscribeTo(pageFactory);
         pageExport.subscribeTo(pageFactory);
-        new PageStatistics().subscribeTo(pageFactory);
+
 
         articleReader.run();
     }

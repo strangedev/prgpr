@@ -23,10 +23,11 @@ Grundvoraussetzungen für die Bewertung:
 * Erstellung einer Datei "Milestone1_README.txt" im Wurzelverzeichnis Ihres SVN-Repositories in welcher Sie Ihre Abgabe für den Tutor kommentieren. 
 
 Die Beschreibung sollte zumindest enthalten:
-+ wie die Berechnung ausgeführt werden kann (Beispielaufruf auf der Konsole)
-+ wo die Ergebnisdatei liegt
-+ wer woran gearbeitet hat (vor allem in den späteren Milestones von Bedeutung)
-+ welche bekannten Probleme ggf. noch bestehen
+
+* wie die Berechnung ausgeführt werden kann (Beispielaufruf auf der Konsole)
+* wo die Ergebnisdatei liegt
+* wer woran gearbeitet hat (vor allem in den späteren Milestones von Bedeutung)
+* welche bekannten Probleme ggf. noch bestehen
 
 
 Die Bewertung der Abgabe ist wie folgt:
