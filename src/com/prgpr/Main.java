@@ -10,7 +10,7 @@ import com.prgpr.helpers.PageStatistics;
 public class Main {
 
     /**
-     * creates instances of the classes and subscribes them to each other so that the program runs in the right order
+     * Creates instances of the classes and subscribes them to each other so that the program runs in the right order
      *
      * @param args input and output file paths
      */

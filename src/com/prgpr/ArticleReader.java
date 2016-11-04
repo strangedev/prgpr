@@ -33,7 +33,7 @@ public class ArticleReader extends Producer<ProtoPage> {
     }
 
     /**
-     * streams the lines to the parser "parseLine"
+     * Streams the lines to the parser "parseLine"
      */
     public void run(){
         try (Stream<String> stream = Files.lines(Paths.get(wikiFilePath))) {
@@ -46,7 +46,7 @@ public class ArticleReader extends Producer<ProtoPage> {
     }
 
     /**
-     * gets lines and looks up where an article starts to create a ProtoPage
+     * Gets lines and looks up where an article starts to create a ProtoPage
      *
      * @param line a String with the text of a line of the input file
      */
