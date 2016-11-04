@@ -3,6 +3,11 @@ package com.prgpr.data;
 import java.util.LinkedHashSet;
 import java.util.Set;
 
+/**
+ * @author Elizaveta Kovalevskaya
+ *
+ * This is a Page Class. It contains the information about the article.
+ */
 public class Page {
     private long id;
 

@@ -16,7 +16,7 @@ public class Main {
     private static final Logger log = LogManager.getFormatterLogger(Main.class);
 
     /**
-     * creates instances of the classes and subscribes them to each other so that the program runs in the right order
+     * Creates instances of the classes and subscribes them to each other so that the program runs in the right order
      *
      * @param args input and output file paths
      */

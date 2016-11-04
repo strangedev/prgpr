@@ -37,7 +37,7 @@ public class PageExport implements Consumer<Page> {
     }
 
     /**
-     * creates a new file if the old one is deleted
+     * Creates a new file if the old one is deleted
      */
     private void createOutputFile(){
         try {
@@ -54,7 +54,7 @@ public class PageExport implements Consumer<Page> {
     }
 
     /**
-     * builds Documents with xml-Pages and outputs them in the console
+     * Builds Documents with xml-Pages and outputs them in the console
      *
      * @param pages Set of pages which were created by the PageFactory
      */
@@ -89,7 +89,7 @@ public class PageExport implements Consumer<Page> {
     }
 
     /**
-     * creates xml-Elements of Pages
+     * Creates xml-Elements of Pages
      *
      * @param doc Document with xml-syntax with Pages
      * @param parent parent of the Page
@@ -114,7 +114,7 @@ public class PageExport implements Consumer<Page> {
     }
 
     /**
-     * writes into the output file as soon as the batchSize is reached
+     * Writes into the output file as soon as the batchSize is reached
      *
      * @param consumable Page from PageFactory
      */
@@ -128,7 +128,7 @@ public class PageExport implements Consumer<Page> {
     }
 
     /**
-     * finishes the method by unsubscribing and writes the last pages into the output file
+     * Finishes the method by unsubscribing and writes the last pages into the output file
      *
      * @param producer The producer this was subscribed to.
      */
