@@ -18,14 +18,14 @@ import java.util.concurrent.atomic.LongAdder;
  */
 public class ProducerLogger<T> implements Consumer<T> {
 
+    private static final Logger log = LogManager.getFormatterLogger(ProducerLogger.class);
+
     private boolean logAll = false;
     private long consumed = 0;
     private long lastTime = 0;
     private long seconds = 0;
     private Set<Long> consumablesPerSecond;
     private String producerName;
-
-    private static final Logger log = LogManager.getFormatterLogger(ProducerLogger.class);
 
     /**
      * Default constructor.
@@ -53,7 +53,7 @@ public class ProducerLogger<T> implements Consumer<T> {
      * generates timing statistics. Logs each consumable consumed if logAll
      * was set during instantiation.
      *
-     * @param consumable
+     * @param consumable A consumable to be logged and counted.
      */
     @Override
     public void consume(T consumable) {

@@ -23,17 +23,23 @@ import java.util.stream.Stream;
 public class PageFactory extends Producer<Page> {
 
     private static final Logger log = LogManager.getFormatterLogger(PageFactory.class);
+
     private boolean insideArticle = false;
     private ProtoPage current;
     private StringBuilder currentDocument = new StringBuilder();
     private String wikiFilePath;
 
+    /**
+     * Constructor.
+     *
+     * @param wikiFilePath The path to the input file.
+     */
     PageFactory(String wikiFilePath){
         this.wikiFilePath = wikiFilePath;
     }
 
     /**
-     * Streams the lines to the parser "parseLine"
+     * Streams lines of the input file to the parser "parseLine".
      */
     public void run(){
         try (Stream<String> stream = Files.lines(Paths.get(wikiFilePath))) {
@@ -68,7 +74,11 @@ public class PageFactory extends Producer<Page> {
     }
 
     /**
-     * Gets lines and looks up where an article starts to create a ProtoPage
+     * Parses an article by sequentially reading lines from a file.
+     * Builds a persistent context between calls and emits a ProtoPage
+     * when an article is finished.
+     * If an ending delimiter is omitted, parseLine will treat the
+     * current article as closed by default.
      *
      * @param line a String with the text of a line of the input file
      */

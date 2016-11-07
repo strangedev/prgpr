@@ -26,104 +26,117 @@ mightiest of all swords!
 1. How to use
 -------------------------------------------------------------------------------
 
-1.1 Invocation
---------------
+    1.1 Invocation
+    --------------
 
-    1.1.1 Invocation by script
-    --------------------------
+        1.1.1 Invocation by script
+        --------------------------
 
-        Execute the script CapnWikicrunch.sh from within bash or similar:
+            Execute the script CapnWikicrunch.sh from within bash or similar:
 
-        "./CapnWikicrunch.sh INFILE OUTFILE [OPTIONS]"
-
-
-    1.1.2 Manual invocation
-    -----------------------
-
-        Execute the following command from the command line of your choice:
-
-        "java -Xmx2g -jar CapnWikicrunch.jar INFILE OUTFILE [OPTIONS]"
+            "./CapnWikicrunch.sh INFILE OUTFILE [OPTIONS]"
 
 
-1.2 Description
----------------
+        1.1.2 Manual invocation
+        -----------------------
 
-    CapnWikicrunch takes an infile of well-formed Wikidata and extracts the
-    contained articles to an outfile in xml format.
-    The following information is extracted:
+            Execute the following command from the command line of your choice:
 
-        Article:
-            * Page ID
-            * Namespace ID
-            * Page title
-            * Article categories by title
-
-    The output will be formatted as follows:
-
-        <?xml version="1.0" encoding="UTF-8" standalone="no"?>
-        <pages>
-        <page namespaceID="0" pageId="162349" title="Shivaji">
-        <categories>
-        <category name="Indischer Herrscher"/>
-        <category name="Person (Pune)"/>
-        <category name="Geboren 1630"/>
-        <category name="Gestorben 1680"/>
-        <category name="Mann"/>
-        </categories>
-        </page>
-        [...]
-
-1.3 Required Arguments
-----------------------
-
-    1.3.1 INFILE
-    ------------
-
-        The path to the input file.
-        This file should be readable.
-        The provided file should contain wikidata.
+            "java -Xmx2g -jar CapnWikicrunch.jar INFILE OUTFILE [OPTIONS]"
 
 
-    1.3.2 OUTFILE
-    -------------
+    1.2 Description
+    ---------------
 
-        The path to the output file.
-        The extracted wikidata will be written to this file.
-        This file should be writable.
-        If this file already exists, it will be overwritten.
+        CapnWikicrunch takes an infile of well-formed Wikidata and extracts the
+        contained articles to an outfile in xml format.
+        The following information is extracted:
 
-1.4 Options
------------
+            Article:
+                * Page ID
+                * Namespace ID
+                * Page title
+                * Article categories by title
 
-    Options are passed by position.
-    Supported options are:
+        The output will be formatted as follows:
+
+            <?xml version="1.0" encoding="UTF-8" standalone="no"?>
+                <pages>
+                    <page namespaceID="0" pageId="162349" title="Shivaji">
+                        <categories>
+                            <category name="Indischer Herrscher"/>
+                            <category name="Person (Pune)"/>
+                            <category name="Geboren 1630"/>
+                            <category name="Gestorben 1680"/>
+                            <category name="Mann"/>
+                        </categories>
+                    </page>
+                    [...]
+                </pages>
+
+    1.3 Required Arguments
+    ----------------------
+
+        1.3.1 INFILE
+        ------------
+
+            The path to the input file.
+            This file should be readable.
+            The provided file should contain wikidata.
 
 
-    1.4.1 Option ordering
-    ---------------------
+        1.3.2 OUTFILE
+        -------------
 
-        [OPTIONS] := [logAll]
+            The path to the output file.
+            The extracted wikidata will be written to this file.
+            This file should be writable.
+            If this file already exists, it will be overwritten.
+
+    1.4 Options
+    -----------
+
+        Options are passed by position.
+        Supported options are:
 
 
-    1.4.2 Detailed description of options
-    -------------------------------------
+        1.4.1 Option ordering
+        ---------------------
 
-        1.4.2.1 logAll - Log all progress [optional]
-        ---------------------------------
+            [OPTIONS] := [logAll]
 
-            Can either be true or false.
-            Default: true
 
-            If set to true, every processed article produces a log entry, this is
-            useful for logging the programs progress.
-            If set to false, only a final performance report will be generated.
+        1.4.2 Detailed description of options
+        -------------------------------------
 
-            WARNING:
-                Setting this option to true will cause a noticeable slowdown.
+            1.4.2.1 log-all - Log all progress [optional]
+            ---------------------------------------------
+
+                Can either be true or false.
+                Default: true
+
+                If set to true, every processed article produces a log entry, this is
+                useful for logging the programs progress.
+                If set to false, only a final performance report will be generated.
+
+                WARNING:
+                    Setting this option to true will cause
+                    a noticeable slowdown.
 
 
 -------------------------------------------------------------------------------
-2. Tested platforms
+2. Logging
+-------------------------------------------------------------------------------
+
+    The program will create a log of any occurring errors, warnings and
+    - if set - all program progress.
+
+    The logfile will be written to "events.log".
+    The logfile will be written to the current working directory.
+
+
+-------------------------------------------------------------------------------
+3. Tested platforms
 -------------------------------------------------------------------------------
 
     This program was tested on:
@@ -133,8 +146,9 @@ mightiest of all swords!
 
     I THOUGHT THIS WAS JAVA! (ノಠ益ಠ)ノ彡┻━┻
 
+
 -------------------------------------------------------------------------------
-3. Authorship
+4. Authorship
 -------------------------------------------------------------------------------
 
     (ヘ･_･)ヘ┳━┳
@@ -142,7 +156,7 @@ mightiest of all swords!
     This program was developed in 4 main phases:
 
 
-    3.1 First draft
+    4.1 First draft
     ---------------
 
         During the first phase, the required classes were put in place.
@@ -154,7 +168,7 @@ mightiest of all swords!
         And a first working version was completed.
 
 
-    3.2 Optimization & Refactoring
+    4.2 Optimization & Refactoring
     ------------------------------
 
         The used structure proved the be not optimal, a consumer-producer
@@ -167,7 +181,7 @@ mightiest of all swords!
         the new structure.
 
 
-    3.3 Finalizing
+    4.3 Finalizing
     --------------
 
         To complete the assignment, multiple code reviews and pair programming
@@ -179,7 +193,7 @@ mightiest of all swords!
         Noah:   README.txt, Main class, docstrings
 
 
-    3.4 Packaging
+    4.4 Packaging
     -------------
 
         An artifact was built.
@@ -188,10 +202,10 @@ mightiest of all swords!
 
 
 -------------------------------------------------------------------------------
-4. Known issues
+5. Known issues
 -------------------------------------------------------------------------------
 
-    4.1 Required usage of JSoup ಠ_ಠ
+    5.1 Required usage of JSoup ಠ_ಠ
     -------------------------------
 
         HTML is messy. Very messy.
@@ -206,8 +220,8 @@ mightiest of all swords!
         reason, it's obligatory to use it.
 
 
-    Required usage of subversion ಠ╭╮ಠ
-    ---------------------------------
+    5.2 Required usage of subversion ಠ╭╮ಠ
+    -------------------------------------
 
         From http://harmful.cat-v.org/software/svn/ :
 
@@ -221,6 +235,7 @@ mightiest of all swords!
                 – James S.
 
         http://tinyurl.com/dontusesvn
+
 
 -------------------------------------------------------------------------------
 -------------------------------------------------------------------------------
