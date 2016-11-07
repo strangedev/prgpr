@@ -38,9 +38,13 @@ public class PageFactory extends Producer<Page> {
     public void run(){
         try (Stream<String> stream = Files.lines(Paths.get(wikiFilePath))) {
             stream.forEachOrdered(this::parseLine);
-        }
-        catch (IOException exception) {
+
+        } catch (IOException exception) {
             log.error("Couldn't get lines of file: " + wikiFilePath);
+
+        } catch (MalformedWikidataException exception) {
+            log.error(exception.getMessage());
+
         }
         this.done();
     }
@@ -73,12 +77,12 @@ public class PageFactory extends Producer<Page> {
                     this.current = null;
                     this.currentDocument = null;
                     this.insideArticle = false;
-                    log.warn("An opening delimiter was encountered before a closing one.");
+                    log.warn("An opening delimiter was encountered before a closing one. Skipping article.");
                 }
 
                 // Closing delimiter received when not inside document
                 if(!this.insideArticle && isSingleChar){
-                    log.warn("Closing delimiter encountered while not inside document.");
+                    log.warn("Closing delimiter encountered while not inside document. Skipping article.");
                     return;
                 }
 
@@ -102,10 +106,10 @@ public class PageFactory extends Producer<Page> {
                         id = Long.parseLong(m.group(1));
                         namespaceId = Integer.parseInt(m.group(2));
                     } catch (Exception e){  // first line had malformed metadata
-                        throw new MalformedWikidataException(e.getMessage());
+                        throw new MalformedWikidataException("Could not convert metadata string to primitive types: " + e.getMessage());
                     }
                 } else {  // first line had no metadata
-                    throw new MalformedWikidataException();
+                    throw new MalformedWikidataException("First line of article had no metadata.");
                 }
                 this.current = new ProtoPage(  // Start parsing lines of article
                         new Page(id, namespaceId, m.group(3))
