@@ -49,6 +49,13 @@ public class PageFactory extends Producer<Page> {
         this.done();
     }
 
+    /**
+     * Emits a previously created page.
+     * This method was previously in a different class, but because
+     * milestone goals had to be met, it resides here (for now).
+     * Extracts the categories from the ProtoPages htmlData
+     * before emitting.
+     */
     private void emitPage(){
         this.current.getPage()
                 .setCategories(
@@ -72,14 +79,6 @@ public class PageFactory extends Producer<Page> {
             case '¤':
                 boolean isSingleChar = line.length() == 1;
 
-                // If an opening delimiter is encountered before a closing one
-                if(this.insideArticle && !isSingleChar){
-                    this.current = null;
-                    this.currentDocument = null;
-                    this.insideArticle = false;
-                    log.warn("An opening delimiter was encountered before a closing one. Skipping article.");
-                }
-
                 // Closing delimiter received when not inside document
                 if(!this.insideArticle && isSingleChar){
                     log.warn("Closing delimiter encountered while not inside document. Skipping article.");
@@ -87,10 +86,15 @@ public class PageFactory extends Producer<Page> {
                 }
 
                 if(this.insideArticle){
+                    // If an opening delimiter is encountered before a closing one
+                    if(!isSingleChar){
+                        log.warn("An opening delimiter was encountered before a closing one. Assuming article end.");
+                    }
+
                     this.insideArticle = false;
                     this.current.setHtmlData(this.currentDocument);
                     this.emitPage();
-                    this.current = null;
+                    this.current = null;  // reset internal fields
                     this.currentDocument = null;
                     return;
                 }
@@ -119,7 +123,7 @@ public class PageFactory extends Producer<Page> {
                 break;
 
             default:
-                if(this.currentDocument == null)
+                if(this.currentDocument == null)  // if there was an error before and there's no article, don't append.
                     return;
                 this.currentDocument.append(line);
                 break;
