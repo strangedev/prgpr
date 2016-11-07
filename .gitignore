@@ -5,6 +5,7 @@ res/infile/*
 external_files/personal_stash/*
 lib/*
 src/com/prgpr/mock/*
+*.log
 
 # Created by https://www.gitignore.io/api/intellij
 
