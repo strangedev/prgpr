@@ -78,7 +78,6 @@ public class PageExport implements Consumer<Page> {
             Transformer transformer = TransformerFactory.newInstance().newTransformer();
             transformer.setOutputProperty(OutputKeys.INDENT, "yes");
             DOMSource source = new DOMSource(doc);
-            //StreamResult console = new StreamResult(System.out);
             StreamResult output = new StreamResult(this.outputFile);
             transformer.transform(source, output);
         } catch (Exception e) {

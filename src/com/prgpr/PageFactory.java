@@ -70,15 +70,15 @@ public class PageFactory extends Producer<Page> {
 
                 // If an opening delimiter is encountered before a closing one
                 if(this.insideArticle && !isSingleChar){
-                    //@TODO: log warning
                     this.current = null;
                     this.currentDocument = null;
                     this.insideArticle = false;
+                    log.warn("An opening delimiter was encountered before a closing one.");
                 }
 
                 // Closing delimiter received when not inside document
                 if(!this.insideArticle && isSingleChar){
-                    //@TODO: log warning
+                    log.warn("Closing delimiter encountered while not inside document.");
                     return;
                 }
 
