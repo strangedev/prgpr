@@ -30,13 +30,13 @@ public class Main {
             case 1:
                 if (args[0].equals("help"))
                     System.exit(0);
-                 else {
+                else {
                     log.error(
                             "Invalid argument: " + args[0] +
                             "\nPlease refer to README.txt for info on how to use."
                     );
                     System.exit(1);
-                 }
+                }
 
             case 2:
 
