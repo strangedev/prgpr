@@ -1,22 +1,32 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <Configuration status="WARN">
-    <Appenders> <!-- TODO create MOAR loggerz -->
+    <Properties>
+        <Property name="filename">loggingfile.log</Property>
+    </Properties>
+    <Appenders>
         <Console name="Console" target="SYSTEM_OUT">
             <PatternLayout pattern="%d{HH:mm:ss.SSS} [%t] %-5level %logger{36} - %msg%n"/>
         </Console>
+        <File name="LoggingFile" fileName="${filename}">
+            <PatternLayout pattern="%d{HH:mm:ss.SSS} [%t] %-5level %logger{36} - %msg%n"/>
+        </File>
     </Appenders>
     <Loggers>
         <Root level="error">
             <AppenderRef ref="Console"/>
+            <AppenderRef ref="LoggingFile"/>
         </Root>
         <Root level="warn">
             <AppenderRef ref="Console"/>
+            <AppenderRef ref="LoggingFile"/>
         </Root>
         <Root level="info">
             <AppenderRef ref="Console"/>
+            <AppenderRef ref="LoggingFile"/>
         </Root>
         <Root level="debug">
             <AppenderRef ref="Console"/>
+            <AppenderRef ref="LoggingFile"/>
         </Root>
     </Loggers>
 </Configuration>
