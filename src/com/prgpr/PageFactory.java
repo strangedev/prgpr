@@ -2,48 +2,112 @@ package com.prgpr;
 
 import com.prgpr.data.Page;
 import com.prgpr.data.ProtoPage;
-import com.prgpr.framework.ConsumerProducer;
+import com.prgpr.exceptions.MalformedWikidataException;
+import com.prgpr.framework.Producer;
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
+
+import java.io.IOException;
+import java.nio.file.Files;
+import java.nio.file.Paths;
+import java.util.regex.Matcher;
+import java.util.regex.Pattern;
+import java.util.stream.Stream;
 
 /**
- * Created by strange on 10/21/16.
- * @author Noah Hummel
+ * Created by kito on 10/26/16.
+ * @author Kyle Rinfreschi
  *
- * A ConsumerProducer which turns ProtoPages into Pages by performing extraction
- * methods on the ProtoPage's html data.
+ * A Page Factory getting the text of the Wikidatas used to generate Page objects.
  */
-public class PageFactory extends ConsumerProducer<Page, ProtoPage> {
+public class PageFactory extends Producer<Page> {
+
+    private static final Logger log = LogManager.getFormatterLogger(PageFactory.class);
+    private boolean insideArticle = false;
+    private ProtoPage current;
+    private StringBuilder currentDocument = new StringBuilder();
+    private String wikiFilePath;
+
+    PageFactory(String wikiFilePath){
+        this.wikiFilePath = wikiFilePath;
+    }
 
     /**
-     * Consumer method which processes one ProtoPage at a time.
-     * Uses LinkExtraction to extract categories from the ProtoPage's
-     * htmlData and emits the final Page.
-     *
-     * Deviation from assignment:
-     * PageFactory is not responsible for reading the input file.
-     * A separate class ArticleReader is responsible for performing I/O and
-     * reading the metadata line for each article.
-     *
-     * Reasoning:
-     * Decoupling Page creation from parsing is necessary to keep a clear
-     * distinction between class responsibilities.
-     * As this project progresses, PageFactory will have to invoke more
-     * extraction methods and grow in functionality. Performing all of
-     * the I/O as well would lead to a god-object which can't be understood
-     * by others anymore.
-     *
-     * @param consumable A ProtoPage object with missing category data.
+     * Streams the lines to the parser "parseLine"
      */
-    @Override
-    public void consume(ProtoPage consumable) {
+    public void run(){
+        try (Stream<String> stream = Files.lines(Paths.get(wikiFilePath))) {
+            stream.forEachOrdered(this::parseLine);
+        }
+        catch (IOException exception) {
+            log.error("Couldn't get lines of file: " + wikiFilePath);
+        }
+        this.done();
+    }
 
-        consumable.getPage()
-                 .setCategories(
-                         LinkExtraction.extractCategories(
-                                 consumable.getHtmlData().toString()  // Uses StringBuilder class
-                         )
-                 );
+    private void emitPage(){
+        this.current.getPage()
+                .setCategories(
+                        LinkExtraction.extractCategories(
+                                this.current.getHtmlData().toString()  // Uses StringBuilder class
+                        )
+                );
 
-        this.emit(consumable.getPage());  // only emit the resulting Page object
+        this.emit(this.current.getPage());  // only emit the resulting Page object
+    }
 
+    /**
+     * Gets lines and looks up where an article starts to create a ProtoPage
+     *
+     * @param line a String with the text of a line of the input file
+     */
+    private void parseLine(String line) {
+        if(line.isEmpty()) return;  // Ignores empty lines
+
+        switch(line.charAt(0)){  // Check for delimiter
+            case '¤':
+                if(this.insideArticle){
+                    this.insideArticle = false;
+
+                    if(line.length() > 1){  // If an opening delimiter is encountered before a closing one
+                        this.current = null;
+                        this.currentDocument = null;
+                        return;
+                    }
+
+                    this.current.setHtmlData(this.currentDocument);
+                    this.emitPage();
+                    this.current = null;
+                    this.currentDocument = null;
+                    return;
+                }
+
+                Pattern r = Pattern.compile("\\s+([0-9]+)\\s+([0-9]+)\\s+(.*)");  // Regex for metadata in first line
+                Matcher m = r.matcher(line);
+
+                long id;
+                int namespaceId;
+
+                if (m.find()) {
+                    try {
+                        id = Long.parseLong(m.group(1));
+                        namespaceId = Integer.parseInt(m.group(2));
+                    } catch (Exception e){  // first line had malformed metadata
+                        throw new MalformedWikidataException(e.getMessage());
+                    }
+                } else {  // first line had no metadata
+                    throw new MalformedWikidataException();
+                }
+                this.current = new ProtoPage(  // Start parsing lines of article
+                        new Page(id, namespaceId, m.group(3))
+                );
+                this.currentDocument = new StringBuilder();
+                this.insideArticle = true;
+                break;
+
+            default:
+                this.currentDocument.append(line);
+                break;
+        }
     }
 }

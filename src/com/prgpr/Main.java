@@ -65,23 +65,20 @@ public class Main {
         }
 
         // Data processing units
-        ArticleReader articleReader = new ArticleReader(infilePath);
-        PageFactory pageFactory = new PageFactory();
+        PageFactory pageFactory = new PageFactory(infilePath);
         PageExport pageExport = new PageExport(outfilePath);
 
         // Logging units
-        ProducerLogger<ProtoPage> articleReaderLogger = new ProducerLogger<>(logAll);
+        ProducerLogger<Page> articleReaderLogger = new ProducerLogger<>(logAll);
         ProducerLogger<Page> pageFactoryLogger = new ProducerLogger<>(logAll);
 
         // Setup
-        pageFactory.subscribeTo(articleReader);
         pageExport.subscribeTo(pageFactory);
 
-        articleReaderLogger.subscribeTo(articleReader);
+        articleReaderLogger.subscribeTo(pageFactory);
         pageFactoryLogger.subscribeTo(pageFactory);
 
         // Execute
-        articleReader.run();
-
+        pageFactory.run();
     }
 }

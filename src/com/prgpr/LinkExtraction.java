@@ -18,7 +18,7 @@ import org.apache.logging.log4j.Logger;
  */
 public class LinkExtraction {
 
-    private static final Logger log = LogManager.getFormatterLogger(PageFactory.class);
+    private static final Logger log = LogManager.getFormatterLogger(LinkExtraction.class);
 
     /**
      * Gets the categories from an article.
