@@ -66,15 +66,24 @@ public class PageFactory extends Producer<Page> {
 
         switch(line.charAt(0)){  // Check for delimiter
             case '¤':
+                boolean isSingleChar = line.length() == 1;
+
+                // If an opening delimiter is encountered before a closing one
+                if(this.insideArticle && !isSingleChar){
+                    //@TODO: log warning
+                    this.current = null;
+                    this.currentDocument = null;
+                    this.insideArticle = false;
+                }
+
+                // Closing delimiter received when not inside document
+                if(!this.insideArticle && isSingleChar){
+                    //@TODO: log warning
+                    return;
+                }
+
                 if(this.insideArticle){
                     this.insideArticle = false;
-
-                    if(line.length() > 1){  // If an opening delimiter is encountered before a closing one
-                        this.current = null;
-                        this.currentDocument = null;
-                        return;
-                    }
-
                     this.current.setHtmlData(this.currentDocument);
                     this.emitPage();
                     this.current = null;
@@ -106,6 +115,8 @@ public class PageFactory extends Producer<Page> {
                 break;
 
             default:
+                if(this.currentDocument == null)
+                    return;
                 this.currentDocument.append(line);
                 break;
         }
