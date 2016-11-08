@@ -4,9 +4,10 @@ import java.util.LinkedHashSet;
 import java.util.Set;
 
 /**
- * @author Elizaveta Kovalevskaya
+ * @author Kyle Rinfreschi
  *
- * This is a Page Class. It contains the information about the article.
+ * Page Class.
+ * It represents a wikipedia page.
  */
 public class Page {
     private long id;
@@ -14,9 +15,13 @@ public class Page {
     private int namespaceID;
     private String title;
     private Set<String> categories;
+
     /**
-     * @param namespaceID
-     * @param title
+     * Constructor.
+     * Categories will be empty.
+     *
+     * @param namespaceID An initial namespaceID.
+     * @param title And initial title.
      */
     public Page(long id, int namespaceID, String title) {
         this.id = id;
@@ -26,9 +31,11 @@ public class Page {
     }
 
     /**
-     * @param namespaceID
-     * @param title
-     * @param categories
+     * Constructor.
+     *
+     * @param namespaceID An initial namespaceID.
+     * @param title An initial title.
+     * @param categories An initial Set of categories.
      */
     public Page(long id, int namespaceID, String title, Set<String> categories) {
         this.id = id;
@@ -37,46 +44,26 @@ public class Page {
         this.categories = categories;
     }
 
-    /**
-     * @return long
-     */
     public long getId() {
         return id;
     }
 
-    /**
-     * @return int
-     */
     public int getNamespaceID() {
         return namespaceID;
     }
 
-    /**
-     * @return String
-     */
     public String getTitle() {
         return title;
     }
 
-    /**
-     * @return Set<String>
-     */
     public Set<String> getCategories() {
         return categories;
     }
 
-    /**
-     * @param categories
-     */
     public void setCategories(Set<String> categories) {
         this.categories = categories;
     }
 
-    /**
-     *
-     * @param Object o
-     * @return boolean
-     */
     @Override
     public boolean equals(Object o) {
         if (this == o) return true;
@@ -87,9 +74,6 @@ public class Page {
         return namespaceID == page.namespaceID && (title != null ? title.equals(page.title) : page.title == null);
     }
 
-    /**
-     * @return int
-     */
     @Override
     public int hashCode() {
         return (31 * namespaceID) + ((title != null) ? title.hashCode() : 0);

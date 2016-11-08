@@ -4,19 +4,29 @@ package com.prgpr.data;
  * Created by lisa on 10/26/16.
  * @author Elizaveta Kovalevskaya
  *
- * This ProtoPage Class contains parts of the Wikidatas to collect them before the actual page is finished.
- * This way we can allways know which page belongs to which article.
+ * ProtoPage Class.
+ * Used to tie an incomplete Page object to it's original html data
+ * for later processing.
  */
 public class ProtoPage {
 
     private Page page;
     private StringBuilder htmlData;
 
+    /**
+     *
+     * @param instance A page object.
+     * @param htmlData A StringBuilder containing the pages html data.
+     */
     public ProtoPage(Page instance, StringBuilder htmlData) {
         this.page = instance;
         this.htmlData = htmlData;
     }
 
+    /**
+     *
+     * @param instance A page object.
+     */
     public ProtoPage(Page instance) {
         this.page = instance;
         this.htmlData = new StringBuilder();
@@ -35,12 +45,6 @@ public class ProtoPage {
         this.htmlData = htmlData;
     }
 
-    /**
-     * Compares this to an object to see if they are equal
-     *
-     * @param o the other object to compare to
-     * @return bool
-     */
     @Override
     public boolean equals(Object o) {
         if (this == o) return true;
@@ -51,11 +55,6 @@ public class ProtoPage {
         return page.equals(protoPage.page);
     }
 
-    /**
-     * Gets the hashCode ot the page
-     *
-     * @return hashCode
-     */
     @Override
     public int hashCode() {
         return page.hashCode();

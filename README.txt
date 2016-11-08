@@ -115,9 +115,9 @@ mightiest of all swords!
                 Can either be true or false.
                 Default: true
 
-                If set to true, every processed article produces a log entry, this is
-                useful for logging the programs progress.
-                If set to false, only a final performance report will be generated.
+                If set to true, every processed article produces a log entry,
+                this is useful for logging the programs progress. If set to
+                false, only a final performance report will be generated.
 
                 WARNING:
                     Setting this option to true will cause

@@ -15,10 +15,9 @@ import java.util.regex.Pattern;
 import java.util.stream.Stream;
 
 /**
- * Created by kito on 10/26/16.
- * @author Kyle Rinfreschi
+ * @author Noah Hummel
  *
- * A Page Factory getting the text of the Wikidatas used to generate Page objects.
+ * A Page Factory getting the text of the Wikidata used to generate Page objects.
  */
 public class PageFactory extends Producer<Page> {
 
