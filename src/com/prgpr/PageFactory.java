@@ -42,6 +42,9 @@ public class PageFactory extends Producer<Page> {
         catch (IOException exception) {
             log.error("Couldn't get lines of file: " + wikiFilePath);
         }
+        catch (MalformedWikidataException exception){
+            log.error(exception.getMessage());
+        }
         this.done();
     }
 
@@ -70,6 +73,7 @@ public class PageFactory extends Producer<Page> {
                     this.insideArticle = false;
 
                     if(line.length() > 1){  // If an opening delimiter is encountered before a closing one
+                        log.error("Opening delimiter is encountered before a closing one.");
                         this.current = null;
                         this.currentDocument = null;
                         return;
@@ -93,10 +97,10 @@ public class PageFactory extends Producer<Page> {
                         id = Long.parseLong(m.group(1));
                         namespaceId = Integer.parseInt(m.group(2));
                     } catch (Exception e){  // first line had malformed metadata
-                        throw new MalformedWikidataException(e.getMessage());
+                        throw new MalformedWikidataException(e.getMessage() + " - couldn't get info from string.");
                     }
                 } else {  // first line had no metadata
-                    throw new MalformedWikidataException();
+                    throw new MalformedWikidataException("First line has no valid metadata.");
                 }
                 this.current = new ProtoPage(  // Start parsing lines of article
                         new Page(id, namespaceId, m.group(3))
@@ -106,7 +110,7 @@ public class PageFactory extends Producer<Page> {
                 break;
 
             default:
-                this.currentDocument.append(line);
+                if (this.insideArticle) { this.currentDocument.append(line); }
                 break;
         }
     }
