@@ -59,13 +59,11 @@ public class Main {
         PageExport pageExport = new PageExport(outfilePath);
 
         // Logging units
-        ProducerLogger<Page> articleReaderLogger = new ProducerLogger<>(logAll);
         ProducerLogger<Page> pageFactoryLogger = new ProducerLogger<>(logAll);
 
         // Setup
         pageExport.subscribeTo(pageFactory);
 
-        articleReaderLogger.subscribeTo(pageFactory);
         pageFactoryLogger.subscribeTo(pageFactory);
 
         // Execute

@@ -71,12 +71,17 @@ public class Page {
 
         Page page = (Page) o;
 
-        return namespaceID == page.namespaceID && (title != null ? title.equals(page.title) : page.title == null);
+        if (getId() != page.getId()) return false;
+        if (getNamespaceID() != page.getNamespaceID()) return false;
+        return getTitle() != null ? getTitle().equals(page.getTitle()) : page.getTitle() == null;
+
     }
 
     @Override
     public int hashCode() {
-        return (31 * namespaceID) + ((title != null) ? title.hashCode() : 0);
+        int result = (int) (getId() ^ (getId() >>> 32));
+        result = 31 * result + getNamespaceID();
+        result = 31 * result + (getTitle() != null ? getTitle().hashCode() : 0);
+        return result;
     }
-
 }
