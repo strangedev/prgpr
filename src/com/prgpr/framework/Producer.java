@@ -12,7 +12,11 @@ import java.util.LinkedHashSet;
  * Consumer objects by using their consume method.
  *
  * All consumers who are subscribed to a producer will
- * receiver an emitted consumable.
+ * receive an emitted consumable. A Producer can have any number
+ * of Consumers subscribed to it.
+ *
+ * Producers can only have subscribers of the same type as
+ * the producer itself.
  */
 public abstract class Producer<T> implements Runnable {
 
@@ -26,6 +30,8 @@ public abstract class Producer<T> implements Runnable {
     }
 
     /**
+     * Start producing data to be emitted.
+     *
      * A Producer can be run, which is useful for doing the
      * setup of a producer-consumer chain first, and then starting
      * the execution chain by calling run() on the first producer.
@@ -78,7 +84,7 @@ public abstract class Producer<T> implements Runnable {
     }
 
     /**
-     * Used to notify all subscribers that there is no more data by unsubscribing them.
+     * Notifies all subscribers that there is no more data by unsubscribing them.
      */
     public void done() {
 
