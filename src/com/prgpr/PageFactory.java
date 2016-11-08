@@ -122,7 +122,7 @@ public class PageFactory extends Producer<Page> {
                         throw new MalformedWikidataException("Could not convert metadata string to primitive types: " + e.getMessage());
                     }
                 } else {  // first line had no metadata
-                    throw new MalformedWikidataException("First line of article had no metadata.");
+                    throw new MalformedWikidataException("First line of article had no valid metadata.");
                 }
                 this.current = new ProtoPage(  // Start parsing lines of article
                         new Page(id, namespaceId, m.group(3))
