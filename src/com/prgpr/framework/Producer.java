@@ -77,9 +77,7 @@ public abstract class Producer<T> implements Runnable {
      */
     public void emit(T consumable) {
 
-        this.subscribers.forEach((subscriber) -> {
-            subscriber.consume(consumable);
-        });
+        this.subscribers.forEach((subscriber) -> subscriber.consume(consumable));
 
     }
 

@@ -10,7 +10,7 @@ package com.prgpr.data;
  */
 public class ProtoPage {
 
-    private Page page;
+    private final Page page;
     private StringBuilder htmlData;
 
     /**

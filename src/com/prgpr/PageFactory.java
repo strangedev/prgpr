@@ -26,7 +26,7 @@ public class PageFactory extends Producer<Page> {
     private boolean insideArticle = false;
     private ProtoPage current;
     private StringBuilder currentDocument = new StringBuilder();
-    private String wikiFilePath;
+    private final String wikiFilePath;
 
     /**
      * Constructor.

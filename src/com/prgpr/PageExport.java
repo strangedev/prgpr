@@ -16,7 +16,6 @@ import javax.xml.transform.TransformerFactory;
 import javax.xml.transform.dom.DOMSource;
 import javax.xml.transform.stream.StreamResult;
 import java.io.File;
-import java.io.FileNotFoundException;
 import java.io.FileOutputStream;
 import java.util.LinkedHashSet;
 import java.util.Set;
@@ -34,7 +33,7 @@ public class PageExport implements Consumer<Page> {
     private Set<Page> pages;
     private static final int batchSize = 100;
     private FileOutputStream outputFile;
-    private String path;
+    private final String path;
 
     /**
      * Constructor.

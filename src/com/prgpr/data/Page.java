@@ -10,10 +10,10 @@ import java.util.Set;
  * It represents a wikipedia page.
  */
 public class Page {
-    private long id;
 
-    private int namespaceID;
-    private String title;
+    private final long id;
+    private final int namespaceID;
+    private final String title;
     private Set<String> categories;
 
     /**

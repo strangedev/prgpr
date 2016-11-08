@@ -63,7 +63,7 @@ public interface Consumer<T> {
      *
      * @param producer The producer to which this consumer was just subscribed to.
      */
-    default void onSubscribe(Producer<T> producer){};
+    default void onSubscribe(Producer<T> producer){}
 
     /**
      * Event handler.
@@ -77,6 +77,6 @@ public interface Consumer<T> {
      *
      * @param producer The producer from which this consumer was just unsubscribed from.
      */
-    default void onUnsubscribed(Producer<T> producer){};
+    default void onUnsubscribed(Producer<T> producer){}
 
 }
