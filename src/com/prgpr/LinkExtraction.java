@@ -14,7 +14,7 @@ import org.apache.logging.log4j.Logger;
  * Created by lisa on 10/24/16.
  * @author Elizaveta Kovalevskaya
  *
- * A LinkExtraction class which provied static methods for extracting informations from wikiarticles.
+ * A LinkExtraction class which provides static methods for extracting information from wiki articles.
  */
 public class LinkExtraction {
 
@@ -23,10 +23,10 @@ public class LinkExtraction {
     /**
      * Gets the categories from an article.
      *
-     * @param article A String of html-formatted text
-     * @return a LinkedHashSet of categories extended from the article
+     * @param article A String of html-formatted text.
+     * @return A LinkedHashSet of categories extracted from the article.
      */
-    public static Set<String> extractCategories(String article){
+     static Set<String> extractCategories(String article){
 
         Set<String> categories = new LinkedHashSet<>();
 

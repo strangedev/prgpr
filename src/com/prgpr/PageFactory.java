@@ -23,31 +23,45 @@ import java.util.stream.Stream;
 public class PageFactory extends Producer<Page> {
 
     private static final Logger log = LogManager.getFormatterLogger(PageFactory.class);
+
     private boolean insideArticle = false;
     private ProtoPage current;
     private StringBuilder currentDocument = new StringBuilder();
     private String wikiFilePath;
 
+    /**
+     * Constructor.
+     *
+     * @param wikiFilePath The path to the input file.
+     */
     PageFactory(String wikiFilePath){
         this.wikiFilePath = wikiFilePath;
     }
 
     /**
-     * Streams the lines to the parser "parseLine"
+     * Streams lines of the input file to the parser "parseLine".
      */
     public void run(){
         try (Stream<String> stream = Files.lines(Paths.get(wikiFilePath))) {
             stream.forEachOrdered(this::parseLine);
-        }
-        catch (IOException exception) {
+
+        } catch (IOException exception) {
             log.error("Couldn't get lines of file: " + wikiFilePath);
-        }
-        catch (MalformedWikidataException exception){
+
+        } catch (MalformedWikidataException exception) {
             log.error(exception.getMessage());
+
         }
         this.done();
     }
 
+    /**
+     * Emits a previously created page.
+     * This method was previously in a different class, but because
+     * milestone goals had to be met, it resides here (for now).
+     * Extracts the categories from the ProtoPages htmlData
+     * before emitting.
+     */
     private void emitPage(){
         this.current.getPage()
                 .setCategories(
@@ -60,7 +74,11 @@ public class PageFactory extends Producer<Page> {
     }
 
     /**
-     * Gets lines and looks up where an article starts to create a ProtoPage
+     * Parses an article by sequentially reading lines from a file.
+     * Builds a persistent context between calls and emits a ProtoPage
+     * when an article is finished.
+     * If an ending delimiter is omitted, parseLine will treat the
+     * current article as closed by default.
      *
      * @param line a String with the text of a line of the input file
      */
@@ -69,19 +87,24 @@ public class PageFactory extends Producer<Page> {
 
         switch(line.charAt(0)){  // Check for delimiter
             case '¤':
-                if(this.insideArticle){
-                    this.insideArticle = false;
+                boolean isSingleChar = line.length() == 1;
 
-                    if(line.length() > 1){  // If an opening delimiter is encountered before a closing one
-                        log.error("Opening delimiter is encountered before a closing one.");
-                        this.current = null;
-                        this.currentDocument = null;
-                        return;
+                // Closing delimiter received when not inside document
+                if(!this.insideArticle && isSingleChar){
+                    log.warn("Closing delimiter encountered while not inside document. Skipping article.");
+                    return;
+                }
+
+                if(this.insideArticle){
+                    // If an opening delimiter is encountered before a closing one
+                    if(!isSingleChar){
+                        log.warn("An opening delimiter was encountered before a closing one. Assuming article end.");
                     }
 
+                    this.insideArticle = false;
                     this.current.setHtmlData(this.currentDocument);
                     this.emitPage();
-                    this.current = null;
+                    this.current = null;  // reset internal fields
                     this.currentDocument = null;
                     return;
                 }
@@ -97,10 +120,10 @@ public class PageFactory extends Producer<Page> {
                         id = Long.parseLong(m.group(1));
                         namespaceId = Integer.parseInt(m.group(2));
                     } catch (Exception e){  // first line had malformed metadata
-                        throw new MalformedWikidataException(e.getMessage() + " - couldn't get info from string.");
+                        throw new MalformedWikidataException("Could not convert metadata string to primitive types: " + e.getMessage());
                     }
                 } else {  // first line had no metadata
-                    throw new MalformedWikidataException("First line has no valid metadata.");
+                    throw new MalformedWikidataException("First line of article had no metadata.");
                 }
                 this.current = new ProtoPage(  // Start parsing lines of article
                         new Page(id, namespaceId, m.group(3))
@@ -110,7 +133,9 @@ public class PageFactory extends Producer<Page> {
                 break;
 
             default:
-                if (this.insideArticle) { this.currentDocument.append(line); }
+                if(this.currentDocument == null)  // if there was an error before and there's no article, don't append.
+                    return;
+                this.currentDocument.append(line);
                 break;
         }
     }

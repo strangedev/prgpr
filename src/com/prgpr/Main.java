@@ -1,6 +1,5 @@
 package com.prgpr;
 
-import com.prgpr.data.ProtoPage;
 import com.prgpr.data.Page;
 import com.prgpr.helpers.ProducerLogger;
 import org.apache.logging.log4j.LogManager;
@@ -9,16 +8,18 @@ import org.apache.logging.log4j.Logger;
 /**
  * @author Elizaveta Kovalevskaya
  *
- * The Main class which puts together the other classes and runs the program
+ * The Main Class which bootstraps the execution.
  */
 public class Main {
 
     private static final Logger log = LogManager.getFormatterLogger(Main.class);
 
     /**
-     * Creates instances of the classes and subscribes them to each other so that the program runs in the right order
+     * Creates producer and consumer instances,
+     * then subscribes them to each other.
+     * Executes the PageFactory to run the program.
      *
-     * @param args input and output file paths
+     * @param args Command line arguments.
      */
     public static void main(String[] args) {
 
@@ -26,36 +27,25 @@ public class Main {
         String infilePath = "";
         String outfilePath = "";
 
+        // get and validate command line arguments
         switch (args.length){
-            case 1:
-                if (args[0].equals("help"))
-                    System.exit(0);
-                 else {
-                    log.error(
-                            "Invalid argument: " + args[0] +
-                            "\nPlease refer to README.txt for info on how to use."
-                    );
-                    System.exit(1);
-                 }
 
             case 2:
-
                 infilePath = args[0];
                 outfilePath = args[1];
                 break;
 
             case 3:
-
                 infilePath = args[0];
                 outfilePath = args[1];
 
                 try {
-
                     logAll = Boolean.parseBoolean(args[2]);
 
                 } catch (Exception e) {
                     log.error("Invalid argument " + args[2] +  " for option log-all.");
                     System.exit(1);
+
                 }
                 break;
 
