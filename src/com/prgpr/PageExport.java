@@ -10,9 +10,8 @@ import org.w3c.dom.Element;
 
 import javax.xml.parsers.DocumentBuilder;
 import javax.xml.parsers.DocumentBuilderFactory;
-import javax.xml.transform.OutputKeys;
-import javax.xml.transform.Transformer;
-import javax.xml.transform.TransformerFactory;
+import javax.xml.parsers.ParserConfigurationException;
+import javax.xml.transform.*;
 import javax.xml.transform.dom.DOMSource;
 import javax.xml.transform.stream.StreamResult;
 import java.io.File;
@@ -34,6 +33,9 @@ public class PageExport implements Consumer<Page> {
     private static final int batchSize = 100;
     private FileOutputStream outputFile;
     private final String path;
+    private DocumentBuilder icBuilder;
+    private Document doc;
+    private Element root;
 
     /**
      * Constructor.
@@ -43,6 +45,8 @@ public class PageExport implements Consumer<Page> {
     PageExport(String path){
         this.path = path;
         this.pages = new LinkedHashSet<>();
+        this.createOutputFile();
+        this.prepareDocument();
     }
 
     /**
@@ -66,42 +70,32 @@ public class PageExport implements Consumer<Page> {
     }
 
     /**
+     * Creates the default structure for the document.
+     */
+    private void prepareDocument(){
+        DocumentBuilderFactory icFactory = DocumentBuilderFactory.newInstance();
+        try {
+            icBuilder = icFactory.newDocumentBuilder();
+        } catch (ParserConfigurationException e) {
+            log.error("Could not create document builder" + e.getMessage());
+        }
+        doc = icBuilder.newDocument();
+        root = doc.createElement("pages");
+        doc.appendChild(root);
+    }
+
+    /**
      * Appends a set of Pages to the output file as xml.
      *
      * @param pages Set of pages to append.
      */
-    private void exportToXml(Set<Page> pages){
-        if(this.outputFile == null){
-            this.createOutputFile();
-        }
-
-        DocumentBuilderFactory icFactory = DocumentBuilderFactory.newInstance();
-        DocumentBuilder icBuilder;
-
+    private void appendPages(Set<Page> pages){
         try {
-            icBuilder = icFactory.newDocumentBuilder();
-            Document doc = icBuilder.newDocument();
-
-            Element root = doc.createElement("pages");
-            doc.appendChild(root);
-
             pages.forEach((page) -> this.addPage(doc, root, page));
-
-            // output DOM XML to console
-            Transformer transformer = TransformerFactory.newInstance().newTransformer();
-            transformer.setOutputProperty("{http://xml.apache.org/xslt}indent-amount", "4");
-            transformer.setOutputProperty(OutputKeys.INDENT, "yes");  // enable indentation in output file
-
-            DOMSource source = new DOMSource(doc);
-            StreamResult output = new StreamResult(this.outputFile);
-            transformer.transform(source, output);
-
         } catch (Exception e) {
             log.error("Couldn't append page to document: " + e.getMessage());
-
         } finally {
             this.pages = new LinkedHashSet<>();  // clear current batch
-
         }
     }
 
@@ -132,6 +126,25 @@ public class PageExport implements Consumer<Page> {
     }
 
     /**
+     * Writes the DOM structure to disk
+     */
+    private void writeDocument(){
+        // output DOM XML to console
+        Transformer transformer;
+        try {
+            transformer = TransformerFactory.newInstance().newTransformer();
+            transformer.setOutputProperty("{http://xml.apache.org/xslt}indent-amount", "4"); // set the indentation
+            transformer.setOutputProperty(OutputKeys.INDENT, "yes");  // enable indentation in output file
+
+            DOMSource source = new DOMSource(doc);
+            StreamResult output = new StreamResult(this.outputFile);
+            transformer.transform(source, output);
+        } catch (Exception e) {
+            log.error("Couldn't write document: " + e.getMessage());
+        }
+    }
+
+    /**
      * Aggregates Page object until batchSize is reached,
      * then appends the aggregated pages to the output file.
      *
@@ -142,18 +155,18 @@ public class PageExport implements Consumer<Page> {
         this.pages.add(consumable);
 
         if(this.pages.size() % batchSize == 0) {
-            this.exportToXml(this.pages);
+            this.appendPages(this.pages);
         }
     }
 
     /**
      * Finishes the export when the Producer has no more output
-     * and writes the remaining pages into the output file.
      *
      * @param producer The producer this was subscribed to.
      */
     @Override
     public void onUnsubscribed(Producer<Page> producer) {
-        this.exportToXml(this.pages);
+        this.appendPages(this.pages);
+        this.writeDocument();
     }
 }
