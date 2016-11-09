@@ -26,7 +26,7 @@ public class LinkExtraction {
      * @param article A String of html-formatted text.
      * @return A LinkedHashSet of categories extracted from the article.
      */
-     static Set<String> extractCategories(String article){
+     public static Set<String> extractCategories(String article){
 
         Set<String> categories = new LinkedHashSet<>();
 
