@@ -1,3 +1,4 @@
 #!/usr/bin/env bash
-
-java -Xmx500m -jar ./build/CapnWikicrunch.jar $1 $2 $3
+JAVA_FILE="CapnWikicrunch.jar"
+VM_PARAMS="-Xmx500m"
+java ${VM_PARAMS} -jar ./${JAVA_FILE} $@
