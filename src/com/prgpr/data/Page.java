@@ -20,6 +20,7 @@ public class Page {
      * Constructor.
      * Categories will be empty.
      *
+     * @param id The pageID.
      * @param namespaceID An initial namespaceID.
      * @param title And initial title.
      */
@@ -33,8 +34,9 @@ public class Page {
     /**
      * Constructor.
      *
-     * @param namespaceID An initial namespaceID.
-     * @param title An initial title.
+     * @param id The pageID.
+     * @param namespaceID A namespaceID.
+     * @param title A title.
      * @param categories An initial Set of categories.
      */
     public Page(long id, int namespaceID, String title, Set<String> categories) {

@@ -42,7 +42,7 @@ mightiest of all swords!
 
             Execute the following command from the command line of your choice:
 
-            "java -Xmx2g -jar CapnWikicrunch.jar INFILE OUTFILE [OPTIONS]"
+            "java -jar CapnWikicrunch.jar INFILE OUTFILE [OPTIONS]"
 
 
     1.2 Description
