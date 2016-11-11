@@ -86,7 +86,7 @@ public class PageFactory extends Producer<Page> {
         if(line.isEmpty()) return;  // Ignores empty lines
 
         switch(line.charAt(0)){  // Check for delimiter
-            case '¤':
+            case '\u00a4':
                 boolean isSingleChar = line.length() == 1;
 
                 // Closing delimiter received when not inside document
