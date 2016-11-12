@@ -8,6 +8,7 @@ import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 
 import java.io.IOException;
+import java.nio.charset.StandardCharsets;
 import java.nio.file.Files;
 import java.nio.file.Paths;
 import java.util.regex.Matcher;
@@ -41,7 +42,7 @@ public class PageFactory extends Producer<Page> {
      * Streams lines of the input file to the parser "parseLine".
      */
     public void run(){
-        try (Stream<String> stream = Files.lines(Paths.get(wikiFilePath))) {
+        try (Stream<String> stream = Files.lines(Paths.get(wikiFilePath), StandardCharsets.UTF_8)) {
             stream.forEachOrdered(this::parseLine);
 
         } catch (IOException exception) {
@@ -85,7 +86,7 @@ public class PageFactory extends Producer<Page> {
         if(line.isEmpty()) return;  // Ignores empty lines
 
         switch(line.charAt(0)){  // Check for delimiter
-            case '¤':
+            case '\u00a4':
                 boolean isSingleChar = line.length() == 1;
 
                 // Closing delimiter received when not inside document

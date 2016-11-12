@@ -1,15 +1,21 @@
 #!/bin/bash
-
-ROOT_DIR=`realpath $1`
+SVN_USER=$1
 COMMIT_MSG=$2
 INFILE=`realpath $3`
+ROOT_DIR=`realpath ${4:-external_files/personal_stash/svn_checkout}`
+DRY_RUN=0 # set to 1 for testing the script.
 
 GIT_DIR="git"
 GIT_REPO="ssh://git@github.com/strangedev/prgpr.git"
 
 SVN_DIR="svn"
+SVN_REPO="https://subversion.hucompute.org/prgpr2016/9C/"
 
 JAVA_FILE="CapnWikicrunch.jar"
+
+if ! [ -d "$ROOT_DIR" ]; then
+    mkdir -p ${ROOT_DIR}
+fi
 
 cd ${ROOT_DIR}
 
@@ -19,36 +25,45 @@ else
     git clone ${GIT_REPO} ${GIT_DIR}
 fi
 
+if ! [ -d "$SVN_DIR" ]; then
+    mkdir ${SVN_DIR}
+    svn checkout --username ${SVN_USER} ${SVN_REPO} ${SVN_DIR}
+fi
+find ${SVN_DIR} -maxdepth 1 ! -path ${SVN_DIR} ! -path "${SVN_DIR}/.svn" -exec rm -rf {} \;
+
 cd ${GIT_DIR}
 ./gradlew jar
 ./gradlew javadoc
 
 cd ${ROOT_DIR}
 
-if ! [ -d "$SVN_DIR" ]; then
-    mkdir ${SVN_DIR}
-fi
-rm -rf ${SVN_DIR}/*
-
 cp ${GIT_DIR}/README.txt ${SVN_DIR}/README.txt
 cp ${GIT_DIR}/settings.gradle ${SVN_DIR}/settings.gradle
 cp ${GIT_DIR}/build.gradle ${SVN_DIR}/build.gradle
 cp ${GIT_DIR}/gradlew ${SVN_DIR}/gradlew
 cp ${GIT_DIR}/gradlew.bat ${SVN_DIR}/gradlew.bat
+cp -R ${GIT_DIR}/gradle ${SVN_DIR}/gradle
 cp ${GIT_DIR}/CapnWikicrunch.sh ${SVN_DIR}/CapnWikicrunch.sh
 cp -R ${GIT_DIR}/src ${SVN_DIR}/src
-cp -R ${GIT_DIR}/build/docs ${SVN_DIR}/docs
+cp -R ${GIT_DIR}/config ${SVN_DIR}/config
+cp -R ${GIT_DIR}/build/docs/javadoc ${SVN_DIR}/javadoc
 cp ${GIT_DIR}/build/libs/${JAVA_FILE} ${SVN_DIR}/
 
 cd ${SVN_DIR}
-
 mkdir example_output
-java -jar -Xmx500m ${JAVA_FILE} ${INFILE} ./example_output/out.xml true
+echo "Running CapnWikicrunch Jar"
+./CapnWikicrunch.sh ${INFILE} ./example_output/out.xml true >> /dev/null
+tail -2 events.log
 mv events.log ./example_output/events.log
 
 zip example_output.zip ./example_output/*
 rm -rf ./example_output
 
-#svn add ./*
-#svn commit -m ${COMMIT_MSG}
-#svn update
+if [ "$DRY_RUN" == 1 ]; then
+    echo "Dry run with commit message '${COMMIT_MSG}'"
+    exit
+fi
+
+svn add --force ./*
+svn commit -m ${COMMIT_MSG}
+svn update

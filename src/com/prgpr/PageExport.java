@@ -133,6 +133,7 @@ public class PageExport implements Consumer<Page> {
         Transformer transformer;
         try {
             transformer = TransformerFactory.newInstance().newTransformer();
+            transformer.setOutputProperty(OutputKeys.ENCODING, "UTF-8"); // set utf8 encoding
             transformer.setOutputProperty("{http://xml.apache.org/xslt}indent-amount", "4"); // set the indentation
             transformer.setOutputProperty(OutputKeys.INDENT, "yes");  // enable indentation in output file
 
