@@ -8,6 +8,9 @@ src/com/prgpr/mock/*
 *.log
 build/*
 
+### Gradle
+gradle.properties
+
 # Created by https://www.gitignore.io/api/intellij
 
 ### Intellij ###
