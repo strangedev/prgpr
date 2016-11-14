@@ -11,7 +11,9 @@ GIT_REPO="ssh://git@github.com/strangedev/prgpr.git"
 SVN_DIR="svn"
 SVN_REPO="https://subversion.hucompute.org/prgpr2016/9C/"
 
-JAVA_FILE="CapnWikicrunch.jar"
+PROJECT_NAME_REAL="CapnWikicrunch"
+PROJECT_NAME_ALIAS="WikiXtractor"
+JAVA_FILE="${PROJECT_NAME_ALIAS}.jar"
 
 if ! [ -d "$ROOT_DIR" ]; then
     mkdir -p ${ROOT_DIR}
@@ -29,11 +31,16 @@ if ! [ -d "$SVN_DIR" ]; then
     mkdir ${SVN_DIR}
     svn checkout --username ${SVN_USER} ${SVN_REPO} ${SVN_DIR}
 fi
+
 find ${SVN_DIR} -maxdepth 1 ! -path ${SVN_DIR} ! -path "${SVN_DIR}/.svn" -exec rm -rf {} \;
+rm -f ${GIT_DIR}/build/libs/*
 
 cd ${GIT_DIR}
+sed -i "s/${PROJECT_NAME_REAL}/${PROJECT_NAME_ALIAS}/g" build.gradle
+sed -i "s/${PROJECT_NAME_REAL}/${PROJECT_NAME_ALIAS}/g" settings.gradle
 ./gradlew jar
 ./gradlew javadoc
+git reset --hard HEAD
 
 cd ${ROOT_DIR}
 
@@ -43,7 +50,7 @@ cp ${GIT_DIR}/build.gradle ${SVN_DIR}/build.gradle
 cp ${GIT_DIR}/gradlew ${SVN_DIR}/gradlew
 cp ${GIT_DIR}/gradlew.bat ${SVN_DIR}/gradlew.bat
 cp -R ${GIT_DIR}/gradle ${SVN_DIR}/gradle
-cp ${GIT_DIR}/CapnWikicrunch.sh ${SVN_DIR}/CapnWikicrunch.sh
+cp ${GIT_DIR}/CapnWikicrunch.sh ${SVN_DIR}/${PROJECT_NAME_ALIAS}.sh
 cp -R ${GIT_DIR}/src ${SVN_DIR}/src
 cp -R ${GIT_DIR}/config ${SVN_DIR}/config
 cp -R ${GIT_DIR}/build/docs/javadoc ${SVN_DIR}/javadoc
@@ -51,8 +58,9 @@ cp ${GIT_DIR}/build/libs/${JAVA_FILE} ${SVN_DIR}/
 
 cd ${SVN_DIR}
 mkdir example_output
-echo "Running CapnWikicrunch Jar"
-./CapnWikicrunch.sh ${INFILE} ./example_output/out.xml true >> /dev/null
+sed -i "s/${PROJECT_NAME_REAL}/${PROJECT_NAME_ALIAS}/g" ${PROJECT_NAME_ALIAS}.sh
+echo "Running ${PROJECT_NAME_REAL} Jar"
+./${PROJECT_NAME_ALIAS}.sh ${INFILE} ./example_output/out.xml true >> /dev/null
 tail -2 events.log
 mv events.log ./example_output/events.log
 
