@@ -4,6 +4,12 @@ import com.prgpr.data.Page;
 import com.prgpr.helpers.ProducerLogger;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
+import org.neo4j.graphdb.GraphDatabaseService;
+import org.neo4j.graphdb.factory.GraphDatabaseFactory;
+import org.neo4j.io.fs.FileUtils;
+
+import java.io.File;
+import java.io.IOException;
 
 /**
  * @author Elizaveta Kovalevskaya
@@ -27,6 +33,7 @@ public class Main {
         String infilePath = "";
         String outfilePath = "";
 
+        /*
         // get and validate command line arguments
         switch (args.length){
 
@@ -53,20 +60,39 @@ public class Main {
                 log.error("Invalid number of arguments. \nPlease refer to README.txt for info on how to use.");
                 System.exit(1);
         }
+        */
 
+        File dbf = new File("neo4j/data");
+
+        if (dbf.exists()) try {
+            FileUtils.deleteRecursively(dbf);
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+
+        PageFactory.setDatabase(new GraphDatabaseFactory().newEmbeddedDatabase(dbf));
+
+        Page p1 = PageFactory.getPage(1, 0, "blah");
+        //Page p2 = PageFactory.getPage(1, 0, "blah");
+
+        log.info(p1.getTitle());
+        //log.info(p2.getTitle());
+
+        /*
         // Data processing units
         PageFactory pageFactory = new PageFactory(infilePath);
-        PageExport pageExport = new PageExport(outfilePath);
+        //PageExport pageExport = new PageExport(outfilePath);
 
         // Logging units
         ProducerLogger<Page> pageFactoryLogger = new ProducerLogger<>(logAll);
 
         // Setup
-        pageExport.subscribeTo(pageFactory);
+        //pageExport.subscribeTo(pageFactory);
 
         pageFactoryLogger.subscribeTo(pageFactory);
 
         // Execute
         pageFactory.run();
+        */
     }
 }

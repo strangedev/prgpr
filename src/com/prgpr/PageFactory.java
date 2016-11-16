@@ -6,11 +6,17 @@ import com.prgpr.exceptions.MalformedWikidataException;
 import com.prgpr.framework.Producer;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
+import org.neo4j.graphdb.GraphDatabaseService;
+import org.neo4j.graphdb.Label;
+import org.neo4j.graphdb.Node;
+import org.neo4j.graphdb.Transaction;
+import org.neo4j.graphdb.index.UniqueFactory;
 
 import java.io.IOException;
 import java.nio.charset.StandardCharsets;
 import java.nio.file.Files;
 import java.nio.file.Paths;
+import java.util.Map;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 import java.util.stream.Stream;
@@ -23,36 +29,28 @@ import java.util.stream.Stream;
 public class PageFactory extends Producer<Page> {
 
     private static final Logger log = LogManager.getFormatterLogger(PageFactory.class);
+    private static GraphDatabaseService graphDb;
 
-    private boolean insideArticle = false;
-    private ProtoPage current;
-    private StringBuilder currentDocument = new StringBuilder();
-    private final String wikiFilePath;
-
-    /**
-     * Constructor.
-     *
-     * @param wikiFilePath The path to the input file.
-     */
-    PageFactory(String wikiFilePath){
-        this.wikiFilePath = wikiFilePath;
+    public static void setDatabase(GraphDatabaseService graphDb){
+        PageFactory.graphDb = graphDb;
+        addDbConstraint(graphDb, "namespaceId");
+        addDbConstraint(graphDb, "title");
     }
 
-    /**
-     * Streams lines of the input file to the parser "parseLine".
-     */
-    public void run(){
-        try (Stream<String> stream = Files.lines(Paths.get(wikiFilePath), StandardCharsets.UTF_8)) {
-            stream.forEachOrdered(this::parseLine);
+    public static Page getPage(long id, int namespaceID, String title)
+    {
+        return new Page(graphDb, id, namespaceID, title);
+    }
 
-        } catch (IOException exception) {
-            log.error("Couldn't get lines of file: " + wikiFilePath);
-
-        } catch (MalformedWikidataException exception) {
-            log.error(exception.getMessage());
-
+    private static void addDbConstraint(GraphDatabaseService graphDb, String constaint){
+        try ( Transaction tx = graphDb.beginTx() )
+        {
+            graphDb.schema()
+                    .constraintFor( Label.label( "Page" ) )
+                    .assertPropertyIsUnique( constaint )
+                    .create();
+            tx.success();
         }
-        this.done();
     }
 
     /**
@@ -62,6 +60,7 @@ public class PageFactory extends Producer<Page> {
      * Extracts the categories from the ProtoPages htmlData
      * before emitting.
      */
+    /*
     private void emitPage(){
         this.current.getPage()
                 .setCategories(
@@ -72,71 +71,5 @@ public class PageFactory extends Producer<Page> {
 
         this.emit(this.current.getPage());  // only emit the resulting Page object
     }
-
-    /**
-     * Parses an article by sequentially reading lines from a file.
-     * Builds a persistent context between calls and emits a ProtoPage
-     * when an article is finished.
-     * If an ending delimiter is omitted, parseLine will treat the
-     * current article as closed by default.
-     *
-     * @param line a String with the text of a line of the input file
-     */
-    private void parseLine(String line) {
-        if(line.isEmpty()) return;  // Ignores empty lines
-
-        switch(line.charAt(0)){  // Check for delimiter
-            case '\u00a4':
-                boolean isSingleChar = line.length() == 1;
-
-                // Closing delimiter received when not inside document
-                if(!this.insideArticle && isSingleChar){
-                    log.warn("Closing delimiter encountered while not inside document. Skipping article.");
-                    return;
-                }
-
-                if(this.insideArticle){
-                    // If an opening delimiter is encountered before a closing one
-                    if(!isSingleChar){
-                        log.warn("An opening delimiter was encountered before a closing one. Assuming article end.");
-                    }
-
-                    this.insideArticle = false;
-                    this.current.setHtmlData(this.currentDocument);
-                    this.emitPage();
-                    this.current = null;  // reset internal fields
-                    this.currentDocument = null;
-                    return;
-                }
-
-                Pattern r = Pattern.compile("\\s+([0-9]+)\\s+([0-9]+)\\s+(.*)");  // Regex for metadata in first line
-                Matcher m = r.matcher(line);
-
-                long id;
-                int namespaceId;
-
-                if (m.find()) {
-                    try {
-                        id = Long.parseLong(m.group(1));
-                        namespaceId = Integer.parseInt(m.group(2));
-                    } catch (Exception e){  // first line had malformed metadata
-                        throw new MalformedWikidataException("Could not convert metadata string to primitive types: " + e.getMessage());
-                    }
-                } else {  // first line had no metadata
-                    throw new MalformedWikidataException("First line of article had no valid metadata.");
-                }
-                this.current = new ProtoPage(  // Start parsing lines of article
-                        new Page(id, namespaceId, m.group(3))
-                );
-                this.currentDocument = new StringBuilder();
-                this.insideArticle = true;
-                break;
-
-            default:
-                if(this.currentDocument == null)  // if there was an error before and there's no article, don't append.
-                    return;
-                this.currentDocument.append(line);
-                break;
-        }
-    }
+    */
 }

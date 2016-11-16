@@ -115,11 +115,14 @@ public class PageExport implements Consumer<Page> {
         page.setAttribute("title", p.getTitle());
 
         Element categories = doc.createElement("categories");
+        /*
+        @TODO: FIX
         p.getCategories().forEach((name) -> {
             Element category = doc.createElement("category");
             category.setAttribute("name", name);
             categories.appendChild(category);
         });
+        */
 
         page.appendChild(categories);
         parent.appendChild(page);

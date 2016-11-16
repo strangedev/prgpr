@@ -1,7 +1,9 @@
 package com.prgpr.data;
 
-import java.util.LinkedHashSet;
-import java.util.Set;
+import org.neo4j.graphdb.GraphDatabaseService;
+import org.neo4j.graphdb.Label;
+import org.neo4j.graphdb.Node;
+import org.neo4j.graphdb.Transaction;
 
 /**
  * @author Kyle Rinfreschi
@@ -11,59 +13,58 @@ import java.util.Set;
  */
 public class Page {
 
-    private final long id;
-    private final int namespaceID;
-    private final String title;
-    private Set<String> categories;
+    private GraphDatabaseService graphDb;
+    private Node node;
 
-    /**
-     * Constructor.
-     * Categories will be empty.
-     *
-     * @param id The pageID.
-     * @param namespaceID An initial namespaceID.
-     * @param title And initial title.
-     */
-    public Page(long id, int namespaceID, String title) {
-        this.id = id;
-        this.namespaceID = namespaceID;
-        this.title = title;
-        this.categories = new LinkedHashSet<>();
+    private Page(GraphDatabaseService graphDb, Node node) {
+        this.graphDb = graphDb;
+        this.node = node;
     }
 
-    /**
-     * Constructor.
-     *
-     * @param id The pageID.
-     * @param namespaceID A namespaceID.
-     * @param title A title.
-     * @param categories An initial Set of categories.
-     */
-    public Page(long id, int namespaceID, String title, Set<String> categories) {
-        this.id = id;
-        this.namespaceID = namespaceID;
-        this.title = title;
-        this.categories = categories;
+    public Page(GraphDatabaseService graphDb, long id, int namespaceID, String title) {
+
+        this.graphDb = graphDb;
+        getOrCreate(this, id, namespaceID, title);
+    }
+
+    public void setId(long id) {
+        node.setProperty("id", id);
     }
 
     public long getId() {
-        return id;
+        return (long)node.getProperty("id");
     }
 
-    public int getNamespaceID() {
-        return namespaceID;
+    public void setNamespaceID(int namespaceID){
+        node.setProperty("namespaceID", namespaceID);
     }
 
-    public String getTitle() {
-        return title;
+    public int getNamespaceID(){
+        return (int)node.getProperty("namespaceID");
     }
 
-    public Set<String> getCategories() {
-        return categories;
+    public void setTitle(String title){
+        node.setProperty("title", title);
     }
 
-    public void setCategories(Set<String> categories) {
-        this.categories = categories;
+    public String getTitle(){
+        String ret;
+        try ( Transaction tx = graphDb.beginTx() ) {
+            ret = (String) node.getProperty("title");
+            tx.success();
+        }
+        return ret;
+    }
+
+    private static void getOrCreate(Page page, long id, int namespaceID, String title){
+        try ( Transaction tx = page.graphDb.beginTx() )
+        {
+            page.node = page.graphDb.createNode(Label.label("Page"));
+            page.setId(id);
+            page.setNamespaceID(namespaceID);
+            page.setTitle(title);
+            tx.success();
+        }
     }
 
     @Override
