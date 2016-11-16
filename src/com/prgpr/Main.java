@@ -74,8 +74,11 @@ public class Main {
 
         Page p1 = PageFactory.getPage(1, 0, "blah");
         //Page p2 = PageFactory.getPage(1, 0, "blah");
-
+        p1.setId(200);
+        log.info(p1.getId());
+        log.info(p1.getNamespaceID());
         log.info(p1.getTitle());
+
         //log.info(p2.getTitle());
 
         /*
