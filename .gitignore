@@ -6,7 +6,11 @@ external_files/personal_stash/*
 lib/*
 src/com/prgpr/mock/*
 *.log
-build/*
+*build/*
+.idea/modules/*
+
+### Gradle
+.gradle
 
 ### Gradle
 gradle.properties
