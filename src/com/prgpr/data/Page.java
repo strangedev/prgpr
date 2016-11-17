@@ -1,5 +1,7 @@
 package com.prgpr.data;
 
+import com.prgpr.framework.Property;
+import com.prgpr.framework.SuperNode;
 import org.neo4j.graphdb.GraphDatabaseService;
 import org.neo4j.graphdb.Label;
 import org.neo4j.graphdb.Node;
@@ -14,9 +16,9 @@ import org.neo4j.graphdb.Transaction;
 public class Page {
 
     private GraphDatabaseService graphDb;
-    private Node node;
+    private SuperNode node;
 
-    private enum Property
+    private enum PageAttribute implements Property
     {
         pageID,
         namespaceID,
@@ -25,7 +27,7 @@ public class Page {
 
     private Page(GraphDatabaseService graphDb, Node node) {
         this.graphDb = graphDb;
-        this.node = node;
+        this.node = new SuperNode(node);
     }
 
     public Page(GraphDatabaseService graphDb, long id, int namespaceID, String title) {
@@ -34,61 +36,38 @@ public class Page {
     }
 
     public void setId(long id) {
-        setPropertyAtomic(Property.pageID, id);
+        node.setPropertyAtomic(PageAttribute.pageID, id);
     }
 
     public long getId() {
-        return (long)getPropertyAtomic(Property.pageID);
+        return (long)node.getPropertyAtomic(PageAttribute.pageID);
     }
 
     public void setNamespaceID(int namespaceID){
-        setPropertyAtomic(Property.namespaceID, namespaceID);
+        node.setPropertyAtomic(PageAttribute.namespaceID, namespaceID);
     }
 
     public int getNamespaceID(){
-        return (int)getPropertyAtomic(Property.namespaceID);
+        return (int)node.getPropertyAtomic(PageAttribute.namespaceID);
     }
 
     public void setTitle(String title){
-        setPropertyAtomic(Property.title, title);
+        node.setPropertyAtomic(PageAttribute.title, title);
     }
 
     public String getTitle(){
-        return (String)getPropertyAtomic(Property.title);
-    }
-
-    private Object getProperty(Property property){
-        return node.getProperty(property.name());
-    }
-
-    private < E > void setProperty(Property property, E val){
-        node.setProperty(property.name(), val);
-    }
-
-    private Object getPropertyAtomic(Property property){
-        Object ret;
-        try ( Transaction tx = graphDb.beginTx() ) {
-            ret = node.getProperty(property.name());
-            tx.success();
-        }
-        return ret;
-    }
-
-    private < E > void setPropertyAtomic(Property property, E val){
-        try ( Transaction tx = graphDb.beginTx() ) {
-            node.setProperty(property.name(), val);
-            tx.success();
-        }
+        return (String)node.getPropertyAtomic(PageAttribute.title);
     }
 
     private static void getOrCreate(Page page, long id, int namespaceID, String title){
         try ( Transaction tx = page.graphDb.beginTx() )
         {
-            page.node = page.graphDb.createNode(Label.label("Page"));
-            page.setProperty(Property.pageID, id);
-            page.setProperty(Property.namespaceID, namespaceID);
-            page.setProperty(Property.title, title);
+            SuperNode node = new SuperNode(page.graphDb.createNode(Label.label("Page")));
+            node.setProperty(PageAttribute.pageID, id);
+            node.setProperty(PageAttribute.namespaceID, namespaceID);
+            node.setProperty(PageAttribute.title, title);
             tx.success();
+            page.node = node;
         }
     }
 
