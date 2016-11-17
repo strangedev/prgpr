@@ -33,24 +33,11 @@ public class PageFactory extends Producer<Page> {
 
     public static void setDatabase(GraphDatabaseService graphDb){
         PageFactory.graphDb = graphDb;
-        addDbConstraint(graphDb, "namespaceId");
-        addDbConstraint(graphDb, "title");
     }
 
     public static Page getPage(long id, int namespaceID, String title)
     {
         return new Page(graphDb, id, namespaceID, title);
-    }
-
-    private static void addDbConstraint(GraphDatabaseService graphDb, String constaint){
-        try ( Transaction tx = graphDb.beginTx() )
-        {
-            graphDb.schema()
-                    .constraintFor( Label.label( "Page" ) )
-                    .assertPropertyIsUnique( constaint )
-                    .create();
-            tx.success();
-        }
     }
 
     /**

@@ -27,6 +27,14 @@ public class SuperNode {
         node.setProperty(property.name(), val);
     }
 
+    public Object getProperty(String property){
+        return node.getProperty(property);
+    }
+
+    public < E > void setProperty(String property, E val){
+        node.setProperty(property, val);
+    }
+
     public Object getPropertyAtomic(Property property){
         return this.getPropertyAtomic(property.name());
     }

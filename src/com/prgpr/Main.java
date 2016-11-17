@@ -5,6 +5,8 @@ import com.prgpr.helpers.ProducerLogger;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 import org.neo4j.graphdb.GraphDatabaseService;
+import org.neo4j.graphdb.Node;
+import org.neo4j.graphdb.Transaction;
 import org.neo4j.graphdb.factory.GraphDatabaseFactory;
 import org.neo4j.io.fs.FileUtils;
 
@@ -64,20 +66,27 @@ public class Main {
 
         File dbf = new File("neo4j/data");
 
+        /*
         if (dbf.exists()) try {
             FileUtils.deleteRecursively(dbf);
         } catch (IOException e) {
             e.printStackTrace();
         }
+        */
 
-        PageFactory.setDatabase(new GraphDatabaseFactory().newEmbeddedDatabase(dbf));
+        GraphDatabaseService graphDb = new GraphDatabaseFactory().newEmbeddedDatabase(dbf);
+        PageFactory.setDatabase(graphDb);
 
         Page p1 = PageFactory.getPage(1, 0, "blah");
-        //Page p2 = PageFactory.getPage(1, 0, "blah");
-        p1.setId(200);
-        log.info(p1.getId());
-        log.info(p1.getNamespaceID());
-        log.info(p1.getTitle());
+        Page p2 = PageFactory.getPage(1, 0, "blah");
+        Page p3 = PageFactory.getPage(1, 0, "blah1");
+
+        try ( Transaction tx = graphDb.beginTx() ) {
+            for (Node node : graphDb.getAllNodes()) {
+                log.info(node.getProperty("id"));
+                log.info(node.getProperty("title"));
+            }
+        }
 
         //log.info(p2.getTitle());
 

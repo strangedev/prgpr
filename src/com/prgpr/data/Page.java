@@ -6,6 +6,9 @@ import org.neo4j.graphdb.GraphDatabaseService;
 import org.neo4j.graphdb.Label;
 import org.neo4j.graphdb.Node;
 import org.neo4j.graphdb.Transaction;
+import org.neo4j.graphdb.index.UniqueFactory;
+
+import java.util.Map;
 
 /**
  * @author Kyle Rinfreschi
@@ -18,7 +21,7 @@ public class Page {
     private GraphDatabaseService graphDb;
     private SuperNode node;
 
-    private enum PageAttribute implements Property
+    public enum PageAttribute implements Property
     {
         pageID,
         namespaceID,
@@ -32,7 +35,7 @@ public class Page {
 
     public Page(GraphDatabaseService graphDb, long id, int namespaceID, String title) {
         this.graphDb = graphDb;
-        getOrCreate(this, id, namespaceID, title);
+        this.node = new SuperNode(getOrCreate(graphDb, id, namespaceID, title));
     }
 
     public void setId(long id) {
@@ -59,16 +62,31 @@ public class Page {
         return (String)node.getPropertyAtomic(PageAttribute.title);
     }
 
-    private static void getOrCreate(Page page, long id, int namespaceID, String title){
-        try ( Transaction tx = page.graphDb.beginTx() )
-        {
-            SuperNode node = new SuperNode(page.graphDb.createNode(Label.label("Page")));
-            node.setProperty(PageAttribute.pageID, id);
-            node.setProperty(PageAttribute.namespaceID, namespaceID);
-            node.setProperty(PageAttribute.title, title);
+    private static Node getOrCreate(GraphDatabaseService graphDb, long id, int namespaceID, String title){
+
+        try ( Transaction tx = graphDb.beginTx() ) {
+            UniqueFactory<Node> factory = new UniqueFactory.UniqueNodeFactory(graphDb, "Pages") {
+                @Override
+                protected void initialize(Node created, Map<String, Object> properties) {
+                    SuperNode node = new SuperNode(created);
+                    node.getNode().addLabel(Label.label("Page"));
+                    node.setProperty("id", properties.get("id"));
+                    node.setProperty(PageAttribute.pageID, id);
+                    node.setProperty(PageAttribute.namespaceID, namespaceID);
+                    node.setProperty(PageAttribute.title, title);
+                }
+            };
+
+            Node node = factory.getOrCreate("id", hashCode(namespaceID, title));
             tx.success();
-            page.node = node;
+            return node;
         }
+    }
+
+    private static int hashCode(int namespaceID, String title) {
+        int result = namespaceID;
+        result = 31 * result + (title != null ? title.hashCode() : 0);
+        return result;
     }
 
     @Override
