@@ -1,4 +1,4 @@
-package com.prgpr.framework;
+package com.prgpr.framework.database;
 
 /**
  * Created by kito on 11/17/16.
