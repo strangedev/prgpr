@@ -22,6 +22,23 @@ public class Main {
 
     private static final Logger log = LogManager.getFormatterLogger(Main.class);
 
+    private static void registerShutdownHook( final GraphDatabaseService graphDb )
+    {
+        // Registers a shutdown hook for the Neo4j instance so that it
+        // shuts down nicely when the VM exits (even if you "Ctrl-C" the
+        // running application).
+
+        Runtime.getRuntime().addShutdownHook( new Thread()
+        {
+            @Override
+            public void run()
+            {
+                graphDb.shutdown();
+            }
+        } );
+    }
+
+
     /**
      * Creates producer and consumer instances,
      * then subscribes them to each other.
@@ -69,14 +86,17 @@ public class Main {
 
         File dbf = new File("neo4j/data");
 
+        /*
         // Just for testing reasons
         if (dbf.exists()) try {
             FileUtils.deleteRecursively(dbf);
         } catch (IOException e) {
             e.printStackTrace();
         }
+        */
 
         GraphDatabaseService graphDb = new GraphDatabaseFactory().newEmbeddedDatabase(dbf);
+        registerShutdownHook(graphDb);
         PageFactory.setDatabase(graphDb);
 
         PageProducer pageProducer = new PageProducer(infilePath);
