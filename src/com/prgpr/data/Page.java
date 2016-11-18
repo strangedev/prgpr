@@ -60,6 +60,10 @@ public class Page {
         node.setPropertyAtomic(PageAttribute.html, html);
     }
 
+    public void setHtml(StringBuilder html){
+        setHtml(html.toString());
+    }
+
     public String getHtml(){
         return (String)node.getPropertyAtomic(PageAttribute.html);
     }

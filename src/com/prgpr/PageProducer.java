@@ -81,8 +81,7 @@ public class PageProducer extends Producer<Page> {
                     }
 
                     this.insideArticle = false;
-                    //@TODO: FIX
-                    //this.current.setHtmlData(this.currentDocument);
+                    this.current.setHtml(this.currentDocument);
                     this.current = null;  // reset internal fields
                     this.currentDocument = null;
                     return;
