@@ -35,9 +35,12 @@ public class Main {
         String infilePath = "";
         String outfilePath = "";
 
-        /*
         // get and validate command line arguments
         switch (args.length){
+
+            case 1:
+                infilePath = args[0];
+                break;
 
             case 2:
                 infilePath = args[0];
@@ -62,35 +65,25 @@ public class Main {
                 log.error("Invalid number of arguments. \nPlease refer to README.txt for info on how to use.");
                 System.exit(1);
         }
-        */
+
 
         File dbf = new File("neo4j/data");
 
-        /*
+        // Just for testing reasons
         if (dbf.exists()) try {
             FileUtils.deleteRecursively(dbf);
         } catch (IOException e) {
             e.printStackTrace();
         }
-        */
 
         GraphDatabaseService graphDb = new GraphDatabaseFactory().newEmbeddedDatabase(dbf);
         PageFactory.setDatabase(graphDb);
 
-        Page p1 = PageFactory.getPage(1, 0, "blah");
-        Page p2 = PageFactory.getPage(1, 0, "blah");
-        Page p3 = PageFactory.getPage(1, 0, "blah1");
+        PageProducer pageProducer = new PageProducer(infilePath);
 
-        try ( Transaction tx = graphDb.beginTx() ) {
-            for (Node node : graphDb.getAllNodes()) {
-                log.info(node.getProperty("id"));
-                log.info(node.getProperty("title"));
-            }
-        }
 
-        /*
         // Data processing units
-        PageFactory pageFactory = new PageFactory(infilePath);
+        //PageFactory pageFactory = new PageFactory(infilePath);
         //PageExport pageExport = new PageExport(outfilePath);
 
         // Logging units
@@ -99,10 +92,9 @@ public class Main {
         // Setup
         //pageExport.subscribeTo(pageFactory);
 
-        pageFactoryLogger.subscribeTo(pageFactory);
+        pageFactoryLogger.subscribeTo(pageProducer);
 
         // Execute
-        pageFactory.run();
-        */
+        pageProducer.run();
     }
 }

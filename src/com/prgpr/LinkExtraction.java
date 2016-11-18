@@ -69,9 +69,7 @@ public class LinkExtraction {
             for (Element link : links) {
                 String test = link.toString();
                 Matcher m = r.matcher(test); // parsing the link String to see if he is valid
-                if (m.find()) {
-                    articleLinks.add(link.text());
-                }
+                if (m.find()) { articleLinks.add(link.text()); }
             }
         } catch (Exception except) {
             log.error("Couldn't find articles in this article.");
