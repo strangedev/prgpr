@@ -1,17 +1,11 @@
 package com.prgpr.data;
 
-import com.prgpr.PageExport;
-import com.prgpr.framework.Property;
-import com.prgpr.framework.SuperNode;
+import com.prgpr.framework.database.Property;
+import com.prgpr.framework.database.SuperNode;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 import org.neo4j.graphdb.GraphDatabaseService;
 import org.neo4j.graphdb.Label;
-import org.neo4j.graphdb.Node;
-import org.neo4j.graphdb.Transaction;
-import org.neo4j.graphdb.index.UniqueFactory;
-
-import java.util.Map;
 
 /**
  * @author Kyle Rinfreschi
@@ -22,9 +16,11 @@ import java.util.Map;
 public class Page {
 
     private static final Logger log = LogManager.getFormatterLogger(Page.class);
-    private GraphDatabaseService graphDb;
     private SuperNode node;
-    private static Transaction tx;
+
+    public enum PageLabel implements Label {
+        Page
+    }
 
     public enum PageAttribute implements Property
     {
@@ -35,13 +31,14 @@ public class Page {
         html
     }
 
-    public Page(GraphDatabaseService graphDb, long id, int namespaceID, String title) {
-        if(tx == null){
-            tx = graphDb.beginTx();
-        }
-
-        this.graphDb = graphDb;
-        this.node = new SuperNode(getOrCreate(graphDb, id, namespaceID, title));
+    public Page(GraphDatabaseService graphDb, long id, int namespaceID, String title, String html) {
+        this.node = SuperNode.getOrCreate(graphDb, "Pages", hashCode(namespaceID, title), (node) -> {
+            node.addLabel(PageLabel.Page);
+            node.setProperty(PageAttribute.articleID, id);
+            node.setProperty(PageAttribute.namespaceID, namespaceID);
+            node.setProperty(PageAttribute.title, title);
+            node.setProperty(PageAttribute.html, html);
+        });
     }
 
     public int getID() {
@@ -73,30 +70,7 @@ public class Page {
     }
 
     public static void save(){
-        try {
-            tx.success();
-        } catch(Exception e){
-            log.error(e.getMessage());
-        }finally {
-            tx.close();
-            tx = null;
-        }
-    }
-
-    private static Node getOrCreate(GraphDatabaseService graphDb, long id, int namespaceID, String title){
-        UniqueFactory<Node> factory = new UniqueFactory.UniqueNodeFactory(graphDb, "Pages") {
-            @Override
-            protected void initialize(Node created, Map<String, Object> properties) {
-                SuperNode node = new SuperNode(created);
-                node.getNode().addLabel(Label.label("Page"));
-                node.setProperty(PageAttribute.id, properties.get(PageAttribute.id.name()));
-                node.setProperty(PageAttribute.articleID, id);
-                node.setProperty(PageAttribute.namespaceID, namespaceID);
-                node.setProperty(PageAttribute.title, title);
-            }
-        };
-
-        return factory.getOrCreate(PageAttribute.id.name(), hashCode(namespaceID, title));
+        SuperNode.save();
     }
 
     private static int hashCode(int namespaceID, String title) {

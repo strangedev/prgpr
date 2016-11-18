@@ -25,6 +25,9 @@ public class PageProducer extends Producer<Page> {
     private Page current;
     private StringBuilder currentDocument = new StringBuilder();
     private final String wikiFilePath;
+    private long id;
+    private int namespaceId;
+    private String title;
 
     /**
      * Constructor.
@@ -81,9 +84,8 @@ public class PageProducer extends Producer<Page> {
                     }
 
                     this.insideArticle = false;
-                    this.current.setHtml(this.currentDocument);
-                    this.emit(current);
-                    this.current = null;  // reset internal fields
+                    Page page = PageFactory.getPage(id, namespaceId, title, this.currentDocument);
+                    this.emit(page);
                     this.currentDocument = null;
                     return;
                 }
@@ -91,20 +93,18 @@ public class PageProducer extends Producer<Page> {
                 Pattern r = Pattern.compile("\\s+([0-9]+)\\s+([0-9]+)\\s+(.*)");  // Regex for metadata in first line
                 Matcher m = r.matcher(line);
 
-                long id;
-                int namespaceId;
-
                 if (m.find()) {
                     try {
                         id = Long.parseLong(m.group(1));
                         namespaceId = Integer.parseInt(m.group(2));
+                        title = m.group(3);
                     } catch (Exception e){  // first line had malformed metadata
                         throw new MalformedWikidataException("Could not convert metadata string to primitive types: " + e.getMessage());
                     }
                 } else {  // first line had no metadata
                     throw new MalformedWikidataException("First line of article had no valid metadata.");
                 }
-                this.current = PageFactory.getPage(id, namespaceId, m.group(3));
+
                 this.currentDocument = new StringBuilder();
                 this.insideArticle = true;
                 break;

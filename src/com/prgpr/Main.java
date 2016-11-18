@@ -1,6 +1,8 @@
 package com.prgpr;
 
 import com.prgpr.data.Page;
+import com.prgpr.framework.database.TransactionManager;
+import com.prgpr.framework.threading.ThreadManager;
 import com.prgpr.helpers.ProducerLogger;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
@@ -33,6 +35,7 @@ public class Main {
             @Override
             public void run()
             {
+                TransactionManager.shutdown();
                 graphDb.shutdown();
             }
         } );

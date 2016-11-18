@@ -2,6 +2,7 @@ package com.prgpr;
 
 import com.prgpr.data.Page;
 import com.prgpr.framework.consumer.Producer;
+import com.prgpr.framework.database.TransactionManager;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 import org.neo4j.graphdb.GraphDatabaseService;
@@ -18,30 +19,11 @@ public class PageFactory extends Producer<Page> {
 
     public static void setDatabase(GraphDatabaseService graphDb){
         PageFactory.graphDb = graphDb;
+        TransactionManager.registerDb(graphDb);
     }
 
-    public static Page getPage(long id, int namespaceID, String title)
+    public static Page getPage(long id, int namespaceID, String title, StringBuilder html)
     {
-        return new Page(graphDb, id, namespaceID, title);
+        return new Page(graphDb, id, namespaceID, title, html.toString());
     }
-
-    /**
-     * Emits a previously created page.
-     * This method was previously in a different class, but because
-     * milestone goals had to be met, it resides here (for now).
-     * Extracts the categories from the ProtoPages htmlData
-     * before emitting.
-     */
-    /*
-    private void emitPage(){
-        this.current.getPage()
-                .setCategories(
-                        LinkExtraction.extractCategories(
-                                this.current.getHtmlData().toString()  // Uses StringBuilder class
-                        )
-                );
-
-        this.emit(this.current.getPage());  // only emit the resulting Page object
-    }
-    */
 }
