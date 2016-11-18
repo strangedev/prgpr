@@ -23,9 +23,11 @@ public class Page {
 
     public enum PageAttribute implements Property
     {
-        pageID,
+        id,
+        articleID,
         namespaceID,
-        title
+        title,
+        html
     }
 
     private Page(GraphDatabaseService graphDb, Node node) {
@@ -38,28 +40,28 @@ public class Page {
         this.node = new SuperNode(getOrCreate(graphDb, id, namespaceID, title));
     }
 
-    public void setId(long id) {
-        node.setPropertyAtomic(PageAttribute.pageID, id);
+    public int getID() {
+        return (int)node.getPropertyAtomic(PageAttribute.id);
     }
 
-    public long getId() {
-        return (long)node.getPropertyAtomic(PageAttribute.pageID);
-    }
-
-    public void setNamespaceID(int namespaceID){
-        node.setPropertyAtomic(PageAttribute.namespaceID, namespaceID);
+    public long getArticleID() {
+        return (long)node.getPropertyAtomic(PageAttribute.articleID);
     }
 
     public int getNamespaceID(){
         return (int)node.getPropertyAtomic(PageAttribute.namespaceID);
     }
 
-    public void setTitle(String title){
-        node.setPropertyAtomic(PageAttribute.title, title);
-    }
-
     public String getTitle(){
         return (String)node.getPropertyAtomic(PageAttribute.title);
+    }
+
+    public void setHtml(String html){
+        node.setPropertyAtomic(PageAttribute.html, html);
+    }
+
+    public String getHtml(){
+        return (String)node.getPropertyAtomic(PageAttribute.html);
     }
 
     private static Node getOrCreate(GraphDatabaseService graphDb, long id, int namespaceID, String title){
@@ -70,14 +72,14 @@ public class Page {
                 protected void initialize(Node created, Map<String, Object> properties) {
                     SuperNode node = new SuperNode(created);
                     node.getNode().addLabel(Label.label("Page"));
-                    node.setProperty("id", properties.get("id"));
-                    node.setProperty(PageAttribute.pageID, id);
+                    node.setProperty(PageAttribute.id, properties.get(PageAttribute.id.name()));
+                    node.setProperty(PageAttribute.articleID, id);
                     node.setProperty(PageAttribute.namespaceID, namespaceID);
                     node.setProperty(PageAttribute.title, title);
                 }
             };
 
-            Node node = factory.getOrCreate("id", hashCode(namespaceID, title));
+            Node node = factory.getOrCreate(PageAttribute.id.name(), hashCode(namespaceID, title));
             tx.success();
             return node;
         }
@@ -96,7 +98,7 @@ public class Page {
 
         Page page = (Page) o;
 
-        if (getId() != page.getId()) return false;
+        if (getID() != page.getID()) return false;
         if (getNamespaceID() != page.getNamespaceID()) return false;
         return getTitle() != null ? getTitle().equals(page.getTitle()) : page.getTitle() == null;
 
@@ -104,9 +106,6 @@ public class Page {
 
     @Override
     public int hashCode() {
-        int result = (int) (getId() ^ (getId() >>> 32));
-        result = 31 * result + getNamespaceID();
-        result = 31 * result + (getTitle() != null ? getTitle().hashCode() : 0);
-        return result;
+        return hashCode(getNamespaceID(), getTitle());
     }
 }

@@ -88,8 +88,6 @@ public class Main {
             }
         }
 
-        //log.info(p2.getTitle());
-
         /*
         // Data processing units
         PageFactory pageFactory = new PageFactory(infilePath);
