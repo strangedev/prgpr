@@ -1,5 +1,6 @@
 package com.prgpr.helpers;
 
+import com.prgpr.data.Page;
 import com.prgpr.framework.consumer.Consumer;
 import com.prgpr.framework.consumer.Producer;
 import org.apache.logging.log4j.LogManager;
@@ -59,6 +60,10 @@ public class ProducerLogger<T> implements Consumer<T> {
     public void consume(T consumable) {
         this.consumed++;  // count all the consumables.
 
+        if(this.consumed % 1000 == 0){
+            Page.save();
+        }
+
         long timeNow = System.currentTimeMillis();
         long timeSince = timeNow - this.lastTime;
 
@@ -95,6 +100,8 @@ public class ProducerLogger<T> implements Consumer<T> {
      */
     @Override
     public void onUnsubscribed(Producer<T> producer) {
+        Page.save();
+
         LongAdder adder = new LongAdder();
         int numConsumablesPerSecond = consumablesPerSecond.size();
         consumablesPerSecond.parallelStream().forEach(adder::add);  // adds all data points for averaging

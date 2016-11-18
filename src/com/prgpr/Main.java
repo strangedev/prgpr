@@ -96,5 +96,9 @@ public class Main {
 
         // Execute
         pageProducer.run();
+
+        try ( Transaction tx = graphDb.beginTx() ) {
+            log.info(graphDb.getAllNodes().stream().count());
+        }
     }
 }

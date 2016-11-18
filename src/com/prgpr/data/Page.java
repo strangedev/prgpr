@@ -1,7 +1,10 @@
 package com.prgpr.data;
 
+import com.prgpr.PageExport;
 import com.prgpr.framework.Property;
 import com.prgpr.framework.SuperNode;
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
 import org.neo4j.graphdb.GraphDatabaseService;
 import org.neo4j.graphdb.Label;
 import org.neo4j.graphdb.Node;
@@ -18,8 +21,10 @@ import java.util.Map;
  */
 public class Page {
 
+    private static final Logger log = LogManager.getFormatterLogger(Page.class);
     private GraphDatabaseService graphDb;
     private SuperNode node;
+    private static Transaction tx;
 
     public enum PageAttribute implements Property
     {
@@ -30,34 +35,33 @@ public class Page {
         html
     }
 
-    private Page(GraphDatabaseService graphDb, Node node) {
-        this.graphDb = graphDb;
-        this.node = new SuperNode(node);
-    }
-
     public Page(GraphDatabaseService graphDb, long id, int namespaceID, String title) {
+        if(tx == null){
+            tx = graphDb.beginTx();
+        }
+
         this.graphDb = graphDb;
         this.node = new SuperNode(getOrCreate(graphDb, id, namespaceID, title));
     }
 
     public int getID() {
-        return (int)node.getPropertyAtomic(PageAttribute.id);
+        return (int)node.getProperty(PageAttribute.id);
     }
 
     public long getArticleID() {
-        return (long)node.getPropertyAtomic(PageAttribute.articleID);
+        return (long)node.getProperty(PageAttribute.articleID);
     }
 
     public int getNamespaceID(){
-        return (int)node.getPropertyAtomic(PageAttribute.namespaceID);
+        return (int)node.getProperty(PageAttribute.namespaceID);
     }
 
     public String getTitle(){
-        return (String)node.getPropertyAtomic(PageAttribute.title);
+        return (String)node.getProperty(PageAttribute.title);
     }
 
     public void setHtml(String html){
-        node.setPropertyAtomic(PageAttribute.html, html);
+        node.setProperty(PageAttribute.html, html);
     }
 
     public void setHtml(StringBuilder html){
@@ -65,28 +69,34 @@ public class Page {
     }
 
     public String getHtml(){
-        return (String)node.getPropertyAtomic(PageAttribute.html);
+        return (String)node.getProperty(PageAttribute.html);
+    }
+
+    public static void save(){
+        try {
+            tx.success();
+        } catch(Exception e){
+            log.error(e.getMessage());
+        }finally {
+            tx.close();
+            tx = null;
+        }
     }
 
     private static Node getOrCreate(GraphDatabaseService graphDb, long id, int namespaceID, String title){
+        UniqueFactory<Node> factory = new UniqueFactory.UniqueNodeFactory(graphDb, "Pages") {
+            @Override
+            protected void initialize(Node created, Map<String, Object> properties) {
+                SuperNode node = new SuperNode(created);
+                node.getNode().addLabel(Label.label("Page"));
+                node.setProperty(PageAttribute.id, properties.get(PageAttribute.id.name()));
+                node.setProperty(PageAttribute.articleID, id);
+                node.setProperty(PageAttribute.namespaceID, namespaceID);
+                node.setProperty(PageAttribute.title, title);
+            }
+        };
 
-        try ( Transaction tx = graphDb.beginTx() ) {
-            UniqueFactory<Node> factory = new UniqueFactory.UniqueNodeFactory(graphDb, "Pages") {
-                @Override
-                protected void initialize(Node created, Map<String, Object> properties) {
-                    SuperNode node = new SuperNode(created);
-                    node.getNode().addLabel(Label.label("Page"));
-                    node.setProperty(PageAttribute.id, properties.get(PageAttribute.id.name()));
-                    node.setProperty(PageAttribute.articleID, id);
-                    node.setProperty(PageAttribute.namespaceID, namespaceID);
-                    node.setProperty(PageAttribute.title, title);
-                }
-            };
-
-            Node node = factory.getOrCreate(PageAttribute.id.name(), hashCode(namespaceID, title));
-            tx.success();
-            return node;
-        }
+        return factory.getOrCreate(PageAttribute.id.name(), hashCode(namespaceID, title));
     }
 
     private static int hashCode(int namespaceID, String title) {
