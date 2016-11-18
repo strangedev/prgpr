@@ -42,7 +42,7 @@ dependencies {
     link group: 'org.apache.logging.log4j', name: 'log4j-core', version: '2.7'
     link group: 'org.apache.logging.log4j', name: 'log4j-api', version: '2.7'
     link group: 'org.jsoup', name: 'jsoup', version: '1.9.2'
-    link group: 'org.neo4j', name: 'neo4j', version: '3.0.7'
+    link group: 'org.neo4j', name: 'neo4j', version: '3.1.0-M10'
 
     compile group: 'xml-apis', name: 'xml-apis', version: '2.0.2'
 
