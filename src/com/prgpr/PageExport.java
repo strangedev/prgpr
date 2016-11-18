@@ -1,8 +1,8 @@
 package com.prgpr;
 
 import com.prgpr.data.Page;
-import com.prgpr.framework.Consumer;
-import com.prgpr.framework.Producer;
+import com.prgpr.framework.consumer.Consumer;
+import com.prgpr.framework.consumer.Producer;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 import org.w3c.dom.Document;
@@ -111,7 +111,7 @@ public class PageExport implements Consumer<Page> {
         Element page = doc.createElement("page");
 
         page.setAttribute("namespaceID", Integer.toString(p.getNamespaceID()));
-        page.setAttribute("pageId", Long.toString(p.getId()));
+        page.setAttribute("pageId", Long.toString(p.getID()));
         page.setAttribute("title", p.getTitle());
 
         Element categories = doc.createElement("categories");

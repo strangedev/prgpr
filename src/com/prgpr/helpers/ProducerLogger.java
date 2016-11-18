@@ -1,7 +1,7 @@
 package com.prgpr.helpers;
 
-import com.prgpr.framework.Consumer;
-import com.prgpr.framework.Producer;
+import com.prgpr.framework.consumer.Consumer;
+import com.prgpr.framework.consumer.Producer;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 

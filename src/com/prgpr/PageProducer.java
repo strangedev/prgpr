@@ -1,9 +1,8 @@
 package com.prgpr;
 
 import com.prgpr.data.Page;
-import com.prgpr.data.ProtoPage;
 import com.prgpr.exceptions.MalformedWikidataException;
-import com.prgpr.framework.Producer;
+import com.prgpr.framework.consumer.Producer;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 

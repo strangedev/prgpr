@@ -1,4 +1,4 @@
-package com.prgpr.framework;
+package com.prgpr.framework.consumer;
 
 import java.util.LinkedHashSet;
 

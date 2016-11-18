@@ -1,4 +1,4 @@
-package com.prgpr.framework;
+package com.prgpr.framework.consumer;
 
 /**
  * Created by strange on 10/26/16.

@@ -1,25 +1,10 @@
 package com.prgpr;
 
 import com.prgpr.data.Page;
-import com.prgpr.data.ProtoPage;
-import com.prgpr.exceptions.MalformedWikidataException;
-import com.prgpr.framework.Producer;
+import com.prgpr.framework.consumer.Producer;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 import org.neo4j.graphdb.GraphDatabaseService;
-import org.neo4j.graphdb.Label;
-import org.neo4j.graphdb.Node;
-import org.neo4j.graphdb.Transaction;
-import org.neo4j.graphdb.index.UniqueFactory;
-
-import java.io.IOException;
-import java.nio.charset.StandardCharsets;
-import java.nio.file.Files;
-import java.nio.file.Paths;
-import java.util.Map;
-import java.util.regex.Matcher;
-import java.util.regex.Pattern;
-import java.util.stream.Stream;
 
 /**
  * @author Noah Hummel
