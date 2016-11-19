@@ -1,6 +1,11 @@
 package com.prgpr;
 
+import com.prgpr.commands.HelpCommand;
+import com.prgpr.commands.ImportHtmlCommand;
 import com.prgpr.data.Page;
+import com.prgpr.exceptions.CommandNotFound;
+import com.prgpr.framework.command.Command;
+import com.prgpr.framework.command.CommandBroker;
 import com.prgpr.framework.database.TransactionManager;
 import com.prgpr.framework.threading.ThreadManager;
 import com.prgpr.helpers.Benchmark;
@@ -25,22 +30,7 @@ public class Main {
 
     private static final Logger log = LogManager.getFormatterLogger(Main.class);
 
-    private static void registerShutdownHook( final GraphDatabaseService graphDb )
-    {
-        // Registers a shutdown hook for the Neo4j instance so that it
-        // shuts down nicely when the VM exits (even if you "Ctrl-C" the
-        // running application).
 
-        Runtime.getRuntime().addShutdownHook( new Thread()
-        {
-            @Override
-            public void run()
-            {
-                TransactionManager.shutdown();
-                graphDb.shutdown();
-            }
-        } );
-    }
 
 
     /**
@@ -52,88 +42,15 @@ public class Main {
      */
     public static void main(String[] args) {
 
-        boolean logAll = true;
-        String infilePath = "";
-        String outfilePath = "";
-
-        // get and validate command line arguments
-        switch (args.length){
-
-            case 1:
-                infilePath = args[0];
-                break;
-
-            case 2:
-                infilePath = args[0];
-                outfilePath = args[1];
-                break;
-
-            case 3:
-                infilePath = args[0];
-                outfilePath = args[1];
-
-                try {
-                    logAll = Boolean.parseBoolean(args[2]);
-
-                } catch (Exception e) {
-                    log.error("Invalid argument " + args[2] +  " for option log-all.");
-                    System.exit(1);
-
-                }
-                break;
-
-            default:
-                log.error("Invalid number of arguments. \nPlease refer to README.txt for info on how to use.");
-                System.exit(1);
-        }
-
-
-        File dbf = new File("neo4j/data");
-
-        /*
-        // Just for testing reasons
-        if (dbf.exists()) try {
-            FileUtils.deleteRecursively(dbf);
-        } catch (IOException e) {
-            e.printStackTrace();
-        }
-        */
-        GraphDatabaseService graphDb = new GraphDatabaseFactory().newEmbeddedDatabase(dbf);
-        registerShutdownHook(graphDb);
-        PageFactory.setDatabase(graphDb);
-
-        PageProducer pageProducer = new PageProducer(infilePath);
-
-
-        // Data processing units
-        //PageFactory pageFactory = new PageFactory(infilePath);
-        //PageExport pageExport = new PageExport(outfilePath);
-
-        // Logging units
-        ProducerLogger<Page> pageFactoryLogger = new ProducerLogger<>(logAll);
-
-        // Setup
-        //pageExport.subscribeTo(pageFactory);
-
-        pageFactoryLogger.subscribeTo(pageProducer);
-
-        // Execute
-        pageProducer.run();
-
-        long time = Benchmark.run(()->{
-            try ( Transaction tx = graphDb.beginTx() ) {
-                log.info(graphDb.getAllNodes().stream().count());
-            }
+        CommandBroker.register(new Command[]{
+                new HelpCommand(),
+                new ImportHtmlCommand()
         });
 
-        log.info("Counted nodes in: " + (time / 1000.0) + " s");
-
-        // inserting the categories
-        try ( Transaction tx = graphDb.beginTx() ) {
-            for (Node node : graphDb.getAllNodes()) {
-                Page page = new Page(node);
-                page.insertCategorieLink();
-            }
+        try {
+            CommandBroker.process(args);
+        } catch (CommandNotFound commandNotFound) {
+            commandNotFound.printStackTrace();
         }
     }
 }

@@ -34,7 +34,7 @@ public class PageProducer extends Producer<Page> {
      *
      * @param wikiFilePath The path to the input file.
      */
-    PageProducer(String wikiFilePath){
+    public PageProducer(String wikiFilePath){
         this.wikiFilePath = wikiFilePath;
     }
 
