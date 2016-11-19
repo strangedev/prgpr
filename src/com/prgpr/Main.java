@@ -1,5 +1,6 @@
 package com.prgpr;
 
+import com.prgpr.commands.CategoryLinksCommand;
 import com.prgpr.commands.HelpCommand;
 import com.prgpr.commands.ImportHtmlCommand;
 import com.prgpr.data.Page;
@@ -20,6 +21,7 @@ import org.neo4j.io.fs.FileUtils;
 
 import java.io.File;
 import java.io.IOException;
+import java.util.List;
 
 /**
  * @author Elizaveta Kovalevskaya
@@ -42,12 +44,16 @@ public class Main {
      */
     public static void main(String[] args) {
 
-        CommandBroker.register(new Command[]{
-                new HelpCommand(),
-                new ImportHtmlCommand()
+        Command help = new HelpCommand();
+
+        CommandBroker.register(new Command[] {
+                help,
+                new ImportHtmlCommand(),
+                new CategoryLinksCommand()
         });
 
         try {
+            CommandBroker.setDefaultCommand(help.getName());
             CommandBroker.process(args);
         } catch (CommandNotFound commandNotFound) {
             commandNotFound.printStackTrace();

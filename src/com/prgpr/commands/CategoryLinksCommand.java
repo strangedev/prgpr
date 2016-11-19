@@ -10,10 +10,15 @@ import org.neo4j.graphdb.Transaction;
 /**
  * Created by kito on 19.11.16.
  */
-public class CategoryLinksCommand implements Command {
+public class CategoryLinksCommand extends Command {
     @Override
     public String getName() {
         return "categorylinks";
+    }
+
+    @Override
+    public String getDescription() {
+        return "This is an example description.";
     }
 
     @Override

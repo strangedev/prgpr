@@ -12,10 +12,12 @@ import org.apache.logging.log4j.Logger;
 import org.neo4j.graphdb.GraphDatabaseService;
 import org.neo4j.graphdb.Transaction;
 
+import java.util.Arrays;
+
 /**
  * Created by kito on 19.11.16.
  */
-public class ImportHtmlCommand implements Command {
+public class ImportHtmlCommand extends Command {
 
     private static final Logger log = LogManager.getFormatterLogger(Command.class);
 
@@ -25,7 +27,14 @@ public class ImportHtmlCommand implements Command {
     }
 
     @Override
+    public String getDescription() {
+        return "Imports an html file into the database.";
+    }
+
+    @Override
     public int execute(String[] args) {
+        Arrays.stream(args).forEach(log::info);
+
         GraphDatabaseService graphDb = DatabaseFactory.newEmbeddedDatabase(args[0]);
         PageFactory.setDatabase(graphDb);
 

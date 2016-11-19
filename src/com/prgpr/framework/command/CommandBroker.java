@@ -3,7 +3,9 @@ package com.prgpr.framework.command;
 import com.prgpr.exceptions.CommandNotFound;
 
 import java.util.Arrays;
+import java.util.Collection;
 import java.util.HashMap;
+import java.util.List;
 
 /**
  * Created by kito on 19.11.16.
@@ -11,51 +13,52 @@ import java.util.HashMap;
 public class CommandBroker {
 
     private static HashMap<String, Command> commandMap = new HashMap<>();
-    private static String defaultCommand = "help";
+    private static Command defaultCommand;
 
     public static void register(Command command){
-        commandMap.put(command.getName(), command);
+        commandMap.put(command.getName().toLowerCase(), command);
     }
 
     public static void register(Command[] commands){
-        Arrays.stream(commands).forEach(
-                command -> commandMap.put(command.getName(), command)
-        );
+        Arrays.stream(commands).forEach(CommandBroker::register);
+    }
+
+    public static void setDefaultCommand(String name) throws CommandNotFound {
+        defaultCommand = getCommandByName(name);
+    }
+
+    public static Collection<Command> getRegisteredCommands(){
+        return commandMap.values();
     }
 
     public static void process(String[] args) throws CommandNotFound {
-        String commandName = defaultCommand;
+        Command command = defaultCommand;
 
-        if(args.length > 0){
-            commandName = args[0];
+        if(args.length == 0 && defaultCommand == null){
+            throw new CommandNotFound();
         }
 
-        Command command;
+        if(args.length == 0){
+            command.execute(new String[]{});
+            return;
+        }
 
         try {
-            command = getCommandByName(commandName);
+            command = getCommandByName(args[0]);
+            args = Arrays.copyOfRange(args, 1, args.length);
         } catch (CommandNotFound e){
-            command = getCommandByName(defaultCommand);
+            // do nothing
         }
 
-        args = getCommandArgs(command.getName(), args);
+        if(command == null){
+            throw new CommandNotFound();
+        }
+
         command.execute(args);
     }
 
-    private static String[] getCommandArgs(String commandName, String[] args) {
-        if(args.length > 0 && args[0].equals(commandName)) {
-            args = Arrays.copyOfRange(args, 1, args.length);
-        }
-
-        return args;
-    }
-
-    public static void setDefaultCommand(String name){
-        defaultCommand = name;
-    }
-
     private static Command getCommandByName(String name) throws CommandNotFound {
-        Command command = commandMap.get(name);
+        Command command = commandMap.get(name.toLowerCase());
 
         if(command == null){
             throw new CommandNotFound();

@@ -1,11 +1,18 @@
 package com.prgpr.framework.command;
 
+import java.util.Arrays;
+
 /**
  * Created by kito on 19.11.16.
  */
-public interface Command {
+public abstract class Command {
 
-    String getName();
+    public abstract String getName();
 
-    int execute(String[] args);
+    public abstract int execute(String[] args);
+
+    public String getDescription(){
+        return "";
+    }
+
 }
