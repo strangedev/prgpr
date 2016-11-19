@@ -23,18 +23,22 @@ public class SuperNode {
     }
 
     public void addLabel(Label label){
+        TransactionManager.getTransaction(graphDb);
         node.addLabel(label);
     }
 
     public Object getProperty(Property property){
+        TransactionManager.getTransaction(graphDb);
         return node.getProperty(property.name());
     }
 
     public < E > void setProperty(Property property, E val){
+        TransactionManager.getTransaction(graphDb);
         node.setProperty(property.name(), val);
     }
 
     public static SuperNode getOrCreate(GraphDatabaseService graphDb, String index, int hashcode, NodeCallable callable){
+        TransactionManager.getTransaction(graphDb);
         UniqueFactory<Node> factory = new UniqueFactory.UniqueNodeFactory(graphDb, index) {
             @Override
             protected void initialize(Node created, Map<String, Object> properties) {
@@ -48,6 +52,7 @@ public class SuperNode {
 
     public void update(NodeCallable run){
         try {
+            TransactionManager.getTransaction(graphDb);
             run.call(this);
         } catch (Exception e) {
             e.printStackTrace();

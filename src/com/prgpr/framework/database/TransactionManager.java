@@ -15,12 +15,15 @@ public class TransactionManager {
 
     private static final HashMap<GraphDatabaseService, Transaction> transactions = new HashMap<>();
 
-    public static void registerDb(GraphDatabaseService db){
+    public static Transaction getTransaction(GraphDatabaseService db){
         Transaction tx = transactions.get(db);
 
         if(tx == null){
-            transactions.put(db, db.beginTx());
+            tx = db.beginTx();
+            transactions.put(db, tx);
         }
+
+        return tx;
     }
 
     public static void commit(GraphDatabaseService db){
@@ -29,11 +32,15 @@ public class TransactionManager {
         } catch (Exception e) {
             log.error(e.getMessage());
         } finally {
-            transactions.put(db, db.beginTx());
+            transactions.put(db, null);
         }
     }
 
     public static void shutdown(){
-        transactions.forEach((db, tx)-> tx.close());
+        transactions.forEach((db, tx) -> {
+            if(tx != null){
+                tx.close();
+            }
+        });
     }
 }

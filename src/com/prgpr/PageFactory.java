@@ -19,7 +19,6 @@ public class PageFactory extends Producer<Page> {
 
     public static void setDatabase(GraphDatabaseService graphDb){
         PageFactory.graphDb = graphDb;
-        TransactionManager.registerDb(graphDb);
     }
 
     public static Page getPage(long id, int namespaceID, String title, StringBuilder html)
