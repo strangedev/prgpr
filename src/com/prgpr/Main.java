@@ -90,13 +90,14 @@ public class Main {
 
         File dbf = new File("neo4j/data");
 
+        /*
         // Just for testing reasons
         if (dbf.exists()) try {
             FileUtils.deleteRecursively(dbf);
         } catch (IOException e) {
             e.printStackTrace();
         }
-
+        */
         GraphDatabaseService graphDb = new GraphDatabaseFactory().newEmbeddedDatabase(dbf);
         registerShutdownHook(graphDb);
         PageFactory.setDatabase(graphDb);
@@ -127,5 +128,12 @@ public class Main {
 
         log.info("Counted nodes in: " + (time / 1000.0) + " s");
 
+        /*
+        // inserting the categories
+        try ( Transaction tx = graphDb.beginTx() ) {
+            for (Node page : graphDb) {
+                page.insertCategorieLink();
+            }
+        }*/
     }
 }

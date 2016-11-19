@@ -6,6 +6,15 @@ import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 import org.neo4j.graphdb.GraphDatabaseService;
 import org.neo4j.graphdb.Label;
+import org.neo4j.graphdb.Node;
+import org.neo4j.graphdb.RelationshipType;
+
+import javax.management.relation.Relation;
+import java.util.Set;
+
+import static com.prgpr.LinkExtraction.extractCategories;
+import static com.prgpr.data.Page.PageAttribute.relations;
+import static org.parboiled.support.ParseTreeUtils.findNode;
 
 /**
  * @author Kyle Rinfreschi
@@ -14,6 +23,7 @@ import org.neo4j.graphdb.Label;
  * It represents a wikipedia page.
  */
 public class Page {
+
 
     private static final Logger log = LogManager.getFormatterLogger(Page.class);
     private SuperNode node;
@@ -28,8 +38,12 @@ public class Page {
         articleID,
         namespaceID,
         title,
-        html
+        html,
+        relations
     }
+
+    public enum RelTypes implements RelationshipType {isCategorie}; // defines the Relationship categorie
+
 
     public Page(GraphDatabaseService graphDb, long id, int namespaceID, String title, String html) {
         this.node = SuperNode.getOrCreate(graphDb, "Pages", hashCode(namespaceID, title), (node) -> {
@@ -96,4 +110,16 @@ public class Page {
     public int hashCode() {
         return hashCode(getNamespaceID(), getTitle());
     }
+
+    /*
+    public void insertCategorieLink() {
+        Set<String> categories = extractCategories(this.getHtml());
+        for (String categorie : categories) {
+            Node page = findNode(Label.label("Page"), "id", Integer.toString(this.getID())); // just like in the presentation of gleim
+            Node cat = findNode(Label.label("Page"), "title", categorie);
+            Relation rel = (Relation) page.createRelationshipTo(cat, RelTypes.isCategorie);
+        }
+    }
+    */
+
 }
