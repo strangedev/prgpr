@@ -13,8 +13,6 @@ import javax.management.relation.Relation;
 import java.util.Set;
 
 import static com.prgpr.LinkExtraction.extractCategories;
-import static com.prgpr.data.Page.PageAttribute.relations;
-import static org.parboiled.support.ParseTreeUtils.findNode;
 
 /**
  * @author Kyle Rinfreschi
@@ -38,12 +36,16 @@ public class Page {
         articleID,
         namespaceID,
         title,
-        html,
-        relations
+        html
     }
 
-    public enum RelTypes implements RelationshipType {isCategorie}; // defines the Relationship categorie
+    public enum RelTypes implements RelationshipType {
+        isCategory
+    } // defines the Relationship category
 
+    public Page(Node node){
+        this.node = new SuperNode(node);
+    }
 
     public Page(GraphDatabaseService graphDb, long id, int namespaceID, String title, String html) {
         this.node = SuperNode.getOrCreate(graphDb, "Pages", hashCode(namespaceID, title), (node) -> {
@@ -111,15 +113,14 @@ public class Page {
         return hashCode(getNamespaceID(), getTitle());
     }
 
-    /*
+    //@TODO: implement
     public void insertCategorieLink() {
         Set<String> categories = extractCategories(this.getHtml());
-        for (String categorie : categories) {
-            Node page = findNode(Label.label("Page"), "id", Integer.toString(this.getID())); // just like in the presentation of gleim
-            Node cat = findNode(Label.label("Page"), "title", categorie);
-            Relation rel = (Relation) page.createRelationshipTo(cat, RelTypes.isCategorie);
+        for (String category : categories) {
+            Node page = node.findNode(Label.label("Page"), PageAttribute.id, this.getID()); // just like in the presentation of gleim
+            Node cat = node.findNode(Label.label("Page"), PageAttribute.title, category);
+            Relation rel = (Relation) page.createRelationshipTo(cat, RelTypes.isCategory);
         }
     }
-    */
 
 }

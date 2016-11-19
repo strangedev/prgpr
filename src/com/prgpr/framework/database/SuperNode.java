@@ -37,6 +37,14 @@ public class SuperNode {
         node.setProperty(property.name(), val);
     }
 
+    //@TODO: return another Type
+    public < E > Node findNode(Label label, Property property, E val){
+        TransactionManager.getTransaction(graphDb);
+        //@TODO: implement
+        return null;
+    }
+
+
     public static SuperNode getOrCreate(GraphDatabaseService graphDb, String index, int hashcode, NodeCallable callable){
         TransactionManager.getTransaction(graphDb);
         UniqueFactory<Node> factory = new UniqueFactory.UniqueNodeFactory(graphDb, index) {

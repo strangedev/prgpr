@@ -128,12 +128,12 @@ public class Main {
 
         log.info("Counted nodes in: " + (time / 1000.0) + " s");
 
-        /*
         // inserting the categories
         try ( Transaction tx = graphDb.beginTx() ) {
-            for (Node page : graphDb) {
+            for (Node node : graphDb.getAllNodes()) {
+                Page page = new Page(node);
                 page.insertCategorieLink();
             }
-        }*/
+        }
     }
 }
