@@ -3,6 +3,7 @@ package com.prgpr;
 import com.prgpr.data.Page;
 import com.prgpr.framework.database.TransactionManager;
 import com.prgpr.framework.threading.ThreadManager;
+import com.prgpr.helpers.Benchmark;
 import com.prgpr.helpers.ProducerLogger;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
@@ -89,14 +90,12 @@ public class Main {
 
         File dbf = new File("neo4j/data");
 
-        /*
         // Just for testing reasons
         if (dbf.exists()) try {
             FileUtils.deleteRecursively(dbf);
         } catch (IOException e) {
             e.printStackTrace();
         }
-        */
 
         GraphDatabaseService graphDb = new GraphDatabaseFactory().newEmbeddedDatabase(dbf);
         registerShutdownHook(graphDb);
@@ -120,8 +119,13 @@ public class Main {
         // Execute
         pageProducer.run();
 
-        try ( Transaction tx = graphDb.beginTx() ) {
-            log.info(graphDb.getAllNodes().stream().count());
-        }
+        long time = Benchmark.run(()->{
+            try ( Transaction tx = graphDb.beginTx() ) {
+                log.info(graphDb.getAllNodes().stream().count());
+            }
+        });
+
+        log.info("Counted nodes in: " + (time / 1000.0) + " s");
+
     }
 }

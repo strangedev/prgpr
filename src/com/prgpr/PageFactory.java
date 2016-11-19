@@ -26,4 +26,9 @@ public class PageFactory extends Producer<Page> {
     {
         return new Page(graphDb, id, namespaceID, title, html.toString());
     }
+
+    public static Page getPage(long id, int namespaceID, String title, String html)
+    {
+        return new Page(graphDb, id, namespaceID, title, html);
+    }
 }

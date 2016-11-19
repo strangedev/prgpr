@@ -60,7 +60,7 @@ public class ProducerLogger<T> implements Consumer<T> {
     public void consume(T consumable) {
         this.consumed++;  // count all the consumables.
 
-        if(this.consumed % 1000 == 0){
+        if(this.consumed % 500 == 0){
             Page.save();
         }
 
