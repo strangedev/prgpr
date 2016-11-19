@@ -22,7 +22,7 @@ public class CategoryLinksCommand extends Command {
     }
 
     @Override
-    public int execute(String[] args) {
+    public void execute(String[] args) {
         GraphDatabaseService graphDb = DatabaseFactory.newEmbeddedDatabase(args[0]);
 
         // inserting the categories
@@ -32,6 +32,5 @@ public class CategoryLinksCommand extends Command {
                 page.insertCategorieLink();
             }
         }
-        return 0;
     }
 }

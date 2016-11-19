@@ -32,7 +32,7 @@ public class ImportHtmlCommand extends Command {
     }
 
     @Override
-    public int execute(String[] args) {
+    public void execute(String[] args) {
         Arrays.stream(args).forEach(log::info);
 
         GraphDatabaseService graphDb = DatabaseFactory.newEmbeddedDatabase(args[0]);
@@ -54,7 +54,5 @@ public class ImportHtmlCommand extends Command {
         });
 
         log.info("Counted nodes in: " + (time / 1000.0) + " s");
-
-        return 0;
     }
 }
