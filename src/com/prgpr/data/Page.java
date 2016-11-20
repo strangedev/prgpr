@@ -26,9 +26,10 @@ public class Page {
     private static final Logger log = LogManager.getFormatterLogger(Page.class);
     private SuperNode node;
 
-    public enum PageLabel implements Label {
-        Page
-    }
+    /**
+     * Contains all Wikipedia namespaces.
+     * Page is a generic label.
+     */
 
     public enum PageAttribute implements Property
     {
@@ -49,7 +50,8 @@ public class Page {
 
     public Page(GraphDatabaseService graphDb, long id, int namespaceID, String title, String html) {
         this.node = SuperNode.getOrCreate(graphDb, "Pages", hashCode(namespaceID, title), (node) -> {
-            node.addLabel(PageLabel.Page);
+            node.addLabel(WikiNamespaces.PageLabel.Page);
+            node.addLabel(WikiNamespaces.fromID(namespaceID));
             node.setProperty(PageAttribute.articleID, id);
             node.setProperty(PageAttribute.namespaceID, namespaceID);
             node.setProperty(PageAttribute.title, title);
@@ -114,7 +116,7 @@ public class Page {
     }
 
     //@TODO: implement
-    public void insertCategorieLink() {
+    public void insertCategoryLink() {
         Set<String> categories = extractCategories(this.getHtml());
         for (String category : categories) {
             Node page = node.findNode(Label.label("Page"), PageAttribute.id, this.getID()); // just like in the presentation of gleim

@@ -1,14 +1,12 @@
 package com.prgpr.framework.database;
 
-import com.prgpr.data.Page;
-import com.sun.org.apache.xpath.internal.functions.Function;
+
 import org.neo4j.graphdb.GraphDatabaseService;
 import org.neo4j.graphdb.Label;
 import org.neo4j.graphdb.Node;
 import org.neo4j.graphdb.index.UniqueFactory;
 
 import java.util.Map;
-import java.util.concurrent.Callable;
 
 /**
  * Created by kito on 11/17/16.
@@ -39,8 +37,8 @@ public class SuperNode {
         node.setProperty(property.name(), val);
     }
 
-    //@TODO: return another Type
-    public < E > Node findNode(Label label, Property property, E val){
+    //@TODO: return another Type METATODO: what do you mean by that?
+    public <E> Node findNode(Label label, Property property, E val){
         TransactionManager.getTransaction(graphDb);
         //@TODO: implement
         return null;
