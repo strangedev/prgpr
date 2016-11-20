@@ -7,6 +7,7 @@ import com.prgpr.data.Page;
 import com.prgpr.exceptions.CommandNotFound;
 import com.prgpr.framework.command.Command;
 import com.prgpr.framework.command.CommandBroker;
+import com.prgpr.framework.command.CommandBrokerFactory;
 import com.prgpr.framework.database.TransactionManager;
 import com.prgpr.framework.threading.ThreadManager;
 import com.prgpr.helpers.Benchmark;
@@ -44,17 +45,19 @@ public class Main {
      */
     public static void main(String[] args) {
 
+        CommandBroker commandBroker = CommandBrokerFactory.getCommandBroker();
+
         Command help = new HelpCommand();
 
-        CommandBroker.register(new Command[] {
+        commandBroker.register(new Command[] {
                 help,
                 new ImportHtmlCommand(),
                 new CategoryLinksCommand()
         });
 
         try {
-            CommandBroker.setDefaultCommand(help.getName());
-            CommandBroker.process(args);
+            commandBroker.setDefaultCommand(help.getName());
+            commandBroker.process(args);
         } catch (CommandNotFound commandNotFound) {
             commandNotFound.printStackTrace();
         }

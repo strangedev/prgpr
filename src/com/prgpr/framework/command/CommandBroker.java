@@ -12,26 +12,26 @@ import java.util.List;
  */
 public class CommandBroker {
 
-    private static HashMap<String, Command> commandMap = new HashMap<>();
-    private static Command defaultCommand;
+    private HashMap<String, Command> commandMap = new HashMap<>();
+    private Command defaultCommand;
 
-    public static void register(Command command){
+    public void register(Command command){
         commandMap.put(command.getName().toLowerCase(), command);
     }
 
-    public static void register(Command[] commands){
-        Arrays.stream(commands).forEach(CommandBroker::register);
+    public void register(Command[] commands){
+        Arrays.stream(commands).forEach(this::register);
     }
 
-    public static void setDefaultCommand(String name) throws CommandNotFound {
+    public void setDefaultCommand(String name) throws CommandNotFound {
         defaultCommand = getCommandByName(name);
     }
 
-    public static Collection<Command> getRegisteredCommands(){
+    public Collection<Command> getRegisteredCommands(){
         return commandMap.values();
     }
 
-    public static void process(String[] args) throws CommandNotFound {
+    public void process(String[] args) throws CommandNotFound {
         Command command = defaultCommand;
 
         if(args.length == 0 && defaultCommand == null){
@@ -57,7 +57,7 @@ public class CommandBroker {
         command.execute(args);
     }
 
-    private static Command getCommandByName(String name) throws CommandNotFound {
+    private Command getCommandByName(String name) throws CommandNotFound {
         Command command = commandMap.get(name.toLowerCase());
 
         if(command == null){
