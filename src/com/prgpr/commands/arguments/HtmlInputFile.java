@@ -12,6 +12,11 @@ import java.io.File;
 public class HtmlInputFile extends CommandArgument {
 
     @Override
+    public String getName() {
+        return "HTML-Input-File";
+    }
+
+    @Override
     public void test(String arg) throws InvalidArgument {
         File f = new File(arg);
 

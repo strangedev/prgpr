@@ -1,6 +1,7 @@
 package com.prgpr.commands;
 
 import com.prgpr.framework.command.Command;
+import com.prgpr.framework.command.CommandArgument;
 import com.prgpr.framework.command.CommandBroker;
 import com.prgpr.framework.command.CommandBrokerFactory;
 
@@ -11,6 +12,16 @@ public class HelpCommand extends Command {
     @Override
     public String getName() {
         return "help";
+    }
+
+    @Override
+    public String getDescription() {
+        return null;
+    }
+
+    @Override
+    public CommandArgument[] getArguments() {
+        return null;
     }
 
     @Override

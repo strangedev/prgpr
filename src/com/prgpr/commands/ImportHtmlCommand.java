@@ -24,7 +24,7 @@ public class ImportHtmlCommand extends Command {
 
     private static final Logger log = LogManager.getFormatterLogger(Command.class);
 
-    protected final CommandArgument[] arguments = new CommandArgument[]{
+    protected static final CommandArgument[] arguments = new CommandArgument[]{
             new DatabaseDirectory(),
             new HtmlInputFile()
     };
@@ -35,8 +35,13 @@ public class ImportHtmlCommand extends Command {
     }
 
     @Override
+    public CommandArgument[] getArguments() {
+        return arguments;
+    }
+
+    @Override
     public String getDescription() {
-        return "Imports an html file into the database.";
+        return null;
     }
 
     @Override

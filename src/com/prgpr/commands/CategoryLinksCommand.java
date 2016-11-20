@@ -27,7 +27,12 @@ public class CategoryLinksCommand extends Command {
 
     @Override
     public String getDescription() {
-        return "This is an example description.";
+        return null;
+    }
+
+    @Override
+    public CommandArgument[] getArguments() {
+        return arguments;
     }
 
     @Override

@@ -8,6 +8,7 @@ import com.prgpr.exceptions.InvalidArgument;
 public abstract class CommandArgument {
     public String value;
 
+    public abstract String getName();
     public abstract void test(String arg) throws InvalidArgument;
 
     public void set(String arg) throws InvalidArgument {

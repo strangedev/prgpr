@@ -9,6 +9,11 @@ import com.prgpr.framework.command.CommandArgument;
 public class DatabaseDirectory extends CommandArgument {
 
     @Override
+    public String getName() {
+        return "DB-Directory";
+    }
+
+    @Override
     public void test(String arg) {}
 
 }
