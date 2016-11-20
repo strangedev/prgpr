@@ -3,26 +3,13 @@ package com.prgpr;
 import com.prgpr.commands.CategoryLinksCommand;
 import com.prgpr.commands.HelpCommand;
 import com.prgpr.commands.ImportHtmlCommand;
-import com.prgpr.data.Page;
-import com.prgpr.exceptions.CommandNotFound;
+import com.prgpr.exceptions.CommandNotFoundException;
+import com.prgpr.exceptions.InvalidArgumentsException;
 import com.prgpr.framework.command.Command;
 import com.prgpr.framework.command.CommandBroker;
 import com.prgpr.framework.command.CommandBrokerFactory;
-import com.prgpr.framework.database.TransactionManager;
-import com.prgpr.framework.threading.ThreadManager;
-import com.prgpr.helpers.Benchmark;
-import com.prgpr.helpers.ProducerLogger;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
-import org.neo4j.graphdb.GraphDatabaseService;
-import org.neo4j.graphdb.Node;
-import org.neo4j.graphdb.Transaction;
-import org.neo4j.graphdb.factory.GraphDatabaseFactory;
-import org.neo4j.io.fs.FileUtils;
-
-import java.io.File;
-import java.io.IOException;
-import java.util.List;
 
 /**
  * @author Elizaveta Kovalevskaya
@@ -58,8 +45,8 @@ public class Main {
         try {
             commandBroker.setDefaultCommand(help.getName());
             commandBroker.process(args);
-        } catch (CommandNotFound commandNotFound) {
-            commandNotFound.printStackTrace();
+        } catch (CommandNotFoundException | InvalidArgumentsException e) {
+            e.printStackTrace();
         }
     }
 }

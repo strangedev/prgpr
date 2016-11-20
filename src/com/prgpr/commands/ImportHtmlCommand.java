@@ -3,6 +3,7 @@ package com.prgpr.commands;
 import com.prgpr.PageFactory;
 import com.prgpr.PageProducer;
 import com.prgpr.data.Page;
+import com.prgpr.exceptions.InvalidArgumentsException;
 import com.prgpr.framework.command.Command;
 import com.prgpr.framework.database.DatabaseFactory;
 import com.prgpr.helpers.Benchmark;
@@ -12,14 +13,15 @@ import org.apache.logging.log4j.Logger;
 import org.neo4j.graphdb.GraphDatabaseService;
 import org.neo4j.graphdb.Transaction;
 
-import java.util.Arrays;
-
 /**
  * Created by kito on 19.11.16.
  */
 public class ImportHtmlCommand extends Command {
 
     private static final Logger log = LogManager.getFormatterLogger(Command.class);
+
+    private String dbPath;
+    private String infilePath;
 
     @Override
     public String getName() {
@@ -32,13 +34,21 @@ public class ImportHtmlCommand extends Command {
     }
 
     @Override
-    public void execute(String[] args) {
-        Arrays.stream(args).forEach(log::info);
+    public void handleArguments(String[] args) throws InvalidArgumentsException {
+        if(args.length < 2){
+            throw new InvalidArgumentsException();
+        }
 
-        GraphDatabaseService graphDb = DatabaseFactory.newEmbeddedDatabase(args[0]);
+        dbPath = args[0];
+        infilePath = args[1];
+    }
+
+    @Override
+    public void run() {
+        GraphDatabaseService graphDb = DatabaseFactory.newEmbeddedDatabase(dbPath);
         PageFactory.setDatabase(graphDb);
 
-        PageProducer pageProducer = new PageProducer(args[1]);
+        PageProducer pageProducer = new PageProducer(infilePath);
 
         // Logging units
         ProducerLogger<Page> pageFactoryLogger = new ProducerLogger<>(true);

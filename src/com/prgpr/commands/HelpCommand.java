@@ -14,16 +14,17 @@ public class HelpCommand extends Command {
     }
 
     @Override
-    public void execute(String[] args) {
+    public void handleArguments(String[] args) {
         if(args.length > 0)
-            System.out.println("Executed command: " + args[0]);
+            System.out.println("Command " + args[0] + " does not exist.");
+    }
 
+    @Override
+    public void run() {
         CommandBroker commandBroker = CommandBrokerFactory.getCommandBroker();
 
         commandBroker.getRegisteredCommands().forEach(
-                (command) -> {
-                    System.out.println(command.getName() + " - " + command.getDescription());
-                }
+                (command) -> System.out.println(command.getFullDescription())
         );
     }
 }
