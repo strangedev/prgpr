@@ -47,7 +47,7 @@ public class CategoryLinksCommand extends Command {
         try ( Transaction tx = graphDb.beginTx() ) {
             for (Node node : graphDb.getAllNodes()) {
                 Page page = new Page(node);
-                page.insertCategorieLink();
+                page.insertCategoryLink();
             }
         }
     }
