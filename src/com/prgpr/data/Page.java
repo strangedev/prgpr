@@ -41,7 +41,7 @@ public class Page {
     }
 
     public enum RelTypes implements RelationshipType {
-        isCategory
+        categoryLink
     } // defines the Relationship category
 
     public Page(Node node){
@@ -121,7 +121,7 @@ public class Page {
         for (String category : categories) {
             Node page = node.findNode(Label.label("Page"), PageAttribute.id, this.getID()); // just like in the presentation of gleim
             Node cat = node.findNode(Label.label("Page"), PageAttribute.title, category);
-            Relation rel = (Relation) page.createRelationshipTo(cat, RelTypes.isCategory);
+            Relation rel = (Relation) page.createRelationshipTo(cat, RelTypes.categoryLink);
         }
     }
 

@@ -41,6 +41,7 @@ public class SuperNode {
     public <E> Node findNode(Label label, Property property, E val){
         TransactionManager.getTransaction(graphDb);
         //@TODO: implement
+
         return null;
     }
 
