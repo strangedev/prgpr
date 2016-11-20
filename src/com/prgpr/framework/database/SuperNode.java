@@ -1,12 +1,14 @@
 package com.prgpr.framework.database;
 
 import com.prgpr.data.Page;
+import com.sun.org.apache.xpath.internal.functions.Function;
 import org.neo4j.graphdb.GraphDatabaseService;
 import org.neo4j.graphdb.Label;
 import org.neo4j.graphdb.Node;
 import org.neo4j.graphdb.index.UniqueFactory;
 
 import java.util.Map;
+import java.util.concurrent.Callable;
 
 /**
  * Created by kito on 11/17/16.
@@ -32,7 +34,7 @@ public class SuperNode {
         return node.getProperty(property.name());
     }
 
-    public < E > void setProperty(Property property, E val){
+    public <E> void setProperty(Property property, E val){
         TransactionManager.getTransaction(graphDb);
         node.setProperty(property.name(), val);
     }
@@ -45,23 +47,23 @@ public class SuperNode {
     }
 
 
-    public static SuperNode getOrCreate(GraphDatabaseService graphDb, String index, int hashcode, NodeCallable callable){
+    public static SuperNode getOrCreate(GraphDatabaseService graphDb, String index, int hashcode, Callback<SuperNode> callback){
         TransactionManager.getTransaction(graphDb);
         UniqueFactory<Node> factory = new UniqueFactory.UniqueNodeFactory(graphDb, index) {
             @Override
             protected void initialize(Node created, Map<String, Object> properties) {
                 created.setProperty("id", properties.get("id"));
-                new SuperNode(created).update(callable);
+                new SuperNode(created).update(callback);
             }
         };
 
         return new SuperNode(factory.getOrCreate("id", hashcode));
     }
 
-    public void update(NodeCallable run){
+    public void update(Callback<SuperNode> callback){
         try {
             TransactionManager.getTransaction(graphDb);
-            run.call(this);
+            callback.call(this);
         } catch (Exception e) {
             e.printStackTrace();
         }
