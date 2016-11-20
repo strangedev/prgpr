@@ -15,14 +15,22 @@ public class HelpCommand extends Command {
 
     @Override
     public void handleArguments(String[] args) {
-        if(args.length > 0)
-            System.out.println("Command " + args[0] + " does not exist.");
+        if(args.length == 0)
+            return;
+
+        System.out.println("Failed to execute command: '" + args[0] + "'");
+        System.out.println("Reason: " + args[1]);
+        System.out.println('\t' + args[2]);
+        System.out.println();
     }
 
     @Override
     public void run() {
         CommandBroker commandBroker = CommandBrokerFactory.getCommandBroker();
 
+        System.out.println("-------------------------------------------------");
+        System.out.println("Available Commands");
+        System.out.println("-------------------------------------------------");
         commandBroker.getRegisteredCommands().forEach(
                 (command) -> System.out.println(command.getFullDescription())
         );

@@ -3,8 +3,9 @@ package com.prgpr;
 import com.prgpr.commands.CategoryLinksCommand;
 import com.prgpr.commands.HelpCommand;
 import com.prgpr.commands.ImportHtmlCommand;
-import com.prgpr.exceptions.CommandNotFoundException;
-import com.prgpr.exceptions.InvalidArgumentsException;
+import com.prgpr.exceptions.CommandNotFound;
+import com.prgpr.exceptions.InvalidArgument;
+import com.prgpr.exceptions.InvalidNumberOfArguments;
 import com.prgpr.framework.command.Command;
 import com.prgpr.framework.command.CommandBroker;
 import com.prgpr.framework.command.CommandBrokerFactory;
@@ -45,7 +46,7 @@ public class Main {
         try {
             commandBroker.setDefaultCommand(help.getName());
             commandBroker.process(args);
-        } catch (CommandNotFoundException | InvalidArgumentsException e) {
+        } catch (CommandNotFound | InvalidNumberOfArguments | InvalidArgument e) {
             e.printStackTrace();
         }
     }

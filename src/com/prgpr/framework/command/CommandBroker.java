@@ -1,7 +1,8 @@
 package com.prgpr.framework.command;
 
-import com.prgpr.exceptions.CommandNotFoundException;
-import com.prgpr.exceptions.InvalidArgumentsException;
+import com.prgpr.exceptions.CommandNotFound;
+import com.prgpr.exceptions.InvalidArgument;
+import com.prgpr.exceptions.InvalidNumberOfArguments;
 
 import java.util.Arrays;
 import java.util.Collection;
@@ -23,7 +24,7 @@ public class CommandBroker {
         Arrays.stream(commands).forEach(this::register);
     }
 
-    public void setDefaultCommand(String name) throws CommandNotFoundException {
+    public void setDefaultCommand(String name) throws CommandNotFound {
         defaultCommand = getCommandByName(name);
     }
 
@@ -31,7 +32,7 @@ public class CommandBroker {
         return commandMap.values();
     }
 
-    public void process(String[] args) throws CommandNotFoundException, InvalidArgumentsException {
+    public void process(String[] args) throws CommandNotFound, InvalidNumberOfArguments, InvalidArgument {
         if(args.length == 0){
             executeDefaultCommand(args);
             return;
@@ -40,24 +41,29 @@ public class CommandBroker {
         try {
             Command command = getCommandByName(args[0]);
             command.execute(Arrays.copyOfRange(args, 1, args.length));
-        } catch (CommandNotFoundException | InvalidArgumentsException e){
+        } catch (CommandNotFound | InvalidNumberOfArguments | InvalidArgument e){
+            args = new String[] {
+                    Arrays.stream(args).reduce((s1, s2) -> s1 + " " + s2).orElse(""),
+                    e.getClass().getSimpleName(),
+                    e.getMessage()
+            };
             executeDefaultCommand(args);
         }
     }
 
-    private void executeDefaultCommand(String[] args) throws InvalidArgumentsException, CommandNotFoundException {
+    private void executeDefaultCommand(String[] args) throws InvalidNumberOfArguments, CommandNotFound, InvalidArgument {
         if(defaultCommand == null){
-            throw new CommandNotFoundException();
+            throw new CommandNotFound();
         }
 
         defaultCommand.execute(args);
     }
 
-    private Command getCommandByName(String name) throws CommandNotFoundException {
+    private Command getCommandByName(String name) throws CommandNotFound {
         Command command = commandMap.get(name.toLowerCase());
 
         if(command == null){
-            throw new CommandNotFoundException();
+            throw new CommandNotFound();
         }
 
         return command;
