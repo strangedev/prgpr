@@ -41,7 +41,7 @@ public class ImportHtmlCommand extends Command {
 
     @Override
     public String getDescription() {
-        return null;
+        return "Imports the HTML-File into the database.";
     }
 
     @Override

@@ -10,13 +10,16 @@ import com.prgpr.framework.database.DatabaseFactory;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 import org.neo4j.graphdb.GraphDatabaseService;
-import org.neo4j.graphdb.Node;
-import org.neo4j.graphdb.Transaction;
+import org.neo4j.io.fs.FileUtils;
+
+import java.io.File;
+import java.io.IOException;
 
 /**
- * Created by kito on 19.11.16.
+ * Created by lisa on 11/21/16.
  */
-public class CategoryLinksCommand extends Command {
+public class ResetDBCommand extends Command {
+
 
     private static final Logger log = LogManager.getFormatterLogger(Page.class);
 
@@ -26,12 +29,12 @@ public class CategoryLinksCommand extends Command {
 
     @Override
     public String getName() {
-        return "categorylinks";
+        return "reset";
     }
 
     @Override
     public String getDescription() {
-        return "Inserts the links of the categories.";
+        return "Resets the database in the given argument and generates a new empty database.";
     }
 
     @Override
@@ -41,7 +44,7 @@ public class CategoryLinksCommand extends Command {
 
     @Override
     public void handleArguments(String[] args) throws InvalidNumberOfArguments, InvalidArgument {
-        if(args.length < 1){
+        if (args.length != 1) {
             throw new InvalidNumberOfArguments();
         }
 
@@ -50,17 +53,14 @@ public class CategoryLinksCommand extends Command {
 
     @Override
     public void run() {
-        GraphDatabaseService graphDb = DatabaseFactory.newEmbeddedDatabase(arguments[0].get());
-
-        // inserting the categories
-        try ( Transaction tx = graphDb.beginTx() ) {
-            for (Node node : graphDb.getAllNodes()) {
-                Page page = new Page(node);
-                page.insertCategoryLink();
+        File dbf = new File(arguments[0].get());
+        if (dbf.exists()) {
+            try {
+                FileUtils.deleteRecursively(dbf);
+                log.info("Database reset finished.");
+            } catch (IOException e) {
+                e.printStackTrace();
             }
-            tx.success();
-        } catch (Exception e) {
-            log.error(e.getMessage());
         }
     }
 }
