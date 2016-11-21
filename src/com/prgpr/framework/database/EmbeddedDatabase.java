@@ -14,4 +14,5 @@ public interface EmbeddedDatabase {
     Element createElement(String index, int id,  Callback<Element> callback);
     Stream<Neo4jElement> getAllNodes();
     Stream<Element> findElements(Label label, PropertyValuePair property);
+    TraversalProvider getTraversalProvider();
 }

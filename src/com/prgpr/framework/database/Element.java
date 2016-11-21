@@ -21,4 +21,5 @@ public interface Element {
     void update(Callback<Element> callback);
 
     EmbeddedDatabase getDatabase();
+
 }

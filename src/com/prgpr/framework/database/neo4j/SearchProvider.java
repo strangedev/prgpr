@@ -1,7 +1,6 @@
 package com.prgpr.framework.database.neo4j;
 
 import com.prgpr.framework.database.*;
-import org.neo4j.graphdb.RelationshipType;
 
 import java.util.*;
 
@@ -78,13 +77,15 @@ public class SearchProvider {
     public static Set<Element> findImmediateOutgoing(
             Neo4jElement start,
             Set<Label> nodeLabels,
-            Set<RelationshipType> relTypes,
+            List<RelationshipType> relTypes,
             Set<PropertyValuePair> properties
     ){
-        start.getDatabase().transaction();
+        EmbeddedDatabase db = start.getDatabase();
+        db.transaction();
         Set<Element> ret = new LinkedHashSet<>();
 
-        TraversalProvider.traverseOutgoingUnique(start, relTypes)
+        db.getTraversalProvider()
+                .traverseIncomingUnique(start, relTypes)
                 .filter(n -> NodePredicates.matchesAllLabels(n, nodeLabels))
                 .filter(n -> NodePredicates.matchesAllProperties(n, properties))
                 .forEach(ret::add);
@@ -95,13 +96,15 @@ public class SearchProvider {
     public static Set<Element> findAnyImmediateIncoming(
             Neo4jElement start,
             Set<Label> nodeLabels,
-            Set<RelationshipType> relTypes,
+            List<RelationshipType> relTypes,
             Set<PropertyValuePair> properties
     ){
-        start.getDatabase().transaction();
+        EmbeddedDatabase db = start.getDatabase();
+        db.transaction();
         Set<Element> ret = new LinkedHashSet<>();
 
-        TraversalProvider.traverseIncomingUnique(start, relTypes)
+        db.getTraversalProvider()
+                .traverseIncomingUnique(start, relTypes)
                 .filter(n -> NodePredicates.matchesAnyLabel(n, nodeLabels))
                 .filter(n -> NodePredicates.matchesAllProperties(n, properties))
                 .forEach(ret::add);
@@ -115,10 +118,12 @@ public class SearchProvider {
             RelationshipType relType,
             Set<PropertyValuePair> properties
     ){
-        start.getDatabase().transaction();
+        EmbeddedDatabase db = start.getDatabase();
+        db.transaction();
         Set<Element> ret = new LinkedHashSet<>();
 
-        TraversalProvider.traverseOutgoingUnique(start, relType)
+        db.getTraversalProvider()
+                .traverseOutgoingUnique(start, relType)
                 .filter(n -> NodePredicates.matchesLabel(n, nodeLabel))
                 .filter(n -> NodePredicates.matchesAllProperties(n, properties))
                 .forEach(ret::add);
@@ -132,10 +137,12 @@ public class SearchProvider {
             RelationshipType relType,
             Set<PropertyValuePair> properties
     ){
-        start.getDatabase().transaction();
+        EmbeddedDatabase db = start.getDatabase();
+        db.transaction();
         Set<Element> ret = new LinkedHashSet<>();
 
-        TraversalProvider.traverseIncomingUnique(start, relType)
+        db.getTraversalProvider()
+                .traverseIncomingUnique(start, relType)
                 .filter(n -> NodePredicates.matchesLabel(n, nodeLabel))
                 .filter(n -> NodePredicates.matchesAllProperties(n, properties))
                 .forEach(ret::add);
@@ -149,10 +156,12 @@ public class SearchProvider {
             RelationshipType relType,
             PropertyValuePair property
     ){
-        start.getDatabase().transaction();
+        EmbeddedDatabase db = start.getDatabase();
+        db.transaction();
         Set<Element> ret = new LinkedHashSet<>();
 
-        TraversalProvider.traverseOutgoingUnique(start, relType)
+        db.getTraversalProvider()
+                .traverseOutgoingUnique(start, relType)
                 .filter(n -> NodePredicates.matchesLabel(n, nodeLabel))
                 .filter(n -> NodePredicates.matchesProperty(n, property))
                 .forEach(ret::add);
@@ -161,15 +170,17 @@ public class SearchProvider {
     }
 
     public static Set<Element> findAnyImmediateIncoming(
-            Neo4jElement start,
+            Element start,
             Label nodeLabel,
             RelationshipType relType,
             PropertyValuePair property
     ){
-        start.getDatabase().transaction();
+        EmbeddedDatabase db = start.getDatabase();
+        db.transaction();
         Set<Element> ret = new LinkedHashSet<>();
 
-        TraversalProvider.traverseIncomingUnique(start, relType)
+        db.getTraversalProvider()
+                .traverseIncomingUnique(start, relType)
                 .filter(n -> NodePredicates.matchesLabel(n, nodeLabel))
                 .filter(n -> NodePredicates.matchesProperty(n, property))
                 .forEach(ret::add);

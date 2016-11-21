@@ -15,12 +15,14 @@ import java.util.stream.Stream;
  */
 public class Neo4jEmbeddedDatabase implements EmbeddedDatabase {
 
+    private Neo4jTraversalProvider traversalProvider;
     private GraphDatabaseService graphDb;
 
     public Neo4jEmbeddedDatabase() {}
 
     public Neo4jEmbeddedDatabase(GraphDatabaseService db) {
         this.graphDb = db;
+        this.traversalProvider = new Neo4jTraversalProvider(db);
     }
 
     private static void registerShutdownHook(final GraphDatabaseService graphDb )
@@ -44,7 +46,13 @@ public class Neo4jEmbeddedDatabase implements EmbeddedDatabase {
     public void create(String path) {
         File dbf = new File(path);
         graphDb = new GraphDatabaseFactory().newEmbeddedDatabase(dbf);
+        traversalProvider = new Neo4jTraversalProvider(graphDb);
         registerShutdownHook(graphDb);
+    }
+
+    @Override
+    public TraversalProvider getTraversalProvider() {
+        return this.traversalProvider;
     }
 
     @Override
