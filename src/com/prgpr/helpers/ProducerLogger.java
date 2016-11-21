@@ -1,5 +1,6 @@
 package com.prgpr.helpers;
 
+import com.prgpr.PageFactory;
 import com.prgpr.data.Page;
 import com.prgpr.framework.consumer.Consumer;
 import com.prgpr.framework.consumer.Producer;
@@ -61,7 +62,7 @@ public class ProducerLogger<T> implements Consumer<T> {
         this.consumed++;  // count all the consumables.
 
         if(this.consumed % 500 == 0){
-            Page.save();
+            PageFactory.commit();
         }
 
         long timeNow = System.currentTimeMillis();
@@ -100,7 +101,7 @@ public class ProducerLogger<T> implements Consumer<T> {
      */
     @Override
     public void onUnsubscribed(Producer<T> producer) {
-        Page.save();
+        PageFactory.commit();
 
         LongAdder adder = new LongAdder();
         int numConsumablesPerSecond = consumablesPerSecond.size();

@@ -6,10 +6,8 @@ import com.prgpr.exceptions.InvalidArgument;
 import com.prgpr.exceptions.InvalidNumberOfArguments;
 import com.prgpr.framework.command.Command;
 import com.prgpr.framework.command.CommandArgument;
-import com.prgpr.framework.database.DatabaseFactory;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
-import org.neo4j.graphdb.GraphDatabaseService;
 import org.neo4j.io.fs.FileUtils;
 
 import java.io.File;

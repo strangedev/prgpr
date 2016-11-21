@@ -1,4 +1,4 @@
-package com.prgpr.framework.database;
+package com.prgpr.framework.database.neo4j;
 
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
@@ -11,7 +11,7 @@ import java.util.HashMap;
  * Created by kito on 18.11.16.
  */
 public class TransactionManager {
-    private static final Logger log = LogManager.getFormatterLogger(SuperNode.class);
+    private static final Logger log = LogManager.getFormatterLogger(Neo4jElement.class);
 
     private static final HashMap<GraphDatabaseService, Transaction> transactions = new HashMap<>();
 

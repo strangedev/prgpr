@@ -1,5 +1,6 @@
-package com.prgpr.framework.database;
+package com.prgpr.framework.database.neo4j;
 
+import com.prgpr.framework.database.PropertyValuePair;
 import org.neo4j.graphdb.*;
 import org.neo4j.graphdb.traversal.Evaluators;
 import org.neo4j.graphdb.traversal.TraversalDescription;
@@ -48,7 +49,7 @@ public class SearchProvider {
         return ret;
     }
 
-    //public static Optional<Node> findNode(){return new Node()}
+    //public static Optional<Element> findNode(){return new Element()}
 
     public static Set<Node> findImmediateOutgoing(
             GraphDatabaseService db,

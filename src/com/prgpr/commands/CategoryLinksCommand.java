@@ -6,12 +6,17 @@ import com.prgpr.exceptions.InvalidArgument;
 import com.prgpr.exceptions.InvalidNumberOfArguments;
 import com.prgpr.framework.command.Command;
 import com.prgpr.framework.command.CommandArgument;
-import com.prgpr.framework.database.DatabaseFactory;
+import com.prgpr.framework.database.neo4j.Neo4jElement;
+import com.prgpr.framework.database.neo4j.Neo4jEmbeddedDatabase;
+import com.prgpr.framework.database.neo4j.Neo4jEmbeddedDatabaseFactory;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 import org.neo4j.graphdb.GraphDatabaseService;
 import org.neo4j.graphdb.Node;
 import org.neo4j.graphdb.Transaction;
+import org.neo4j.graphdb.factory.GraphDatabaseFactory;
+
+import java.io.File;
 
 /**
  * Created by kito on 19.11.16.
@@ -50,12 +55,14 @@ public class CategoryLinksCommand extends Command {
 
     @Override
     public void run() {
-        GraphDatabaseService graphDb = DatabaseFactory.newEmbeddedDatabase(arguments[0].get());
+        File f = new File(arguments[0].get());
+        GraphDatabaseService db = new GraphDatabaseFactory().newEmbeddedDatabase(f);
+        Neo4jEmbeddedDatabase graphDb = Neo4jEmbeddedDatabaseFactory.newEmbeddedDatabase(db);
 
         // inserting the categories
-        try ( Transaction tx = graphDb.beginTx() ) {
-            for (Node node : graphDb.getAllNodes()) {
-                Page page = new Page(node);
+        try ( Transaction tx = db.beginTx() ) {
+            for (Node node : db.getAllNodes()) {
+                Page page = new Page(new Neo4jElement(graphDb, node));
                 page.insertCategoryLink();
             }
             tx.success();

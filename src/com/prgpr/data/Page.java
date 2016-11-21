@@ -1,15 +1,12 @@
 package com.prgpr.data;
 
+import com.prgpr.framework.database.Element;
+import com.prgpr.framework.database.EmbeddedDatabase;
 import com.prgpr.framework.database.Property;
-import com.prgpr.framework.database.SuperNode;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
-import org.neo4j.graphdb.GraphDatabaseService;
-import org.neo4j.graphdb.Label;
-import org.neo4j.graphdb.Node;
 import org.neo4j.graphdb.RelationshipType;
 
-import javax.management.relation.Relation;
 import java.util.Set;
 
 import static com.prgpr.LinkExtraction.extractCategories;
@@ -24,7 +21,7 @@ public class Page {
 
 
     private static final Logger log = LogManager.getFormatterLogger(Page.class);
-    private SuperNode node;
+    private Element node;
 
     /**
      * Contains all Wikipedia namespaces.
@@ -44,12 +41,12 @@ public class Page {
         categoryLink
     } // defines the Relationship category
 
-    public Page(Node node){
-        this.node = new SuperNode(node);
+    public Page(Element node) {
+        this.node = node;
     }
 
-    public Page(GraphDatabaseService graphDb, long id, int namespaceID, String title, String html) {
-        this.node = SuperNode.getOrCreate(graphDb, "Pages", hashCode(namespaceID, title), (node) -> {
+    public Page(EmbeddedDatabase db, long id, int namespaceID, String title, String html) {
+        this.node = db.createElement("Pages", hashCode(namespaceID, title), (node) -> {
             node.addLabel(WikiNamespaces.PageLabel.Page);
             node.addLabel(WikiNamespaces.fromID(namespaceID));
             node.setProperty(PageAttribute.articleID, id);
@@ -87,10 +84,6 @@ public class Page {
         return (String)node.getProperty(PageAttribute.html);
     }
 
-    public static void save(){
-        SuperNode.save();
-    }
-
     private static int hashCode(int namespaceID, String title) {
         int result = namespaceID;
         result = 31 * result + (title != null ? title.hashCode() : 0);
@@ -119,9 +112,9 @@ public class Page {
     public void insertCategoryLink() {
         Set<String> categories = extractCategories(this.getHtml());
         for (String category : categories) {
-            Node page = node.findNode(Label.label("Page"), PageAttribute.id, this.getID()); // just like in the presentation of gleim
-            Node cat = node.findNode(Label.label("Page"), PageAttribute.title, category);
-            Relation rel = (Relation) page.createRelationshipTo(cat, RelTypes.categoryLink);
+            Element page = node.findNode(WikiNamespaces.PageLabel.Page, PageAttribute.id, this.getID()); // just like in the presentation of gleim
+            Element cat = node.findNode(WikiNamespaces.PageLabel.Page, PageAttribute.title, category);
+            //Relation rel = (Relation) page.createRelationshipTo(cat, RelTypes.categoryLink);
         }
     }
 

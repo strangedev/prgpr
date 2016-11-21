@@ -1,6 +1,6 @@
 package com.prgpr.data;
 
-import org.neo4j.graphdb.Label;
+import com.prgpr.framework.database.Label;
 
 /**
  * Created by strange on 11/20/16.
