@@ -1,11 +1,11 @@
 package com.prgpr.framework.database.neo4j;
 
 
-import com.prgpr.framework.database.Callback;
-import com.prgpr.framework.database.Element;
-import com.prgpr.framework.database.Label;
-import com.prgpr.framework.database.Property;
+import com.prgpr.framework.database.*;
 import org.neo4j.graphdb.Node;
+
+import java.util.stream.Stream;
+import java.util.stream.StreamSupport;
 
 /**
  * Created by kito on 11/17/16.
@@ -13,6 +13,7 @@ import org.neo4j.graphdb.Node;
 public class Neo4jElement implements Element {
 
     private Neo4jEmbeddedDatabase db;
+
     private Node node;
 
     public Neo4jElement(Neo4jEmbeddedDatabase db, Node node){
@@ -20,9 +21,18 @@ public class Neo4jElement implements Element {
         this.node = node;
     }
 
+    public Node getNode() {
+        return node;
+    }
+
     public void addLabel(Label label){
         db.transaction();
         node.addLabel(org.neo4j.graphdb.Label.label(label.name()));
+    }
+
+    public Stream<Label> getLabels() {
+        return StreamSupport.stream(node.getLabels().spliterator(), false)
+                .map(label -> (Label)label);
     }
 
     public Object getProperty(Property property){
@@ -43,6 +53,11 @@ public class Neo4jElement implements Element {
         } catch (Exception e) {
             e.printStackTrace();
         }
+    }
+
+    @Override
+    public Neo4jEmbeddedDatabase getDatabase() {
+        return db;
     }
 
     //@TODO: return another Type METATODO: what do you mean by that?

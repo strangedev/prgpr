@@ -1,6 +1,7 @@
-package com.prgpr.framework.database;
+package com.prgpr.framework.database.neo4j;
 
-import org.neo4j.graphdb.*;
+import com.prgpr.framework.database.*;
+import org.neo4j.graphdb.RelationshipType;
 
 import java.util.*;
 
@@ -12,16 +13,15 @@ import java.util.*;
  */
 public class SearchProvider {
 
-    public static Set<Node> findAll(
-            GraphDatabaseService db,
+    public static Set<Element> findAll(
+            EmbeddedDatabase db,
             Set<Label> labels,
             Set<PropertyValuePair> properties){
 
-        TransactionManager.getTransaction(db);
-        Set<Node> ret = new LinkedHashSet<>();
+        db.transaction();
+        Set<Element> ret = new LinkedHashSet<>();
 
         db.getAllNodes()
-                .stream()
                 .filter(n -> NodePredicates.matchesAllLabels(n, labels))
                 .filter(n -> NodePredicates.matchesAllProperties(n, properties))
                 .forEach(ret::add);
@@ -29,16 +29,15 @@ public class SearchProvider {
         return ret;
     }
 
-    public static Set<Node> findAny(
-            GraphDatabaseService db,
+    public static Set<Element> findAny(
+            EmbeddedDatabase db,
             Set<Label> labels,
             Set<PropertyValuePair> properties){
 
-        TransactionManager.getTransaction(db);
-        Set<Node> ret = new LinkedHashSet<>();
+        db.transaction();
+        Set<Element> ret = new LinkedHashSet<>();
 
         db.getAllNodes()
-                .stream()
                 .filter(n -> NodePredicates.matchesAnyLabel(n, labels))
                 .filter(n -> NodePredicates.matchesAllProperties(n, properties))
                 .forEach(ret::add);
@@ -46,16 +45,15 @@ public class SearchProvider {
         return ret;
     }
 
-    public static Set<Node> findNode(
-            GraphDatabaseService db,
+    public static Set<Element> findNode(
+            EmbeddedDatabase db,
             Label label,
             Set<PropertyValuePair> properties){
 
-        TransactionManager.getTransaction(db);
-        Set<Node> ret = new LinkedHashSet<>();
+        db.transaction();
+        Set<Element> ret = new LinkedHashSet<>();
 
         db.getAllNodes()
-                .stream()
                 .filter(n -> NodePredicates.matchesLabel(n, label))
                 .filter(n -> NodePredicates.matchesAllProperties(n, properties))
                 .forEach(ret::add);
@@ -63,29 +61,28 @@ public class SearchProvider {
         return ret;
     }
 
-    public static Set<Node> findNode(
-            GraphDatabaseService db,
+    public static Set<Element> findNode(
+            EmbeddedDatabase db,
             Label label,
             PropertyValuePair property){
 
-        TransactionManager.getTransaction(db);
-        Set<Node> ret = new LinkedHashSet<>();
+        db.transaction();
+        Set<Element> ret = new LinkedHashSet<>();
 
-        db.findNodes(label, property.property.name(), property.value)
-                .stream()
+        db.findElements(label, property)
                 .forEach(ret::add);
 
         return ret;
     }
 
-    public static Set<Node> findImmediateOutgoing(
-            Node start,
+    public static Set<Element> findImmediateOutgoing(
+            Neo4jElement start,
             Set<Label> nodeLabels,
             Set<RelationshipType> relTypes,
             Set<PropertyValuePair> properties
     ){
-        TransactionManager.getTransaction(start.getGraphDatabase());
-        Set<Node> ret = new LinkedHashSet<>();
+        start.getDatabase().transaction();
+        Set<Element> ret = new LinkedHashSet<>();
 
         TraversalProvider.traverseOutgoingUnique(start, relTypes)
                 .filter(n -> NodePredicates.matchesAllLabels(n, nodeLabels))
@@ -95,14 +92,14 @@ public class SearchProvider {
         return ret;
     }
 
-    public static Set<Node> findAnyImmediateIncoming(
-            Node start,
+    public static Set<Element> findAnyImmediateIncoming(
+            Neo4jElement start,
             Set<Label> nodeLabels,
             Set<RelationshipType> relTypes,
             Set<PropertyValuePair> properties
     ){
-        TransactionManager.getTransaction(start.getGraphDatabase());
-        Set<Node> ret = new LinkedHashSet<>();
+        start.getDatabase().transaction();
+        Set<Element> ret = new LinkedHashSet<>();
 
         TraversalProvider.traverseIncomingUnique(start, relTypes)
                 .filter(n -> NodePredicates.matchesAnyLabel(n, nodeLabels))
@@ -112,14 +109,14 @@ public class SearchProvider {
         return ret;
     }
 
-    public static Set<Node> findImmediateOutgoing(
-            Node start,
+    public static Set<Element> findImmediateOutgoing(
+            Neo4jElement start,
             Label nodeLabel,
             RelationshipType relType,
             Set<PropertyValuePair> properties
     ){
-        TransactionManager.getTransaction(start.getGraphDatabase());
-        Set<Node> ret = new LinkedHashSet<>();
+        start.getDatabase().transaction();
+        Set<Element> ret = new LinkedHashSet<>();
 
         TraversalProvider.traverseOutgoingUnique(start, relType)
                 .filter(n -> NodePredicates.matchesLabel(n, nodeLabel))
@@ -129,14 +126,14 @@ public class SearchProvider {
         return ret;
     }
 
-    public static Set<Node> findAnyImmediateIncoming(
-            Node start,
+    public static Set<Element> findAnyImmediateIncoming(
+            Neo4jElement start,
             Label nodeLabel,
             RelationshipType relType,
             Set<PropertyValuePair> properties
     ){
-        TransactionManager.getTransaction(start.getGraphDatabase());
-        Set<Node> ret = new LinkedHashSet<>();
+        start.getDatabase().transaction();
+        Set<Element> ret = new LinkedHashSet<>();
 
         TraversalProvider.traverseIncomingUnique(start, relType)
                 .filter(n -> NodePredicates.matchesLabel(n, nodeLabel))
@@ -146,14 +143,14 @@ public class SearchProvider {
         return ret;
     }
 
-    public static Set<Node> findImmediateOutgoing(
-            Node start,
+    public static Set<Element> findImmediateOutgoing(
+            Neo4jElement start,
             Label nodeLabel,
             RelationshipType relType,
             PropertyValuePair property
     ){
-        TransactionManager.getTransaction(start.getGraphDatabase());
-        Set<Node> ret = new LinkedHashSet<>();
+        start.getDatabase().transaction();
+        Set<Element> ret = new LinkedHashSet<>();
 
         TraversalProvider.traverseOutgoingUnique(start, relType)
                 .filter(n -> NodePredicates.matchesLabel(n, nodeLabel))
@@ -163,14 +160,14 @@ public class SearchProvider {
         return ret;
     }
 
-    public static Set<Node> findAnyImmediateIncoming(
-            Node start,
+    public static Set<Element> findAnyImmediateIncoming(
+            Neo4jElement start,
             Label nodeLabel,
             RelationshipType relType,
             PropertyValuePair property
     ){
-        TransactionManager.getTransaction(start.getGraphDatabase());
-        Set<Node> ret = new LinkedHashSet<>();
+        start.getDatabase().transaction();
+        Set<Element> ret = new LinkedHashSet<>();
 
         TraversalProvider.traverseIncomingUnique(start, relType)
                 .filter(n -> NodePredicates.matchesLabel(n, nodeLabel))

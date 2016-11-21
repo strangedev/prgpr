@@ -1,15 +1,14 @@
 package com.prgpr.framework.database.neo4j;
 
-import com.prgpr.framework.database.Callback;
-import com.prgpr.framework.database.Element;
-import com.prgpr.framework.database.EmbeddedDatabase;
-import org.neo4j.graphdb.GraphDatabaseService;
-import org.neo4j.graphdb.Node;
+import com.prgpr.framework.database.*;
+import com.prgpr.framework.database.Label;
+import org.neo4j.graphdb.*;
 import org.neo4j.graphdb.factory.GraphDatabaseFactory;
 import org.neo4j.graphdb.index.UniqueFactory;
 
 import java.io.File;
 import java.util.Map;
+import java.util.stream.Stream;
 
 /**
  * Created by kito on 21.11.16.
@@ -70,5 +69,17 @@ public class Neo4jEmbeddedDatabase implements EmbeddedDatabase {
         };
 
         return new Neo4jElement(db, factory.getOrCreate("id", id));
+    }
+
+    public Stream<Neo4jElement> getAllNodes() {
+        return graphDb.getAllNodes().stream().map(n -> new Neo4jElement(this, n));
+    }
+
+    @Override
+    public Stream<Element> findElements(Label label, PropertyValuePair property) {
+        return graphDb
+                .findNodes(org.neo4j.graphdb.Label.label(label.name()), property.property.name(), property.value)
+                .stream()
+                .map(n -> new Neo4jElement(this, n));
     }
 }
