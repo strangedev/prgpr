@@ -31,7 +31,10 @@ public class HelpCommand extends Command {
 
         System.out.println("Failed to execute command: '" + args[0] + "'");
         System.out.println("Reason: " + args[1]);
-        System.out.println('\t' + args[2]);
+        if(args[2] != null) {
+            System.out.println('\t' + args[2]);
+        }
+
         System.out.println();
     }
 
