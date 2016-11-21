@@ -1,16 +1,14 @@
 package com.prgpr.framework.database;
 
 import org.neo4j.graphdb.*;
-import org.neo4j.graphdb.traversal.Evaluators;
-import org.neo4j.graphdb.traversal.TraversalDescription;
-import org.neo4j.graphdb.traversal.Uniqueness;
 
 import java.util.*;
-import java.util.stream.Stream;
-import java.util.stream.StreamSupport;
 
 /**
  * Created by strange on 11/20/16.
+ * @author Noah Hummel
+ *
+ * A Class providing basic search functionality for neo4.
  */
 public class SearchProvider {
 
@@ -24,8 +22,8 @@ public class SearchProvider {
 
         db.getAllNodes()
                 .stream()
-                .filter(n -> matchAllLabels(n, labels))
-                .filter(n -> matchAllProperties(n, properties))
+                .filter(n -> NodePredicates.matchesAllLabels(n, labels))
+                .filter(n -> NodePredicates.matchesAllProperties(n, properties))
                 .forEach(ret::add);
 
         return ret;
@@ -41,122 +39,147 @@ public class SearchProvider {
 
         db.getAllNodes()
                 .stream()
-                .filter(n -> matchAnyLabel(n, labels))
-                .filter(n -> matchAllProperties(n, properties))
+                .filter(n -> NodePredicates.matchesAnyLabel(n, labels))
+                .filter(n -> NodePredicates.matchesAllProperties(n, properties))
                 .forEach(ret::add);
 
         return ret;
     }
 
-    //public static Optional<Node> findNode(){return new Node()}
+    public static Set<Node> findNode(
+            GraphDatabaseService db,
+            Label label,
+            Set<PropertyValuePair> properties){
+
+        TransactionManager.getTransaction(db);
+        Set<Node> ret = new LinkedHashSet<>();
+
+        db.getAllNodes()
+                .stream()
+                .filter(n -> NodePredicates.matchesLabel(n, label))
+                .filter(n -> NodePredicates.matchesAllProperties(n, properties))
+                .forEach(ret::add);
+
+        return ret;
+    }
+
+    public static Set<Node> findNode(
+            GraphDatabaseService db,
+            Label label,
+            PropertyValuePair property){
+
+        TransactionManager.getTransaction(db);
+        Set<Node> ret = new LinkedHashSet<>();
+
+        db.getAllNodes()
+                .stream()
+                .filter(n -> NodePredicates.matchesLabel(n, label))
+                .filter(n -> NodePredicates.matchesProperty(n, property))
+                .forEach(ret::add);
+
+        return ret;
+    }
 
     public static Set<Node> findImmediateOutgoing(
-            GraphDatabaseService db,
             Node start,
             Set<Label> nodeLabels,
             Set<RelationshipType> relTypes,
             Set<PropertyValuePair> properties
     ){
-        TransactionManager.getTransaction(db);
+        TransactionManager.getTransaction(start.getGraphDatabase());
         Set<Node> ret = new LinkedHashSet<>();
 
-        traverseOutgoingUnique(db, start, relTypes)
-                .filter(n -> matchAllLabels(n, nodeLabels))
-                .filter(n -> matchAllProperties(n, properties))
+        TraversalProvider.traverseOutgoingUnique(start, relTypes)
+                .filter(n -> NodePredicates.matchesAllLabels(n, nodeLabels))
+                .filter(n -> NodePredicates.matchesAllProperties(n, properties))
                 .forEach(ret::add);
 
         return ret;
     }
 
-    public static Set<Node> findAnyImmediateOutgoing(
-            GraphDatabaseService db,
+    public static Set<Node> findAnyImmediateIncoming(
             Node start,
             Set<Label> nodeLabels,
             Set<RelationshipType> relTypes,
             Set<PropertyValuePair> properties
     ){
-        TransactionManager.getTransaction(db);
+        TransactionManager.getTransaction(start.getGraphDatabase());
         Set<Node> ret = new LinkedHashSet<>();
 
-        traverseOutgoingUnique(db, start, relTypes)
-                .filter(n -> matchAnyLabel(n, nodeLabels))
-                .filter(n -> matchAllProperties(n, properties))
+        TraversalProvider.traverseIncomingUnique(start, relTypes)
+                .filter(n -> NodePredicates.matchesAnyLabel(n, nodeLabels))
+                .filter(n -> NodePredicates.matchesAllProperties(n, properties))
                 .forEach(ret::add);
 
         return ret;
     }
 
-    private static Stream<Node> traverseOutgoingUnique(GraphDatabaseService db, Node from, Set<RelationshipType> relTypes){
-        TraversalDescription tv = db.traversalDescription()
-                .breadthFirst()
-                .uniqueness(Uniqueness.NODE_GLOBAL);
+    public static Set<Node> findImmediateOutgoing(
+            Node start,
+            Label nodeLabel,
+            RelationshipType relType,
+            Set<PropertyValuePair> properties
+    ){
+        TransactionManager.getTransaction(start.getGraphDatabase());
+        Set<Node> ret = new LinkedHashSet<>();
 
-        relTypes.forEach(r -> tv.relationships(r, Direction.OUTGOING));
-        return tv.evaluator(Evaluators.atDepth(1))
-                .traverse(from)
-                .nodes()
-                .stream();
+        TraversalProvider.traverseOutgoingUnique(start, relType)
+                .filter(n -> NodePredicates.matchesLabel(n, nodeLabel))
+                .filter(n -> NodePredicates.matchesAllProperties(n, properties))
+                .forEach(ret::add);
+
+        return ret;
     }
 
-    private static Stream<Node> traverseOutgoingUnique(GraphDatabaseService db, Node from, Set<RelationshipType> relTypes, int depth){
-        TraversalDescription tv = db.traversalDescription()
-                .breadthFirst()
-                .uniqueness(Uniqueness.NODE_GLOBAL);
+    public static Set<Node> findAnyImmediateIncoming(
+            Node start,
+            Label nodeLabel,
+            RelationshipType relType,
+            Set<PropertyValuePair> properties
+    ){
+        TransactionManager.getTransaction(start.getGraphDatabase());
+        Set<Node> ret = new LinkedHashSet<>();
 
-        relTypes.forEach(r -> tv.relationships(r, Direction.OUTGOING));
-        return tv.evaluator(Evaluators.atDepth(depth))
-                .traverse(from)
-                .nodes()
-                .stream();
+        TraversalProvider.traverseIncomingUnique(start, relType)
+                .filter(n -> NodePredicates.matchesLabel(n, nodeLabel))
+                .filter(n -> NodePredicates.matchesAllProperties(n, properties))
+                .forEach(ret::add);
+
+        return ret;
     }
 
-    private static Stream<Node> traverseIncomingUnique(GraphDatabaseService db, Node from, Set<RelationshipType> relTypes){
-        TraversalDescription tv = db.traversalDescription()
-                .breadthFirst()
-                .uniqueness(Uniqueness.NODE_GLOBAL);
+    public static Set<Node> findImmediateOutgoing(
+            Node start,
+            Label nodeLabel,
+            RelationshipType relType,
+            PropertyValuePair property
+    ){
+        TransactionManager.getTransaction(start.getGraphDatabase());
+        Set<Node> ret = new LinkedHashSet<>();
 
-        relTypes.forEach(r -> tv.relationships(r, Direction.INCOMING));
-        return tv.evaluator(Evaluators.atDepth(1))
-                .traverse(from)
-                .nodes()
-                .stream();
+        TraversalProvider.traverseOutgoingUnique(start, relType)
+                .filter(n -> NodePredicates.matchesLabel(n, nodeLabel))
+                .filter(n -> NodePredicates.matchesProperty(n, property))
+                .forEach(ret::add);
+
+        return ret;
     }
 
-    private static Stream<Node> traverseIncomingUnique(GraphDatabaseService db, Node from, Set<RelationshipType> relTypes, int depth){
-        TraversalDescription tv = db.traversalDescription()
-                .breadthFirst()
-                .uniqueness(Uniqueness.NODE_GLOBAL);
+    public static Set<Node> findAnyImmediateIncoming(
+            Node start,
+            Label nodeLabel,
+            RelationshipType relType,
+            PropertyValuePair property
+    ){
+        TransactionManager.getTransaction(start.getGraphDatabase());
+        Set<Node> ret = new LinkedHashSet<>();
 
-        relTypes.forEach(r -> tv.relationships(r, Direction.INCOMING));
-        return tv.evaluator(Evaluators.atDepth(depth))
-                .traverse(from)
-                .nodes()
-                .stream();
-    }
+        TraversalProvider.traverseIncomingUnique(start, relType)
+                .filter(n -> NodePredicates.matchesLabel(n, nodeLabel))
+                .filter(n -> NodePredicates.matchesProperty(n, property))
+                .forEach(ret::add);
 
-    private static boolean matchAnyLabel(Node n, Set<Label> labels){
-        return StreamSupport.stream(n.getLabels().spliterator(), false)
-                            .anyMatch(labels::contains)
-                            || labels.isEmpty();
-    }
-
-    private static boolean matchAllLabels(Node n, Set<Label> labels){
-        return StreamSupport.stream(n.getLabels().spliterator(), false)
-                            .allMatch(labels::contains)
-                            || labels.isEmpty();
-    }
-
-    private static boolean matchLabel(Node n, Label label){
-        return StreamSupport.stream(n.getLabels().spliterator(), false)
-                            .anyMatch(l -> l.name().equals(label.name()))
-                            || label.name().isEmpty();
-    }
-
-    private static boolean matchAllProperties(Node n, Set<PropertyValuePair> properties){
-         return properties.stream()
-                          .allMatch(p ->
-                                  n.getProperty(p.property.name()) == p.value
-                          ) || properties.isEmpty();
+        return ret;
     }
 
 }

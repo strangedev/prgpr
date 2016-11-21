@@ -1,6 +1,7 @@
 package com.prgpr.data;
 
 import com.prgpr.framework.database.Property;
+import com.prgpr.framework.database.SearchProvider;
 import com.prgpr.framework.database.SuperNode;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
