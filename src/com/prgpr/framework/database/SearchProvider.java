@@ -8,7 +8,7 @@ import java.util.*;
  * Created by strange on 11/20/16.
  * @author Noah Hummel
  *
- * A Class providing basic search functionality for neo4.
+ * A Class providing basic search functionality for neo4j.
  */
 public class SearchProvider {
 
@@ -71,10 +71,8 @@ public class SearchProvider {
         TransactionManager.getTransaction(db);
         Set<Node> ret = new LinkedHashSet<>();
 
-        db.getAllNodes()
+        db.findNodes(label, property.property.name(), property.value)
                 .stream()
-                .filter(n -> NodePredicates.matchesLabel(n, label))
-                .filter(n -> NodePredicates.matchesProperty(n, property))
                 .forEach(ret::add);
 
         return ret;

@@ -8,6 +8,9 @@ import java.util.stream.StreamSupport;
 
 /**
  * Created by strange on 11/21/16.
+ * @author Noah Hummel
+ *
+ * Provides basic predicates for filtering node streams.
  */
 public class NodePredicates {
 

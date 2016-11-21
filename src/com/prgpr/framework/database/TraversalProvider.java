@@ -12,6 +12,9 @@ import java.util.stream.Stream;
 
 /**
  * Created by strange on 11/21/16.
+ * @author Noah Hummel
+ *
+ * Provides basic TraversalDescriptions for neo4j.
  */
 public class TraversalProvider {
 
