@@ -3,7 +3,7 @@ package com.prgpr.data;
 import com.prgpr.framework.database.Element;
 import com.prgpr.framework.database.EmbeddedDatabase;
 import com.prgpr.framework.database.Property;
-import com.prgpr.framework.database.neo4j.SearchProvider;
+import com.prgpr.framework.database.SearchProvider;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 import org.neo4j.graphdb.RelationshipType;

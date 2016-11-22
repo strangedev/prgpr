@@ -1,6 +1,4 @@
-package com.prgpr.framework.database.neo4j;
-
-import com.prgpr.framework.database.*;
+package com.prgpr.framework.database;
 
 import java.util.*;
 
@@ -75,7 +73,7 @@ public class SearchProvider {
     }
 
     public static Set<Element> findImmediateOutgoing(
-            Neo4jElement start,
+            Element start,
             Set<Label> nodeLabels,
             List<RelationshipType> relTypes,
             Set<PropertyValuePair> properties
@@ -94,7 +92,7 @@ public class SearchProvider {
     }
 
     public static Set<Element> findAnyImmediateIncoming(
-            Neo4jElement start,
+            Element start,
             Set<Label> nodeLabels,
             List<RelationshipType> relTypes,
             Set<PropertyValuePair> properties
@@ -113,7 +111,7 @@ public class SearchProvider {
     }
 
     public static Set<Element> findImmediateOutgoing(
-            Neo4jElement start,
+            Element start,
             Label nodeLabel,
             RelationshipType relType,
             Set<PropertyValuePair> properties
@@ -132,7 +130,7 @@ public class SearchProvider {
     }
 
     public static Set<Element> findAnyImmediateIncoming(
-            Neo4jElement start,
+            Element start,
             Label nodeLabel,
             RelationshipType relType,
             Set<PropertyValuePair> properties
@@ -151,7 +149,7 @@ public class SearchProvider {
     }
 
     public static Set<Element> findImmediateOutgoing(
-            Neo4jElement start,
+            Element start,
             Label nodeLabel,
             RelationshipType relType,
             PropertyValuePair property
