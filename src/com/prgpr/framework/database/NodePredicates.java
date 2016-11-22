@@ -34,7 +34,14 @@ public class NodePredicates {
     public static boolean matchesAllProperties(Element n, Set<PropertyValuePair> properties){
         return properties.stream()
                 .allMatch(p ->
-                        n.getProperty(p.property) == p.value
+                        n.getProperty(p.property).equals(p.value)
+                ) || properties.isEmpty();
+    }
+
+    public static boolean matchesAnyProperties(Element n, Set<PropertyValuePair> properties){
+        return properties.stream()
+                .anyMatch(p ->
+                        n.getProperty(p.property).equals(p.value)
                 ) || properties.isEmpty();
     }
 

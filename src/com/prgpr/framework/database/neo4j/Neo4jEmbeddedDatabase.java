@@ -4,6 +4,7 @@ import com.prgpr.framework.database.*;
 import com.prgpr.framework.database.Label;
 import org.neo4j.graphdb.*;
 import org.neo4j.graphdb.factory.GraphDatabaseFactory;
+import org.neo4j.graphdb.index.ReadableIndex;
 import org.neo4j.graphdb.index.UniqueFactory;
 
 import java.io.File;
@@ -23,6 +24,7 @@ public class Neo4jEmbeddedDatabase implements EmbeddedDatabase {
     public Neo4jEmbeddedDatabase(GraphDatabaseService db) {
         this.graphDb = db;
         this.traversalProvider = new Neo4jTraversalProvider(db);
+        registerShutdownHook(graphDb);
     }
 
     private static void registerShutdownHook(final GraphDatabaseService graphDb )
@@ -65,13 +67,13 @@ public class Neo4jEmbeddedDatabase implements EmbeddedDatabase {
         TransactionManager.commit(graphDb);
     }
 
-    public Element createElement(String index, int id, Callback<Element> callback){
+    public Element createElement(String index, long id, Callback<Element> callback){
         transaction();
         Neo4jEmbeddedDatabase db = this;
         UniqueFactory<Node> factory = new UniqueFactory.UniqueNodeFactory(graphDb, index) {
             @Override
             protected void initialize(Node created, Map<String, Object> properties) {
-                created.setProperty("id", properties.get("id"));
+                created.setProperty("id", id);
                 new Neo4jElement(db, created).update(callback);
             }
         };
@@ -79,8 +81,18 @@ public class Neo4jEmbeddedDatabase implements EmbeddedDatabase {
         return new Neo4jElement(db, factory.getOrCreate("id", id));
     }
 
-    public Stream<Neo4jElement> getAllNodes() {
+    public Stream<Element> getAllNodes() {
         return graphDb.getAllNodes().stream().map(n -> new Neo4jElement(this, n));
+    }
+
+    @Override
+    public Element getNodeFromIndex(String indexName, long id) {
+        ReadableIndex<Node> index = graphDb.index().forNodes(indexName);
+        Node node = index.get("id", id).getSingle();
+        if(node == null){
+            return null;
+        }
+        return new Neo4jElement(this, node);
     }
 
     @Override

@@ -9,6 +9,7 @@ import com.prgpr.framework.command.CommandArgument;
 import com.prgpr.framework.database.neo4j.Neo4jElement;
 import com.prgpr.framework.database.neo4j.Neo4jEmbeddedDatabase;
 import com.prgpr.framework.database.neo4j.Neo4jEmbeddedDatabaseFactory;
+import com.prgpr.helpers.Benchmark;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 import org.neo4j.graphdb.GraphDatabaseService;
@@ -59,15 +60,24 @@ public class CategoryLinksCommand extends Command {
         GraphDatabaseService db = new GraphDatabaseFactory().newEmbeddedDatabase(f);
         Neo4jEmbeddedDatabase graphDb = Neo4jEmbeddedDatabaseFactory.newEmbeddedDatabase(db);
 
-        // inserting the categories
-        try ( Transaction tx = db.beginTx() ) {
+        graphDb.transaction();
+
+        long time = Benchmark.run(()->{
             for (Node node : db.getAllNodes()) {
                 Page page = new Page(new Neo4jElement(graphDb, node));
                 page.insertCategoryLink();
             }
+        });
+
+        log.info("took: " + time / 1000);
+        /*
+        // inserting the categories
+        try ( Transaction tx = db.beginTx() ) {
+
             tx.success();
         } catch (Exception e) {
             log.error(e.getMessage());
         }
+        */
     }
 }

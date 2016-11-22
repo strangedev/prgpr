@@ -1,9 +1,6 @@
 package com.prgpr;
 
-import com.prgpr.commands.CategoryLinksCommand;
-import com.prgpr.commands.HelpCommand;
-import com.prgpr.commands.ImportHtmlCommand;
-import com.prgpr.commands.ResetDBCommand;
+import com.prgpr.commands.*;
 import com.prgpr.exceptions.CommandNotFound;
 import com.prgpr.exceptions.InvalidArgument;
 import com.prgpr.exceptions.InvalidNumberOfArguments;

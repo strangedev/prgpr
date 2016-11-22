@@ -1,7 +1,5 @@
 package com.prgpr.framework.database;
 
-import com.prgpr.framework.database.neo4j.Neo4jElement;
-
 import java.util.stream.Stream;
 
 /**
@@ -11,8 +9,9 @@ public interface EmbeddedDatabase {
     void create(String path);
     void transaction();
     void commit();
-    Element createElement(String index, int id,  Callback<Element> callback);
-    Stream<Neo4jElement> getAllNodes();
+    Element createElement(String index, long id, Callback<Element> callback);
+    Stream<Element> getAllNodes();
+    Element getNodeFromIndex(String indexName, long hash);
     Stream<Element> findElements(Label label, PropertyValuePair property);
     TraversalProvider getTraversalProvider();
 }

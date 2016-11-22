@@ -3,6 +3,7 @@ package com.prgpr.framework.database.neo4j;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 import org.neo4j.graphdb.GraphDatabaseService;
+import org.neo4j.graphdb.NotInTransactionException;
 import org.neo4j.graphdb.Transaction;
 
 import java.util.HashMap;
@@ -38,8 +39,12 @@ public class TransactionManager {
 
     public static void shutdown(){
         transactions.forEach((db, tx) -> {
-            if(tx != null){
-                tx.close();
+            try {
+                if (tx != null) {
+                    tx.close();
+                }
+            }catch (NotInTransactionException e){
+                // do nothing
             }
         });
     }

@@ -82,4 +82,43 @@ public class WikiNamespaces {
             default: return PageLabel.Unknown;
         }
     }
+
+    public static int fromPageLabel(PageLabel label) {
+        switch (label.name()){
+            case "Page": return -1;
+            case "Article": return 0;
+            case "ArticleTalk": return 1;
+            case "User": return 2;
+            case "UserTalk": return 3;
+            case "Wikipedia": return 4;
+            case "WikipediaTalk": return 5;
+            case "File": return 6;
+            case "FileTalk": return 7;
+            case "MediaWiki": return 8;
+            case "MediaWikiTalk": return 9;
+            case "Template": return 10;
+            case "TemplateTalk": return 11;
+            case "Help": return 12;
+            case "HelpTalk": return 13;
+            case "Category": return 14;
+            case "CategoryTalk": return 15;
+            case "Portal": return 100;
+            case "PortalTalk": return 101;
+            case "Book": return 108;
+            case "BookTalk": return 109;
+            case "Draft": return 118;
+            case "DraftTalk": return 119;
+            case "EducationProgram": return 446;
+            case "EducationProgramTalk": return 447;
+            case "TimedText": return 710;
+            case "TimedTextTalk": return 711;
+            case "Module": return 828;
+            case "ModuleTalk": return 829;
+            case "Gadget": return 2300;
+            case "GadgetTalk": return 2301;
+            case "GadgetDefinition": return 2302;
+            case "GadgetDefinitionTalk": return 2303;
+            default: throw new IndexOutOfBoundsException();
+        }
+    }
 }

@@ -32,7 +32,12 @@ public class Neo4jElement implements Element {
 
     public Stream<Label> getLabels() {
         return StreamSupport.stream(node.getLabels().spliterator(), false)
-                .map(label -> (Label)label);
+                .map(label -> new Label() {
+                    @Override
+                    public String name() {
+                        return label.name();
+                    }
+                });
     }
 
     public Object getProperty(Property property){
@@ -58,13 +63,5 @@ public class Neo4jElement implements Element {
     @Override
     public Neo4jEmbeddedDatabase getDatabase() {
         return db;
-    }
-
-    //@TODO: return another Type METATODO: what do you mean by that?
-    public <E> Element findNode(Label label, Property property, E val){
-        db.transaction();
-        //@TODO: implement
-
-        return null;
     }
 }

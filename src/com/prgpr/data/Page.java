@@ -1,9 +1,6 @@
 package com.prgpr.data;
 
-import com.prgpr.framework.database.Element;
-import com.prgpr.framework.database.EmbeddedDatabase;
-import com.prgpr.framework.database.Property;
-import com.prgpr.framework.database.SearchProvider;
+import com.prgpr.framework.database.*;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 import org.neo4j.graphdb.RelationshipType;
@@ -22,6 +19,7 @@ public class Page {
 
 
     private static final Logger log = LogManager.getFormatterLogger(Page.class);
+    private static final String indexName = "Pages";
     private Element node;
 
     /**
@@ -47,7 +45,7 @@ public class Page {
     }
 
     public Page(EmbeddedDatabase db, long id, int namespaceID, String title, String html) {
-        this.node = db.createElement("Pages", hashCode(namespaceID, title), (node) -> {
+        this.node = db.createElement(indexName, hashCode(namespaceID, title), (node) -> {
             node.addLabel(WikiNamespaces.PageLabel.Page);
             node.addLabel(WikiNamespaces.fromID(namespaceID));
             node.setProperty(PageAttribute.articleID, id);
@@ -111,11 +109,20 @@ public class Page {
 
     //@TODO: implement
     public void insertCategoryLink() {
-        Set<String> categories = extractCategories(this.getHtml());
-        for (String category : categories) {
-            Element page = node.findNode(WikiNamespaces.PageLabel.Page, PageAttribute.id, this.getID()); // just like in the presentation of gleim
-            Element cat = node.findNode(WikiNamespaces.PageLabel.Page, PageAttribute.title, category);
-            //Relation rel = (Relation) page.createRelationshipTo(cat, RelTypes.categoryLink);
+        Set<String> categoryTitles = extractCategories(this.getHtml());
+
+        int categoryNamespace = WikiNamespaces.fromPageLabel(WikiNamespaces.PageLabel.Category);
+
+        for (String title : categoryTitles) {
+            long hash = hashCode(categoryNamespace, title);
+
+            Element category = node.getDatabase().getNodeFromIndex(indexName, hash);
+
+            if(category == null) {
+                continue;
+            }
+
+            //@TODO: add relation
         }
     }
 }

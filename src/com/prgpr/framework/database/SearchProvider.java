@@ -42,6 +42,22 @@ public class SearchProvider {
         return ret;
     }
 
+    public static Set<Element> findAnyWithLabel(
+            EmbeddedDatabase db,
+            Label labels,
+            Set<PropertyValuePair> properties){
+
+        db.transaction();
+        Set<Element> ret = new LinkedHashSet<>();
+
+        db.getAllNodes()
+                .filter(n -> NodePredicates.matchesLabel(n, labels))
+                .filter(n -> NodePredicates.matchesAnyProperties(n, properties))
+                .forEach(ret::add);
+
+        return ret;
+    }
+
     public static Set<Element> findNode(
             EmbeddedDatabase db,
             Label label,
@@ -58,18 +74,12 @@ public class SearchProvider {
         return ret;
     }
 
-    public static Set<Element> findNode(
-            EmbeddedDatabase db,
-            Label label,
-            PropertyValuePair property){
+    public static <E> Element findNode(EmbeddedDatabase db, Label label, Property property, E val){
 
         db.transaction();
-        Set<Element> ret = new LinkedHashSet<>();
 
-        db.findElements(label, property)
-                .forEach(ret::add);
-
-        return ret;
+        return db.findElements(label, new PropertyValuePair<>(property, val))
+                .findFirst().orElse(null);
     }
 
     public static Set<Element> findImmediateOutgoing(
