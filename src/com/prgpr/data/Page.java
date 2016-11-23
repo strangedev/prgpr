@@ -8,7 +8,9 @@ import com.prgpr.framework.database.neo4j.Neo4jElement;
 
 import java.util.Set;
 
+import static com.prgpr.LinkExtraction.extractArticles;
 import static com.prgpr.LinkExtraction.extractCategories;
+import static com.prgpr.framework.database.neo4j.Neo4jElement.RelTypes.articleLink;
 import static com.prgpr.framework.database.neo4j.Neo4jElement.RelTypes.categoryLink;
 
 /**
@@ -109,6 +111,7 @@ public class Page {
     //@TODO: implement
     public void insertCategoryLink() {
         Set<String> categoryTitles = extractCategories(this.getHtml());
+        String pageTitle = this.getTitle();
 
         int categoryNamespace = WikiNamespaces.fromPageLabel(WikiNamespaces.PageLabel.Category);
 
@@ -121,10 +124,29 @@ public class Page {
                 continue;
             }
 
-            Relationship rel = node.createRelationshipTo(category, categoryLink);
-            log.info("A relation from " + this.getTitle() + " to " + title + " was created.");
-            //@TODO: add relation
+            node.createRelationshipTo(category, categoryLink);
+            log.info("A relation from " + pageTitle + " to category " + title + " was created.");
         }
     }
+
+    public void insertArticleLink() {
+        Set<String> articleTitles = extractArticles(this.getHtml());
+        String pageTitle = this.getTitle();
+
+        int articleNamespace = WikiNamespaces.fromPageLabel(WikiNamespaces.PageLabel.Article);
+
+        for (String title : articleTitles) {
+            long hash = hashCode(articleNamespace, title);
+
+            Element article = node.getDatabase().getNodeFromIndex(indexName, hash);
+            if(article == null) {
+                continue;
+            }
+
+            node.createRelationshipTo(article, articleLink); //@TODO: make the relation directed
+            log.info("A relation from " + pageTitle + " to article " + title + " was created.");
+        }
+    }
+
 
 }

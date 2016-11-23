@@ -39,7 +39,8 @@ public class Main {
                 help,
                 new ResetDBCommand(),
                 new ImportHtmlCommand(),
-                new CategoryLinksCommand()
+                new CategoryLinksCommand(),
+                new ArticleLinksCommand()
         });
 
         try {

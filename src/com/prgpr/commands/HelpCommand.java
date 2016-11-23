@@ -45,8 +45,10 @@ public class HelpCommand extends Command {
         System.out.println("-------------------------------------------------");
         System.out.println("Available Commands");
         System.out.println("-------------------------------------------------");
-        commandBroker.getRegisteredCommands().forEach(
-                (command) -> System.out.println(command.getFullDescription())
-        );
+        commandBroker.getRegisteredCommands()
+                .stream()
+                .map(Command::getFullDescription)
+                .sorted(String.CASE_INSENSITIVE_ORDER)
+                .forEach(System.out::println);
     }
 }
