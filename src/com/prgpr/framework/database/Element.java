@@ -1,5 +1,8 @@
 package com.prgpr.framework.database;
 
+import com.prgpr.framework.database.neo4j.Neo4jElement;
+import org.neo4j.graphdb.Relationship;
+
 import java.util.Set;
 import java.util.stream.Stream;
 
@@ -17,6 +20,8 @@ public interface Element {
     <E> void setProperty(Property property, E val);
 
     //<E> Element findNode(Label label, Property property, E val);
+
+    Relationship createRelationshipTo(Element ingoing, Neo4jElement.RelTypes relation);
 
     void update(Callback<Element> callback);
 

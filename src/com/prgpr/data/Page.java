@@ -3,11 +3,13 @@ package com.prgpr.data;
 import com.prgpr.framework.database.*;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
-import org.neo4j.graphdb.RelationshipType;
+import org.neo4j.graphdb.Relationship;
+import com.prgpr.framework.database.neo4j.Neo4jElement;
 
 import java.util.Set;
 
 import static com.prgpr.LinkExtraction.extractCategories;
+import static com.prgpr.framework.database.neo4j.Neo4jElement.RelTypes.categoryLink;
 
 /**
  * @author Kyle Rinfreschi
@@ -36,9 +38,6 @@ public class Page {
         html
     }
 
-    public enum RelTypes implements RelationshipType {
-        categoryLink
-    } // defines the Relationship category
 
     public Page(Element node) {
         this.node = node;
@@ -122,7 +121,10 @@ public class Page {
                 continue;
             }
 
+            Relationship rel = node.createRelationshipTo(category, categoryLink);
+            log.info("A relation from " + this.getTitle() + " to " + title + " was created.");
             //@TODO: add relation
         }
     }
+
 }

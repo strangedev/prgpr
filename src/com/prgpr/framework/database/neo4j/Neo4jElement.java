@@ -1,8 +1,10 @@
 package com.prgpr.framework.database.neo4j;
 
 
+import com.prgpr.data.Page;
 import com.prgpr.framework.database.*;
-import org.neo4j.graphdb.Node;
+import com.prgpr.framework.database.Label;
+import org.neo4j.graphdb.*;
 
 import java.util.stream.Stream;
 import java.util.stream.StreamSupport;
@@ -64,4 +66,15 @@ public class Neo4jElement implements Element {
     public Neo4jEmbeddedDatabase getDatabase() {
         return db;
     }
+
+    public enum RelTypes implements org.neo4j.graphdb.RelationshipType {
+        categoryLink,  // defines the Relationship category
+        articleLink
+    }
+
+    @Override
+    public Relationship createRelationshipTo(Element ingoing, RelTypes relation) {
+        return node.createRelationshipTo(((Neo4jElement)ingoing).getNode(), relation);
+    }
+
 }

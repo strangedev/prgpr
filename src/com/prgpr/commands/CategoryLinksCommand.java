@@ -69,15 +69,6 @@ public class CategoryLinksCommand extends Command {
             }
         });
 
-        log.info("took: " + time / 1000);
-        /*
-        // inserting the categories
-        try ( Transaction tx = db.beginTx() ) {
-
-            tx.success();
-        } catch (Exception e) {
-            log.error(e.getMessage());
-        }
-        */
+        log.info("It took so many seconds: " + time / 1000);
     }
 }
