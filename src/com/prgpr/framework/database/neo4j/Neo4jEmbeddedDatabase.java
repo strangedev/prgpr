@@ -9,6 +9,7 @@ import org.neo4j.graphdb.index.UniqueFactory;
 
 import java.io.File;
 import java.util.Map;
+import java.util.concurrent.Callable;
 import java.util.stream.Stream;
 
 /**
@@ -63,43 +64,61 @@ public class Neo4jEmbeddedDatabase implements EmbeddedDatabase {
     }
 
     @Override
+    public void transaction(Runnable runnable)
+    {
+        TransactionManager.getTransaction(graphDb, runnable);
+    }
+
+    @Override
+    public <T> T transaction(Callable<T> callable)
+    {
+        return TransactionManager.getTransaction(graphDb, callable);
+    }
+
+    @Override
     public void commit() {
-        TransactionManager.commit(graphDb);
+        TransactionManager.success(graphDb);
     }
 
     public Element createElement(String index, long id, Callback<Element> callback){
-        transaction();
         Neo4jEmbeddedDatabase db = this;
-        UniqueFactory<Node> factory = new UniqueFactory.UniqueNodeFactory(graphDb, index) {
-            @Override
-            protected void initialize(Node created, Map<String, Object> properties) {
-                created.setProperty("id", id);
-                new Neo4jElement(db, created).update(callback);
-            }
-        };
+        return transaction(() -> {
+            UniqueFactory<Node> factory = new UniqueFactory.UniqueNodeFactory(graphDb, index) {
+                @Override
+                protected void initialize(Node created, Map<String, Object> properties) {
+                    created.setProperty("id", id);
+                    new Neo4jElement(db, created).update(callback);
+                }
+            };
 
-        return new Neo4jElement(db, factory.getOrCreate("id", id));
+            return new Neo4jElement(db, factory.getOrCreate("id", id));
+        });
     }
 
     public Stream<Element> getAllNodes() {
-        return graphDb.getAllNodes().stream().map(n -> new Neo4jElement(this, n));
+        return transaction(() -> graphDb.getAllNodes()
+                                            .stream()
+                                            .map(n -> new Neo4jElement(this, n)));
     }
 
     @Override
     public Element getNodeFromIndex(String indexName, long id) {
-        ReadableIndex<Node> index = graphDb.index().forNodes(indexName);
-        Node node = index.get("id", id).getSingle();
-        if(node == null){
-            return null;
-        }
-        return new Neo4jElement(this, node);
+        return transaction(() -> {
+            ReadableIndex<Node> index = graphDb.index().forNodes(indexName);
+            Node node = index.get("id", id).getSingle();
+            if(node == null){
+                return null;
+            }
+
+            return new Neo4jElement(this, node);
+        });
     }
 
     @Override
     public Stream<Element> findElements(Label label, PropertyValuePair property) {
-        return graphDb
+        return transaction(() -> graphDb
                 .findNodes(org.neo4j.graphdb.Label.label(label.name()), property.property.name(), property.value)
                 .stream()
-                .map(n -> new Neo4jElement(this, n));
+                .map(n -> new Neo4jElement(this, n)));
     }
 }

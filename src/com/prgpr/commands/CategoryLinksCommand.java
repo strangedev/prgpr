@@ -60,13 +60,13 @@ public class CategoryLinksCommand extends Command {
         GraphDatabaseService db = new GraphDatabaseFactory().newEmbeddedDatabase(f);
         Neo4jEmbeddedDatabase graphDb = Neo4jEmbeddedDatabaseFactory.newEmbeddedDatabase(db);
 
-        graphDb.transaction();
-
         long time = Benchmark.run(()->{
-            for (Node node : db.getAllNodes()) {
-                Page page = new Page(new Neo4jElement(graphDb, node));
-                page.insertCategoryLink();
-            }
+            graphDb.transaction(() ->{
+                for (Node node : db.getAllNodes()) {
+                    Page page = new Page(new Neo4jElement(graphDb, node));
+                    page.insertCategoryLink();
+                }
+            });
         });
 
         log.info("It took so many seconds: " + time / 1000);
