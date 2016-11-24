@@ -64,7 +64,7 @@ public class ArticleLinksCommand extends Command {
         long time = Benchmark.run(()->{
             for (Node node : db.getAllNodes()) {
                 Page page = new Page(new Neo4jElement(graphDb, node));
-                page.insertArticleLink();
+                page.insertArticleLinks();
             }
         });
 

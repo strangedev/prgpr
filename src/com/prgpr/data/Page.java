@@ -3,15 +3,13 @@ package com.prgpr.data;
 import com.prgpr.framework.database.*;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
-import org.neo4j.graphdb.Relationship;
-import com.prgpr.framework.database.neo4j.Neo4jElement;
 
 import java.util.Set;
+import java.util.concurrent.Callable;
 
 import static com.prgpr.LinkExtraction.extractArticles;
 import static com.prgpr.LinkExtraction.extractCategories;
-import static com.prgpr.framework.database.neo4j.Neo4jElement.RelTypes.articleLink;
-import static com.prgpr.framework.database.neo4j.Neo4jElement.RelTypes.categoryLink;
+import static com.prgpr.framework.database.neo4j.Neo4jElement.RelTypes;
 
 /**
  * @author Kyle Rinfreschi
@@ -103,44 +101,42 @@ public class Page {
         return hashCode(getNamespaceID(), getTitle());
     }
 
-    //@TODO: implement
-    public void insertCategoryLink() {
-        Set<String> categoryTitles = extractCategories(this.getHtml());
-        String pageTitle = this.getTitle();
-
-        int categoryNamespace = WikiNamespaces.fromPageLabel(WikiNamespaces.PageLabel.Category);
-
-        for (String title : categoryTitles) {
-            long hash = hashCode(categoryNamespace, title);
-
-            Element category = node.getDatabase().getNodeFromIndex(indexName, hash);
-
-            if(category == null) {
-                continue;
-            }
-
-            node.createRelationshipTo(category, categoryLink);
-            log.info("A relation from " + pageTitle + " to category " + title + " was created.");
-        }
+    public void insertCategoryLinks() {
+        addRelationships(WikiNamespaces.PageLabel.Category, RelTypes.categoryLink, () -> extractCategories(this.getHtml()));
     }
 
-    public void insertArticleLink() {
-        Set<String> articleTitles = extractArticles(this.getHtml());
+    public void insertArticleLinks() {
+        addRelationships(WikiNamespaces.PageLabel.Article, RelTypes.articleLink, () -> extractArticles(this.getHtml()));
+    }
+
+    
+    private void addRelationships(WikiNamespaces.PageLabel label, RelTypes relType, Callable<Set<String>> callable) {
+        Set<String> titles;
+
+        try {
+            titles = callable.call();
+        } catch (Exception e) {
+            log.error(e);
+            return;
+        }
+
+        int namespace = WikiNamespaces.fromPageLabel(label);
+
         String pageTitle = this.getTitle();
 
-        int articleNamespace = WikiNamespaces.fromPageLabel(WikiNamespaces.PageLabel.Article);
+        titles.forEach((title) -> {
+            long hash = hashCode(namespace, title);
 
-        for (String title : articleTitles) {
-            long hash = hashCode(articleNamespace, title);
+            Element elem = node.getDatabase().getNodeFromIndex(indexName, hash);
 
-            Element article = node.getDatabase().getNodeFromIndex(indexName, hash);
-            if(article == null) {
-                continue;
+            if(elem == null) {
+                return;
             }
 
-            node.createRelationshipTo(article, articleLink); //@TODO: make the relation directed
+            node.createRelationshipTo(elem, relType); //@TODO: make the relation directed
+
             log.info("A relation from " + pageTitle + " to article " + title + " was created.");
-        }
+        });
     }
 
 

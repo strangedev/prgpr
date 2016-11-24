@@ -14,7 +14,6 @@ import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 import org.neo4j.graphdb.GraphDatabaseService;
 import org.neo4j.graphdb.Node;
-import org.neo4j.graphdb.Transaction;
 import org.neo4j.graphdb.factory.GraphDatabaseFactory;
 
 import java.io.File;
@@ -64,7 +63,7 @@ public class CategoryLinksCommand extends Command {
             graphDb.transaction(() ->{
                 for (Node node : db.getAllNodes()) {
                     Page page = new Page(new Neo4jElement(graphDb, node));
-                    page.insertCategoryLink();
+                    page.insertCategoryLinks();
                 }
             });
         });
