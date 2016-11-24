@@ -25,12 +25,7 @@ public class Page {
     private static final Logger log = LogManager.getFormatterLogger(Page.class);
     private static final String indexName = "Pages";
     private Element node;
-
-    /**
-     * Contains all Wikipedia namespaces.
-     * Page is a generic label.
-     */
-
+    
     public enum PageAttribute implements Property
     {
         id,

@@ -73,8 +73,8 @@ public class Neo4jElement implements Element {
     }
 
     @Override
-    public Relationship createRelationshipTo(Element ingoing, RelTypes relation) {
-        return node.createRelationshipTo(((Neo4jElement)ingoing).getNode(), relation);
+    public Relationship createRelationshipTo(Element incoming, RelTypes relation) {
+        return node.createRelationshipTo(((Neo4jElement)incoming).getNode(), relation);
     }
 
 }
