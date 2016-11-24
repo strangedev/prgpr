@@ -1,9 +1,9 @@
 package com.prgpr.framework.database.neo4j;
 
-
-import com.prgpr.data.Page;
-import com.prgpr.framework.database.*;
+import com.prgpr.framework.database.Callback;
+import com.prgpr.framework.database.Element;
 import com.prgpr.framework.database.Label;
+import com.prgpr.framework.database.Property;
 import org.neo4j.graphdb.*;
 
 import java.util.stream.Stream;
@@ -23,7 +23,7 @@ public class Neo4jElement implements Element {
         this.node = node;
     }
 
-    public Node getNode() {
+    Node getNode() {
         return node;
     }
 

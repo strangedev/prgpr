@@ -3,10 +3,8 @@ package com.prgpr;
 import com.prgpr.data.Page;
 import com.prgpr.framework.consumer.Producer;
 import com.prgpr.framework.database.EmbeddedDatabase;
-import com.prgpr.framework.database.neo4j.TransactionManager;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
-import org.neo4j.graphdb.GraphDatabaseService;
 
 /**
  * @author Noah Hummel

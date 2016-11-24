@@ -1,8 +1,8 @@
 package com.prgpr.framework.database.neo4j;
 
 import com.prgpr.framework.database.*;
-import com.prgpr.framework.database.Label;
-import org.neo4j.graphdb.*;
+import org.neo4j.graphdb.GraphDatabaseService;
+import org.neo4j.graphdb.Node;
 import org.neo4j.graphdb.factory.GraphDatabaseFactory;
 import org.neo4j.graphdb.index.ReadableIndex;
 import org.neo4j.graphdb.index.UniqueFactory;
@@ -20,9 +20,9 @@ public class Neo4jEmbeddedDatabase implements EmbeddedDatabase {
     private Neo4jTraversalProvider traversalProvider;
     private GraphDatabaseService graphDb;
 
-    public Neo4jEmbeddedDatabase() {}
+    Neo4jEmbeddedDatabase() {}
 
-    public Neo4jEmbeddedDatabase(GraphDatabaseService db) {
+    Neo4jEmbeddedDatabase(GraphDatabaseService db) {
         this.graphDb = db;
         this.traversalProvider = new Neo4jTraversalProvider(db);
         registerShutdownHook(graphDb);
@@ -39,7 +39,7 @@ public class Neo4jEmbeddedDatabase implements EmbeddedDatabase {
             @Override
             public void run()
             {
-                TransactionManager.shutdown();
+                Neo4jTransactionManager.shutdown();
                 graphDb.shutdown();
             }
         } );
@@ -60,24 +60,24 @@ public class Neo4jEmbeddedDatabase implements EmbeddedDatabase {
 
     @Override
     public void transaction() {
-        TransactionManager.getTransaction(graphDb);
+        Neo4jTransactionManager.getTransaction(graphDb);
     }
 
     @Override
     public void transaction(Runnable runnable)
     {
-        TransactionManager.getTransaction(graphDb, runnable);
+        Neo4jTransactionManager.getTransaction(graphDb, runnable);
     }
 
     @Override
     public <T> T transaction(Callable<T> callable)
     {
-        return TransactionManager.getTransaction(graphDb, callable);
+        return Neo4jTransactionManager.getTransaction(graphDb, callable);
     }
 
     @Override
     public void commit() {
-        TransactionManager.success(graphDb);
+        Neo4jTransactionManager.success(graphDb);
     }
 
     public Element createElement(String index, long id, Callback<Element> callback){

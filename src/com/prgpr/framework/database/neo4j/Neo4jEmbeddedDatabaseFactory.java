@@ -1,10 +1,6 @@
 package com.prgpr.framework.database.neo4j;
 
-import com.prgpr.framework.database.neo4j.TransactionManager;
 import org.neo4j.graphdb.GraphDatabaseService;
-import org.neo4j.graphdb.factory.GraphDatabaseFactory;
-
-import java.io.File;
 
 /**
  * Created by kito on 19.11.16.

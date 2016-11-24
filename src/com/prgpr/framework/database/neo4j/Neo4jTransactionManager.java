@@ -14,12 +14,12 @@ import java.util.concurrent.Callable;
 /**
  * Created by kito on 18.11.16.
  */
-public class TransactionManager {
-    private static final Logger log = LogManager.getFormatterLogger(TransactionManager.class);
+class Neo4jTransactionManager {
+    private static final Logger log = LogManager.getFormatterLogger(Neo4jTransactionManager.class);
 
     private static final HashMap<GraphDatabaseService, Transaction> transactions = new HashMap<>();
 
-    public static Transaction getTransaction(GraphDatabaseService db){
+    static Transaction getTransaction(GraphDatabaseService db){
         Transaction tx = transactions.get(db);
 
         if(tx == null){
@@ -34,18 +34,18 @@ public class TransactionManager {
         return tx;
     }
 
-    public static void getTransaction(GraphDatabaseService db, Runnable runnable){
+    static void getTransaction(GraphDatabaseService db, Runnable runnable){
         try{
-            TransactionManager.getTransaction(db);
+            Neo4jTransactionManager.getTransaction(db);
             runnable.run();
         } catch (Exception e){
             log.error(e);
         }
     }
 
-    public static <T> T getTransaction(GraphDatabaseService db, Callable<T> callable){
+    static <T> T getTransaction(GraphDatabaseService db, Callable<T> callable){
         try{
-            TransactionManager.getTransaction(db);
+            Neo4jTransactionManager.getTransaction(db);
             return callable.call();
         } catch (Exception e){
             log.error(e);
@@ -54,7 +54,7 @@ public class TransactionManager {
         return null;
     }
 
-    public static void shutdown(){
+    static void shutdown(){
         transactions.forEach((db, tx) -> {
             try {
                 if (tx != null) {
@@ -68,11 +68,11 @@ public class TransactionManager {
         });
     }
 
-    public static void success(GraphDatabaseService db){
+    static void success(GraphDatabaseService db){
         commit(db, Transaction::success);
     }
 
-    public static void failure(GraphDatabaseService db){
+    static void failure(GraphDatabaseService db){
         commit(db, Transaction::failure);
     }
 
