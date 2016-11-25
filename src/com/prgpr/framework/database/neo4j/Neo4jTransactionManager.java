@@ -39,6 +39,7 @@ class Neo4jTransactionManager {
             Neo4jTransactionManager.getTransaction(db);
             runnable.run();
         } catch (Exception e){
+            e.printStackTrace();
             log.error(e);
         }
     }
@@ -48,6 +49,7 @@ class Neo4jTransactionManager {
             Neo4jTransactionManager.getTransaction(db);
             return callable.call();
         } catch (Exception e){
+            e.printStackTrace();
             log.error(e);
         }
 
@@ -64,6 +66,7 @@ class Neo4jTransactionManager {
                 // do nothing
             } catch (Exception e){
                 log.error(e);
+                e.printStackTrace();
             }
         });
     }

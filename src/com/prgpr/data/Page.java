@@ -1,15 +1,19 @@
 package com.prgpr.data;
 
+import com.prgpr.PageFactory;
 import com.prgpr.framework.database.*;
+
+import com.prgpr.framework.database.neo4j.RelationshipTypes;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 
+import java.util.LinkedHashSet;
 import java.util.Set;
 import java.util.concurrent.Callable;
+import java.util.stream.Collectors;
 
 import static com.prgpr.LinkExtraction.extractArticles;
 import static com.prgpr.LinkExtraction.extractCategories;
-import static com.prgpr.framework.database.neo4j.Neo4jElement.RelTypes;
 
 /**
  * @author Kyle Rinfreschi
@@ -77,6 +81,16 @@ public class Page {
         return (String)node.getProperty(PageAttribute.html);
     }
 
+    public Set<Page> getCategories() {
+        return SearchProvider.findAnyImmediateIncoming(
+                this.node,
+                WikiNamespaces.PageLabel.Category,
+                RelationshipTypes.categoryLink,
+                (PropertyValuePair) null)
+                .stream()
+                .map(e -> new Page(e)).collect(Collectors.toCollection(LinkedHashSet::new));
+    }
+
     private static int hashCode(int namespaceID, String title) {
         int result = namespaceID;
         result = 31 * result + (title != null ? title.hashCode() : 0);
@@ -102,15 +116,15 @@ public class Page {
     }
 
     public void insertCategoryLinks() {
-        addRelationships(WikiNamespaces.PageLabel.Category, RelTypes.categoryLink, () -> extractCategories(this.getHtml()));
+        addRelationships(WikiNamespaces.PageLabel.Category, RelationshipTypes.categoryLink, () -> extractCategories(this.getHtml()));
     }
 
     public void insertArticleLinks() {
-        addRelationships(WikiNamespaces.PageLabel.Article, RelTypes.articleLink, () -> extractArticles(this.getHtml()));
+        addRelationships(WikiNamespaces.PageLabel.Article, RelationshipTypes.articleLink, () -> extractArticles(this.getHtml()));
     }
 
     
-    private void addRelationships(WikiNamespaces.PageLabel label, RelTypes relType, Callable<Set<String>> callable) {
+    private void addRelationships(WikiNamespaces.PageLabel label, RelationshipType relType, Callable<Set<String>> callable) {
         Set<String> titles;
 
         try {

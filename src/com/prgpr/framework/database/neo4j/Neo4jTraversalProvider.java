@@ -36,7 +36,7 @@ public class Neo4jTraversalProvider extends TraversalProvider {
                 .evaluator(Evaluators.atDepth(depth));
 
         org.neo4j.graphdb.Direction n4jDirection = org.neo4j.graphdb.Direction.valueOf(direction.name());
-        relTypes.forEach(r -> tv.relationships((org.neo4j.graphdb.RelationshipType)r, n4jDirection)); // <(^.^<) Check it out!
+        relTypes.forEach(r -> tv.relationships(org.neo4j.graphdb.RelationshipType.withName(r.name()), n4jDirection)); // <(^.^<) Check it out!
 
         return tv.traverse(node)
                 .nodes()

@@ -97,7 +97,7 @@ public class Neo4jEmbeddedDatabase implements EmbeddedDatabase {
         });
     }
 
-    public Stream<Element> getAllNodes() {
+    public Stream<Element> getAllElements() {
         return transaction(() -> graphDb.getAllNodes()
                                             .stream()
                                             .map(n -> new Neo4jElement(this, n)));
@@ -107,7 +107,12 @@ public class Neo4jEmbeddedDatabase implements EmbeddedDatabase {
         UniqueFactory<Relationship> factory = new UniqueFactory.UniqueRelationshipFactory(graphDb, relType.name()) {
             @Override
             protected Relationship create(Map<String, Object> properties) {
-                Relationship r =  ((Neo4jElement)start).getNode().createRelationshipTo(((Neo4jElement)end).getNode(), (org.neo4j.graphdb.RelationshipType) relType);
+                Relationship r =  ((Neo4jElement)start)
+                                        .getNode()
+                                        .createRelationshipTo(
+                                                ((Neo4jElement)end).getNode(),
+                                                org.neo4j.graphdb.RelationshipType.withName(relType.name())
+                                        );
                 r.setProperty("id", relationshipHash(start, end, relType));
                 return r;
             }
@@ -117,9 +122,14 @@ public class Neo4jEmbeddedDatabase implements EmbeddedDatabase {
     }
 
     private long relationshipHash(Element start, Element end, RelationshipType relType) {
-        long result = (long)start.getProperty(Page.PageAttribute.id) ^ ((long)start.getProperty(Page.PageAttribute.id) >>> 32);
-        result += (long)end.getProperty(Page.PageAttribute.id) ^ ((long)end.getProperty(Page.PageAttribute.id) >>> 32);
-        result += (long)relType.hashCode() ^ ((long)relType.hashCode() >>> 32);
+
+        long startId = (int) start.getProperty(Page.PageAttribute.id);
+        long endId = (int) end.getProperty(Page.PageAttribute.id);
+        long relHash = (int) relType.hashCode();
+
+        long result = startId ^ (startId >>> 32);
+        result += endId ^ (endId >>> 32);
+        result += relHash ^ (relHash >>> 32);
         return result;
     }
 

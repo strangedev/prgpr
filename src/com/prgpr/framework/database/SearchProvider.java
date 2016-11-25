@@ -18,7 +18,7 @@ public class SearchProvider {
         db.transaction();
         Set<Element> ret = new LinkedHashSet<>();
 
-        db.getAllNodes()
+        db.getAllElements()
                 .filter(n -> NodePredicates.matchesAllLabels(n, labels))
                 .filter(n -> NodePredicates.matchesAllProperties(n, properties))
                 .forEach(ret::add);
@@ -34,7 +34,7 @@ public class SearchProvider {
         db.transaction();
         Set<Element> ret = new LinkedHashSet<>();
 
-        db.getAllNodes()
+        db.getAllElements()
                 .filter(n -> NodePredicates.matchesAnyLabel(n, labels))
                 .filter(n -> NodePredicates.matchesAllProperties(n, properties))
                 .forEach(ret::add);
@@ -50,7 +50,7 @@ public class SearchProvider {
         db.transaction();
         Set<Element> ret = new LinkedHashSet<>();
 
-        db.getAllNodes()
+        db.getAllElements()
                 .filter(n -> NodePredicates.matchesLabel(n, labels))
                 .filter(n -> NodePredicates.matchesAnyProperties(n, properties))
                 .forEach(ret::add);
@@ -66,7 +66,7 @@ public class SearchProvider {
         db.transaction();
         Set<Element> ret = new LinkedHashSet<>();
 
-        db.getAllNodes()
+        db.getAllElements()
                 .filter(n -> NodePredicates.matchesLabel(n, label))
                 .filter(n -> NodePredicates.matchesAllProperties(n, properties))
                 .forEach(ret::add);

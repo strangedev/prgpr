@@ -40,7 +40,8 @@ public class Main {
                 new ResetDBCommand(),
                 new ImportHtmlCommand(),
                 new CategoryLinksCommand(),
-                new ArticleLinksCommand()
+                new ArticleLinksCommand(),
+                new TestDBCommand()
         });
 
         try {

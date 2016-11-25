@@ -6,22 +6,26 @@ import com.prgpr.exceptions.InvalidArgument;
 import com.prgpr.exceptions.InvalidNumberOfArguments;
 import com.prgpr.framework.command.Command;
 import com.prgpr.framework.command.CommandArgument;
+import com.prgpr.framework.database.Element;
+import com.prgpr.framework.database.Label;
+import com.prgpr.framework.database.PropertyValuePair;
+import com.prgpr.framework.database.SearchProvider;
 import com.prgpr.framework.database.neo4j.Neo4jElement;
 import com.prgpr.framework.database.neo4j.Neo4jEmbeddedDatabase;
 import com.prgpr.framework.database.neo4j.Neo4jEmbeddedDatabaseFactory;
-import com.prgpr.helpers.Benchmark;
+import com.prgpr.framework.database.neo4j.RelationshipTypes;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 import org.neo4j.graphdb.GraphDatabaseService;
-import org.neo4j.graphdb.Node;
 import org.neo4j.graphdb.factory.GraphDatabaseFactory;
 
 import java.io.File;
+import java.util.LinkedHashSet;
 
 /**
- * Created by kito on 19.11.16.
+ * Created by strange on 11/25/16.
  */
-public class CategoryLinksCommand extends Command {
+public class TestDBCommand extends Command{
 
     private static final Logger log = LogManager.getFormatterLogger(Page.class);
 
@@ -31,12 +35,12 @@ public class CategoryLinksCommand extends Command {
 
     @Override
     public String getName() {
-        return "categorylinks";
+        return "test";
     }
 
     @Override
     public String getDescription() {
-        return "Inserts the links of the categories.";
+        return "Tests internal database logic. For debug purposes only.";
     }
 
     @Override
@@ -46,7 +50,7 @@ public class CategoryLinksCommand extends Command {
 
     @Override
     public void handleArguments(String[] args) throws InvalidNumberOfArguments, InvalidArgument {
-        if(args.length < 1){
+        if (args.length != 1) {
             throw new InvalidNumberOfArguments();
         }
 
@@ -59,18 +63,30 @@ public class CategoryLinksCommand extends Command {
         GraphDatabaseService db = new GraphDatabaseFactory().newEmbeddedDatabase(f);
         Neo4jEmbeddedDatabase graphDb = Neo4jEmbeddedDatabaseFactory.newEmbeddedDatabase(db);
 
-        long time = Benchmark.run(()->{
-            graphDb.transaction(() ->{
-                for (Node node : db.getAllNodes()) {
-                    Page page = new Page(new Neo4jElement(graphDb, node));
-                    page.insertCategoryLinks();
-                    page.getCategories().forEach(catPage -> {
-                        System.out.println("Category from DB: " + catPage.getTitle());
-                    });
-                }
-            });
+
+        Element vertex = graphDb.createElement("Elements", 0, (node) -> {});
+        Element vertox = graphDb.createElement("Elements", 1, (node) -> {});
+        Element vertix = graphDb.createElement("Elements", 1, (node) -> {});
+
+        graphDb.getAllElements().forEach((element) -> {
+            System.out.print(element.getProperty(Page.PageAttribute.id) + " ");
+            System.out.println(element.getLabels().count());
         });
 
-        log.info("It took so many seconds: " + time / 1000);
+        vertex.createUniqueRelationshipTo(vertox, RelationshipTypes.categoryLink);
+        vertex.createUniqueRelationshipTo(vertox, RelationshipTypes.categoryLink);
+
+        SearchProvider.findAnyImmediateIncoming(vertox, new Label() {
+            @Override
+            public String name() {
+                return "";
+            }
+        }, RelationshipTypes.categoryLink, new LinkedHashSet<PropertyValuePair>())
+                .forEach((neighbor) -> {
+                    System.out.print(neighbor.getProperty(Page.PageAttribute.id) + " ");
+                    System.out.println(neighbor.getLabels().count());
+                });
+
     }
+
 }

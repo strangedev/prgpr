@@ -13,7 +13,7 @@ public interface EmbeddedDatabase {
     <T> T transaction(Callable<T> callable);
     void commit();
     Element createElement(String index, long id, Callback<Element> callback);
-    Stream<Element> getAllNodes();
+    Stream<Element> getAllElements();
     Element getNodeFromIndex(String indexName, long hash);
     Stream<Element> findElements(Label label, PropertyValuePair property);
     TraversalProvider getTraversalProvider();

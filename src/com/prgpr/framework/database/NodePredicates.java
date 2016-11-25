@@ -46,7 +46,7 @@ public class NodePredicates {
     }
 
     public static boolean matchesProperty(Element n, PropertyValuePair property){
-        return n.getProperty(property.property) == property.value;
+        return property == null ? true : n.getProperty(property.property) == property.value;
     }
     
 }
