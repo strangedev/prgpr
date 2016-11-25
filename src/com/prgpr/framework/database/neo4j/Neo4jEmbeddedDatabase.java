@@ -1,8 +1,10 @@
 package com.prgpr.framework.database.neo4j;
 
+import com.prgpr.data.Page;
 import com.prgpr.framework.database.*;
-import org.neo4j.graphdb.GraphDatabaseService;
-import org.neo4j.graphdb.Node;
+import com.prgpr.framework.database.Label;
+import com.prgpr.framework.database.RelationshipType;
+import org.neo4j.graphdb.*;
 import org.neo4j.graphdb.factory.GraphDatabaseFactory;
 import org.neo4j.graphdb.index.ReadableIndex;
 import org.neo4j.graphdb.index.UniqueFactory;
@@ -99,6 +101,26 @@ public class Neo4jEmbeddedDatabase implements EmbeddedDatabase {
         return transaction(() -> graphDb.getAllNodes()
                                             .stream()
                                             .map(n -> new Neo4jElement(this, n)));
+    }
+
+    public Relationship createUniqueRelationshipTo(Element start, Element end, com.prgpr.framework.database.RelationshipType relType) {
+        UniqueFactory<Relationship> factory = new UniqueFactory.UniqueRelationshipFactory(graphDb, relType.name()) {
+            @Override
+            protected Relationship create(Map<String, Object> properties) {
+                Relationship r =  ((Neo4jElement)start).getNode().createRelationshipTo(((Neo4jElement)end).getNode(), (org.neo4j.graphdb.RelationshipType) relType);
+                r.setProperty("id", relationshipHash(start, end, relType));
+                return r;
+            }
+        };
+
+        return factory.getOrCreate("id", relationshipHash(start, end, relType));
+    }
+
+    private long relationshipHash(Element start, Element end, RelationshipType relType) {
+        long result = (long)start.getProperty(Page.PageAttribute.id) ^ ((long)start.getProperty(Page.PageAttribute.id) >>> 32);
+        result += (long)end.getProperty(Page.PageAttribute.id) ^ ((long)end.getProperty(Page.PageAttribute.id) >>> 32);
+        result += (long)relType.hashCode() ^ ((long)relType.hashCode() >>> 32);
+        return result;
     }
 
     @Override

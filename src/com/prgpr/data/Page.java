@@ -133,7 +133,7 @@ public class Page {
                 return;
             }
 
-            node.createRelationshipTo(elem, relType); //@TODO: make the relation directed
+            node.createUniqueRelationshipTo(elem, relType); //@TODO: make the relation directed
 
             log.info("A relation from " + pageTitle + " to article " + title + " was created.");
         });

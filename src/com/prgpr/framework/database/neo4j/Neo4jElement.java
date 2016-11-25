@@ -1,9 +1,6 @@
 package com.prgpr.framework.database.neo4j;
 
-import com.prgpr.framework.database.Callback;
-import com.prgpr.framework.database.Element;
-import com.prgpr.framework.database.Label;
-import com.prgpr.framework.database.Property;
+import com.prgpr.framework.database.*;
 import org.neo4j.graphdb.*;
 
 import java.util.stream.Stream;
@@ -15,7 +12,6 @@ import java.util.stream.StreamSupport;
 public class Neo4jElement implements Element {
 
     private Neo4jEmbeddedDatabase db;
-
     private Node node;
 
     public Neo4jElement(Neo4jEmbeddedDatabase db, Node node){
@@ -27,14 +23,14 @@ public class Neo4jElement implements Element {
         return node;
     }
 
-    public void addLabel(Label label){
+    public void addLabel(com.prgpr.framework.database.Label label){
         db.transaction(()-> node.addLabel(org.neo4j.graphdb.Label.label(label.name())));
     }
 
-    public Stream<Label> getLabels() {
+    public Stream<com.prgpr.framework.database.Label> getLabels() {
         return db.transaction(() ->
                 StreamSupport.stream(node.getLabels().spliterator(), false)
-                    .map(label -> (Label) label::name));
+                    .map(label -> (com.prgpr.framework.database.Label) label::name));
     }
 
     public Object getProperty(Property property){
@@ -55,14 +51,10 @@ public class Neo4jElement implements Element {
         return db;
     }
 
-    public enum RelTypes implements org.neo4j.graphdb.RelationshipType {
-        categoryLink,  // defines the Relationship category
-        articleLink
-    }
-
     @Override
-    public Relationship createRelationshipTo(Element incoming, RelTypes relation) {
-        return node.createRelationshipTo(((Neo4jElement)incoming).getNode(), relation);
+    public Relationship createUniqueRelationshipTo(Element incoming, com.prgpr.framework.database.RelationshipType relation) {
+        //return node.createRelationshipTo(((Neo4jElement)incoming).getNode(), relation);
+        return db.createUniqueRelationshipTo(this, incoming, relation);
     }
 
 }
