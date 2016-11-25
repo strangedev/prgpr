@@ -60,7 +60,6 @@ public class ArticleLinksCommand extends Command {
 
         graphDb.transaction();
 
-        //@TODO: Find out, if the ralations are automaticly unique
         long time = Benchmark.run(()->{
             for (Node node : db.getAllNodes()) {
                 Page page = new Page(new Neo4jElement(graphDb, node));

@@ -147,7 +147,7 @@ public class Page {
                 return;
             }
 
-            node.createUniqueRelationshipTo(elem, relType); //@TODO: make the relation directed
+            node.createUniqueRelationshipTo(elem, relType);
 
             log.info("A relation from " + pageTitle + " to article " + title + " was created.");
         });
