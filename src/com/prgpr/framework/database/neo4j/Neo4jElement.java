@@ -43,7 +43,7 @@ public class Neo4jElement implements Element {
 
     @Override
     public void update(Callback<Element> callback) {
-        db.transaction(()-> callback);
+        db.transaction(()-> callback.call(this));
     }
 
     @Override

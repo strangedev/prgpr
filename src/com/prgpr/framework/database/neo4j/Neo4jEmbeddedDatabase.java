@@ -123,9 +123,9 @@ public class Neo4jEmbeddedDatabase implements EmbeddedDatabase {
 
     private long relationshipHash(Element start, Element end, RelationshipType relType) {
 
-        long startId = (int) start.getProperty(Page.PageAttribute.id);
-        long endId = (int) end.getProperty(Page.PageAttribute.id);
-        long relHash = (int) relType.hashCode();
+        long startId = (long) start.getProperty(Page.PageAttribute.id);
+        long endId = (long) end.getProperty(Page.PageAttribute.id);
+        long relHash = relType.hashCode();
 
         long result = startId ^ (startId >>> 32);
         result += endId ^ (endId >>> 32);

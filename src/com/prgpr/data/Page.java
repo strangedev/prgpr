@@ -53,8 +53,8 @@ public class Page {
         });
     }
 
-    public int getID() {
-        return (int)node.getProperty(PageAttribute.id);
+    public long getID() {
+        return (long)node.getProperty(PageAttribute.id);
     }
 
     public long getArticleID() {
