@@ -12,7 +12,6 @@ import java.util.Arrays;
 import java.util.LinkedHashSet;
 import java.util.Set;
 import java.util.concurrent.Callable;
-import java.util.stream.Collector;
 import java.util.stream.Collectors;
 
 import static com.prgpr.LinkExtraction.extractArticles;
@@ -86,7 +85,7 @@ public class Page {
     }
 
     public Set<Page> getCategories() {
-        return SearchProvider.findAnyImmediateIncoming(
+        return SearchProvider.findImmediateIncoming(
                 this.node,
                 WikiNamespaces.PageLabel.Category,
                 RelationshipTypes.categoryLink,
@@ -102,6 +101,28 @@ public class Page {
                 WikiNamespaces.PageLabel.Category,
                 RelationshipTypes.categoryLink,
                 null)
+                .stream()
+                .map(PageFactory::getPage)
+                .collect(Collectors.toCollection(LinkedHashSet::new));
+    }
+
+    public Set<Page> getLinkedArticles() {
+        return SearchProvider.findImmediateOutgoing(
+                this.node,
+                WikiNamespaces.PageLabel.Article,
+                RelationshipTypes.articleLink,
+                (PropertyValuePair) null)
+                .stream()
+                .map(PageFactory::getPage)
+                .collect(Collectors.toCollection(LinkedHashSet::new));
+    }
+
+    public Set<Page> getLinkingArticles() {
+        return SearchProvider.findImmediateIncoming(
+                this.node,
+                WikiNamespaces.PageLabel.Article,
+                RelationshipTypes.articleLink,
+                (PropertyValuePair) null)
                 .stream()
                 .map(PageFactory::getPage)
                 .collect(Collectors.toCollection(LinkedHashSet::new));
@@ -167,20 +188,15 @@ public class Page {
         }
 
         int namespace = WikiNamespaces.fromPageLabel(label);
-
         String pageTitle = this.getTitle();
 
         titles.forEach((title) -> {
             long hash = hashCode(namespace, title);
-
             Element elem = node.getDatabase().getNodeFromIndex(indexName, hash);
 
-            if(elem == null) {
-                return;
-            }
+            if(elem == null) return;
 
             node.createUniqueRelationshipTo(elem, relType);
-
             log.info("A relation from " + pageTitle + " to article " + title + " was created.");
         });
     }

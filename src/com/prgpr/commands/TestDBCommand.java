@@ -75,7 +75,7 @@ public class TestDBCommand extends Command{
         vertex.createUniqueRelationshipTo(vertox, RelationshipTypes.categoryLink);
         vertex.createUniqueRelationshipTo(vertox, RelationshipTypes.categoryLink);
 
-        SearchProvider.findAnyImmediateIncoming(vertox, new Label() {
+        SearchProvider.findImmediateIncoming(vertox, new Label() {
             @Override
             public String name() {
                 return "";
