@@ -58,6 +58,7 @@ public class Neo4jEmbeddedDatabase implements EmbeddedDatabase {
     @Override
     public TraversalProvider getTraversalProvider() {
         return transaction(() -> this.traversalProvider );
+
     }
 
     @Override
@@ -88,12 +89,12 @@ public class Neo4jEmbeddedDatabase implements EmbeddedDatabase {
             UniqueFactory<Node> factory = new UniqueFactory.UniqueNodeFactory(graphDb, index) {
                 @Override
                 protected void initialize(Node created, Map<String, Object> properties) {
-                    created.setProperty("hash", hash);
+                    created.setProperty("id", hash);
                     new Neo4jElement(db, created).update(callback);
                 }
             };
 
-            return new Neo4jElement(db, factory.getOrCreate("hash", hash));
+            return new Neo4jElement(db, factory.getOrCreate("id", hash));
         });
     }
 

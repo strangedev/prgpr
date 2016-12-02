@@ -126,10 +126,7 @@ public class Page {
             titleHash = title.getBytes();
         }
 
-        return Arrays.hashCode(new Object[] {
-                namespaceID,
-                titleHash
-        });
+        return (namespaceID * 31) + Arrays.hashCode(titleHash);
     }
 
     @Override
