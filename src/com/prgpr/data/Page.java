@@ -7,6 +7,8 @@ import com.prgpr.framework.database.neo4j.RelationshipTypes;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 
+import java.security.NoSuchAlgorithmException;
+import java.util.Arrays;
 import java.util.LinkedHashSet;
 import java.util.Set;
 import java.util.concurrent.Callable;
@@ -15,6 +17,7 @@ import java.util.stream.Collectors;
 
 import static com.prgpr.LinkExtraction.extractArticles;
 import static com.prgpr.LinkExtraction.extractCategories;
+import java.security.MessageDigest;
 
 /**
  * @author Kyle Rinfreschi
@@ -27,8 +30,9 @@ public class Page {
 
     private static final Logger log = LogManager.getFormatterLogger(Page.class);
     private static final String indexName = "Pages";
+    private static final String stringHashFunction = "SHA-1";
     private Element node;
-    
+
     public enum PageAttribute implements Property
     {
         hash,
@@ -37,7 +41,6 @@ public class Page {
         title,
         html
     }
-
 
     public Page(Element node) {
         this.node = node;
@@ -104,10 +107,29 @@ public class Page {
                 .collect(Collectors.toCollection(LinkedHashSet::new));
     }
 
+    /**
+     * http://eclipsesource.com/blogs/2012/09/04/the-3-things-you-should-know-about-hashcode/
+     * http://preshing.com/20110504/hash-collision-probabilities/
+     * http://stackoverflow.com/questions/1867191/probability-of-sha1-collisions
+     *
+     * @param namespaceID
+     * @param title
+     * @return
+     */
     private static int hashCode(int namespaceID, String title) {
-        int result = namespaceID;
-        result = 31 * result + (title != null ? title.hashCode() : 0);
-        return result;
+        byte[] titleHash;
+        try {
+            final MessageDigest messageDigest = MessageDigest.getInstance(stringHashFunction);
+            messageDigest.update(title.getBytes());
+            titleHash = messageDigest.digest();
+        } catch (NoSuchAlgorithmException e) {
+            titleHash = title.getBytes();
+        }
+
+        return Arrays.hashCode(new Object[] {
+                namespaceID,
+                titleHash
+        });
     }
 
     @Override
