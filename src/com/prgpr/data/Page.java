@@ -97,6 +97,8 @@ public class Page {
     /**
      * http://eclipsesource.com/blogs/2012/09/04/the-3-things-you-should-know-about-hashcode/
      * http://preshing.com/20110504/hash-collision-probabilities/
+     * http://stackoverflow.com/questions/1867191/probability-of-sha1-collisions
+     *
      * @param namespaceID
      * @param title
      * @return

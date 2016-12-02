@@ -57,7 +57,7 @@ public class Neo4jEmbeddedDatabase implements EmbeddedDatabase {
 
     @Override
     public TraversalProvider getTraversalProvider() {
-        return this.traversalProvider;
+        return transaction(() -> this.traversalProvider );
     }
 
     @Override
