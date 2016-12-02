@@ -107,6 +107,28 @@ public class Page {
                 .collect(Collectors.toCollection(LinkedHashSet::new));
     }
 
+    public Set<Page> getOutgoingArticleLinks() {
+        return SearchProvider.findImmediateOutgoing(
+                this.node,
+                WikiNamespaces.PageLabel.Article,
+                RelationshipTypes.articleLink,
+                (PropertyValuePair) null)
+                .stream()
+                .map(PageFactory::getPage)
+                .collect(Collectors.toCollection(LinkedHashSet::new));
+    }
+
+    public Set<Page> getIncomingArticleLinks() {
+        return SearchProvider.findImmediateIncoming(
+                this.node,
+                WikiNamespaces.PageLabel.Article,
+                RelationshipTypes.articleLink,
+                (PropertyValuePair) null)
+                .stream()
+                .map(PageFactory::getPage)
+                .collect(Collectors.toCollection(LinkedHashSet::new));
+    }
+
     /**
      * http://eclipsesource.com/blogs/2012/09/04/the-3-things-you-should-know-about-hashcode/
      * http://preshing.com/20110504/hash-collision-probabilities/
@@ -170,20 +192,15 @@ public class Page {
         }
 
         int namespace = WikiNamespaces.fromPageLabel(label);
-
         String pageTitle = this.getTitle();
 
         titles.forEach((title) -> {
             long hash = hashCode(namespace, title);
-
             Element elem = node.getDatabase().getNodeFromIndex(indexName, hash);
 
-            if(elem == null) {
-                return;
-            }
+            if(elem == null) return;
 
             node.createUniqueRelationshipTo(elem, relType);
-
             log.info("A relation from " + pageTitle + " to article " + title + " was created.");
         });
     }
