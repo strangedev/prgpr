@@ -1,6 +1,6 @@
 package com.prgpr.commands;
 
-import com.prgpr.commands.arguments.DatabaseDirectory;
+import com.prgpr.commands.arguments.DatabaseDirectoryArgument;
 import com.prgpr.data.Page;
 import com.prgpr.exceptions.InvalidArgument;
 import com.prgpr.exceptions.InvalidNumberOfArguments;
@@ -25,7 +25,7 @@ public class ArticleLinksCommand extends Command {
     private static final Logger log = LogManager.getFormatterLogger(Page.class);
 
     protected final CommandArgument[] arguments = new CommandArgument[]{
-            new DatabaseDirectory()
+            new DatabaseDirectoryArgument()
     };
 
     @Override

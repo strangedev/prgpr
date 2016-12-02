@@ -9,7 +9,7 @@ import java.nio.file.Path;
 /**
  * Created by kito on 20.11.16.
  */
-public class DatabaseDirectory extends CommandArgument {
+public class DatabaseDirectoryArgument extends CommandArgument {
 
     @Override
     public String getName() {

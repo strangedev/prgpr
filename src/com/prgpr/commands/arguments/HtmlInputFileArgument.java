@@ -9,7 +9,7 @@ import java.io.File;
 /**
  * Created by kito on 20.11.16.
  */
-public class HtmlInputFile extends CommandArgument {
+public class HtmlInputFileArgument extends CommandArgument {
 
     @Override
     public String getName() {
