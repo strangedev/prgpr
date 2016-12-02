@@ -16,31 +16,20 @@ public class SearchProvider {
             Set<Label> labels,
             Set<PropertyValuePair> properties){
 
-        db.transaction();
-        Set<Element> ret = new LinkedHashSet<>();
-
-        db.getAllElements()
+        return db.getAllElements()
                 .filter(n -> NodePredicates.matchesAllLabels(n, labels))
                 .filter(n -> NodePredicates.matchesAllProperties(n, properties))
-                .forEach(ret::add);
-
-        return ret;
+                .collect(Collectors.toCollection(LinkedHashSet::new));
     }
 
     public static Set<Element> findAny(
             EmbeddedDatabase db,
             Set<Label> labels,
             Set<PropertyValuePair> properties){
-
-        db.transaction();
-        Set<Element> ret = new LinkedHashSet<>();
-
-        db.getAllElements()
+        return db.getAllElements()
                 .filter(n -> NodePredicates.matchesAnyLabel(n, labels))
                 .filter(n -> NodePredicates.matchesAllProperties(n, properties))
-                .forEach(ret::add);
-
-        return ret;
+                .collect(Collectors.toCollection(LinkedHashSet::new));
     }
 
     public static Set<Element> findAnyWithLabel(
@@ -48,15 +37,10 @@ public class SearchProvider {
             Label labels,
             Set<PropertyValuePair> properties){
 
-        db.transaction();
-        Set<Element> ret = new LinkedHashSet<>();
-
-        db.getAllElements()
+        return db.getAllElements()
                 .filter(n -> NodePredicates.matchesLabel(n, labels))
                 .filter(n -> NodePredicates.matchesAnyProperties(n, properties))
-                .forEach(ret::add);
-
-        return ret;
+                .collect(Collectors.toCollection(LinkedHashSet::new));
     }
 
     public static Set<Element> findNode(
@@ -64,21 +48,13 @@ public class SearchProvider {
             Label label,
             Set<PropertyValuePair> properties){
 
-        db.transaction();
-        Set<Element> ret = new LinkedHashSet<>();
-
-        db.getAllElements()
+        return db.getAllElements()
                 .filter(n -> NodePredicates.matchesLabel(n, label))
                 .filter(n -> NodePredicates.matchesAllProperties(n, properties))
-                .forEach(ret::add);
-
-        return ret;
+                .collect(Collectors.toCollection(LinkedHashSet::new));
     }
 
     public static <E> Element findNode(EmbeddedDatabase db, Label label, Property property, E val){
-
-        db.transaction();
-
         return db.findElements(label, new PropertyValuePair<>(property, val))
                 .findFirst().orElse(null);
     }
@@ -89,17 +65,11 @@ public class SearchProvider {
             List<RelationshipType> relTypes,
             Set<PropertyValuePair> properties
     ){
-        EmbeddedDatabase db = start.getDatabase();
-        db.transaction();
-        Set<Element> ret = new LinkedHashSet<>();
-
-        db.getTraversalProvider()
+        return start.getDatabase().getTraversalProvider()
                 .traverseIncomingUnique(start, relTypes, 1)
                 .filter(n -> NodePredicates.matchesAllLabels(n, nodeLabels))
                 .filter(n -> NodePredicates.matchesAllProperties(n, properties))
-                .forEach(ret::add);
-
-        return ret;
+                .collect(Collectors.toCollection(LinkedHashSet::new));
     }
 
     public static Set<Element> findAnyImmediateIncoming(
@@ -108,17 +78,12 @@ public class SearchProvider {
             List<RelationshipType> relTypes,
             Set<PropertyValuePair> properties
     ){
-        EmbeddedDatabase db = start.getDatabase();
-        db.transaction();
-        Set<Element> ret = new LinkedHashSet<>();
-
-        db.getTraversalProvider()
+        return start.getDatabase()
+                .getTraversalProvider()
                 .traverseIncomingUnique(start, relTypes, 1)
                 .filter(n -> NodePredicates.matchesAnyLabel(n, nodeLabels))
                 .filter(n -> NodePredicates.matchesAllProperties(n, properties))
-                .forEach(ret::add);
-
-        return ret;
+                .collect(Collectors.toCollection(LinkedHashSet::new));
     }
 
     public static Set<Element> findImmediateOutgoing(
@@ -127,17 +92,12 @@ public class SearchProvider {
             RelationshipType relType,
             Set<PropertyValuePair> properties
     ){
-        EmbeddedDatabase db = start.getDatabase();
-        db.transaction();
-        Set<Element> ret = new LinkedHashSet<>();
-
-        db.getTraversalProvider()
+        return start.getDatabase()
+                .getTraversalProvider()
                 .traverseOutgoingUnique(start, relType, 1)
                 .filter(n -> NodePredicates.matchesLabel(n, nodeLabel))
                 .filter(n -> NodePredicates.matchesAllProperties(n, properties))
-                .forEach(ret::add);
-
-        return ret;
+                .collect(Collectors.toCollection(LinkedHashSet::new));
     }
 
     public static Set<Element> findAnyImmediateIncoming(
@@ -146,17 +106,12 @@ public class SearchProvider {
             RelationshipType relType,
             Set<PropertyValuePair> properties
     ){
-        EmbeddedDatabase db = start.getDatabase();
-        db.transaction();
-        Set<Element> ret = new LinkedHashSet<>();
-
-        db.getTraversalProvider()
+        return start.getDatabase()
+                .getTraversalProvider()
                 .traverseIncomingUnique(start, relType, 1)
                 .filter(n -> NodePredicates.matchesLabel(n, nodeLabel))
                 .filter(n -> NodePredicates.matchesAllProperties(n, properties))
-                .forEach(ret::add);
-
-        return ret;
+                .collect(Collectors.toCollection(LinkedHashSet::new));
     }
 
     public static Set<Element> findImmediateOutgoing(
@@ -165,17 +120,12 @@ public class SearchProvider {
             RelationshipType relType,
             PropertyValuePair property
     ){
-        EmbeddedDatabase db = start.getDatabase();
-        db.transaction();
-        Set<Element> ret = new LinkedHashSet<>();
-
-        db.getTraversalProvider()
+        return start.getDatabase()
+                .getTraversalProvider()
                 .traverseOutgoingUnique(start, relType, 1)
                 .filter(n -> NodePredicates.matchesLabel(n, nodeLabel))
                 .filter(n -> NodePredicates.matchesProperty(n, property))
-                .forEach(ret::add);
-
-        return ret;
+                .collect(Collectors.toCollection(LinkedHashSet::new));
     }
 
     public static Set<Element> findAnyImmediateIncoming(
@@ -184,17 +134,13 @@ public class SearchProvider {
             RelationshipType relType,
             PropertyValuePair property
     ){
-        EmbeddedDatabase db = start.getDatabase();
-        db.transaction();
-        Set<Element> ret = new LinkedHashSet<>();
-
-        db.getTraversalProvider()
+        return start
+                .getDatabase()
+                .getTraversalProvider()
                 .traverseIncomingUnique(start, relType, 1)
                 .filter(n -> NodePredicates.matchesLabel(n, nodeLabel))
                 .filter(n -> NodePredicates.matchesProperty(n, property))
-                .forEach(ret::add);
-
-        return ret;
+                .collect(Collectors.toCollection(LinkedHashSet::new));
     }
 
     public static Set<Element> findAllInSubgraph(
@@ -203,10 +149,9 @@ public class SearchProvider {
         RelationshipType relType,
         PropertyValuePair property
     ){
-        EmbeddedDatabase db = start.getDatabase();
-        db.transaction();
-
-        return db.getTraversalProvider()
+        return  start
+                .getDatabase()
+                .getTraversalProvider()
                 .traverseOutgoingUnique(start, relType)
                 .filter(n -> NodePredicates.matchesLabel(n, nodeLabel))
                 .filter(n -> NodePredicates.matchesProperty(n, property))
