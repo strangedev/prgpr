@@ -2,6 +2,7 @@ package com.prgpr;
 
 import com.prgpr.data.Page;
 import com.prgpr.framework.consumer.Producer;
+import com.prgpr.framework.database.Element;
 import com.prgpr.framework.database.EmbeddedDatabase;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
@@ -29,6 +30,12 @@ public class PageFactory extends Producer<Page> {
     {
         return new Page(db, id, namespaceID, title, html);
     }
+
+    public static Page getPage(Element e)
+    {
+        return new Page(e);
+    }
+
 
     public static void commit()
     {
