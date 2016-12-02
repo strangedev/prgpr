@@ -41,7 +41,8 @@ public class Main {
                 new ImportHtmlCommand(),
                 new CategoryLinksCommand(),
                 new ArticleLinksCommand(),
-                new TestDBCommand()
+                new TestDBCommand(),
+                new PageInfoCommand()
         });
 
         try {

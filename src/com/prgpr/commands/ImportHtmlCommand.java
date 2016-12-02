@@ -2,8 +2,8 @@ package com.prgpr.commands;
 
 import com.prgpr.PageFactory;
 import com.prgpr.PageProducer;
-import com.prgpr.commands.arguments.DatabaseDirectory;
-import com.prgpr.commands.arguments.HtmlInputFile;
+import com.prgpr.commands.arguments.DatabaseDirectoryArgument;
+import com.prgpr.commands.arguments.HtmlInputFileArgument;
 import com.prgpr.data.Page;
 import com.prgpr.exceptions.InvalidArgument;
 import com.prgpr.exceptions.InvalidNumberOfArguments;
@@ -29,8 +29,8 @@ public class ImportHtmlCommand extends Command {
     private static final Logger log = LogManager.getFormatterLogger(Command.class);
 
     protected static final CommandArgument[] arguments = new CommandArgument[]{
-            new DatabaseDirectory(),
-            new HtmlInputFile()
+            new DatabaseDirectoryArgument(),
+            new HtmlInputFileArgument()
     };
 
     @Override

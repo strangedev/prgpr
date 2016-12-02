@@ -1,6 +1,6 @@
 package com.prgpr.commands;
 
-import com.prgpr.commands.arguments.DatabaseDirectory;
+import com.prgpr.commands.arguments.DatabaseDirectoryArgument;
 import com.prgpr.data.Page;
 import com.prgpr.exceptions.InvalidArgument;
 import com.prgpr.exceptions.InvalidNumberOfArguments;
@@ -10,7 +10,6 @@ import com.prgpr.framework.database.Element;
 import com.prgpr.framework.database.Label;
 import com.prgpr.framework.database.PropertyValuePair;
 import com.prgpr.framework.database.SearchProvider;
-import com.prgpr.framework.database.neo4j.Neo4jElement;
 import com.prgpr.framework.database.neo4j.Neo4jEmbeddedDatabase;
 import com.prgpr.framework.database.neo4j.Neo4jEmbeddedDatabaseFactory;
 import com.prgpr.framework.database.neo4j.RelationshipTypes;
@@ -30,7 +29,7 @@ public class TestDBCommand extends Command{
     private static final Logger log = LogManager.getFormatterLogger(Page.class);
 
     protected final CommandArgument[] arguments = new CommandArgument[]{
-            new DatabaseDirectory()
+            new DatabaseDirectoryArgument()
     };
 
     @Override
