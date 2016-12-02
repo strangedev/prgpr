@@ -12,7 +12,6 @@ import java.util.Arrays;
 import java.util.LinkedHashSet;
 import java.util.Set;
 import java.util.concurrent.Callable;
-import java.util.stream.Collector;
 import java.util.stream.Collectors;
 
 import static com.prgpr.LinkExtraction.extractArticles;
@@ -86,7 +85,7 @@ public class Page {
     }
 
     public Set<Page> getCategories() {
-        return SearchProvider.findAnyImmediateIncoming(
+        return SearchProvider.findImmediateIncoming(
                 this.node,
                 WikiNamespaces.PageLabel.Category,
                 RelationshipTypes.categoryLink,
@@ -107,7 +106,7 @@ public class Page {
                 .collect(Collectors.toCollection(LinkedHashSet::new));
     }
 
-    public Set<Page> getOutgoingArticleLinks() {
+    public Set<Page> getLinkedArticles() {
         return SearchProvider.findImmediateOutgoing(
                 this.node,
                 WikiNamespaces.PageLabel.Article,
@@ -118,7 +117,7 @@ public class Page {
                 .collect(Collectors.toCollection(LinkedHashSet::new));
     }
 
-    public Set<Page> getIncomingArticleLinks() {
+    public Set<Page> getLinkingArticles() {
         return SearchProvider.findImmediateIncoming(
                 this.node,
                 WikiNamespaces.PageLabel.Article,

@@ -72,7 +72,7 @@ public class SearchProvider {
                 .collect(Collectors.toCollection(LinkedHashSet::new));
     }
 
-    public static Set<Element> findAnyImmediateIncoming(
+    public static Set<Element> findImmediateIncoming(
             Element start,
             Set<Label> nodeLabels,
             List<RelationshipType> relTypes,
@@ -100,7 +100,7 @@ public class SearchProvider {
                 .collect(Collectors.toCollection(LinkedHashSet::new));
     }
 
-    public static Set<Element> findAnyImmediateIncoming(
+    public static Set<Element> findImmediateIncoming(
             Element start,
             Label nodeLabel,
             RelationshipType relType,
@@ -128,7 +128,7 @@ public class SearchProvider {
                 .collect(Collectors.toCollection(LinkedHashSet::new));
     }
 
-    public static Set<Element> findAnyImmediateIncoming(
+    public static Set<Element> findImmediateIncoming(
             Element start,
             Label nodeLabel,
             RelationshipType relType,

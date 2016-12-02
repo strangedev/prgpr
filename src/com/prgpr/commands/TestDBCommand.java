@@ -10,7 +10,6 @@ import com.prgpr.framework.database.Element;
 import com.prgpr.framework.database.Label;
 import com.prgpr.framework.database.PropertyValuePair;
 import com.prgpr.framework.database.SearchProvider;
-import com.prgpr.framework.database.neo4j.Neo4jElement;
 import com.prgpr.framework.database.neo4j.Neo4jEmbeddedDatabase;
 import com.prgpr.framework.database.neo4j.Neo4jEmbeddedDatabaseFactory;
 import com.prgpr.framework.database.neo4j.RelationshipTypes;
@@ -76,7 +75,7 @@ public class TestDBCommand extends Command{
         vertex.createUniqueRelationshipTo(vertox, RelationshipTypes.categoryLink);
         vertex.createUniqueRelationshipTo(vertox, RelationshipTypes.categoryLink);
 
-        SearchProvider.findAnyImmediateIncoming(vertox, new Label() {
+        SearchProvider.findImmediateIncoming(vertox, new Label() {
             @Override
             public String name() {
                 return "";
