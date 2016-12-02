@@ -14,39 +14,45 @@ import java.util.stream.StreamSupport;
 public class NodePredicates {
 
     public static boolean matchesAnyLabel(Element n, Set<Label> labels){
-        return n.getLabels()
+        return labels == null ||
+                n.getLabels()
                 .anyMatch(labels::contains)
                 || labels.isEmpty();
     }
 
     public static boolean matchesAllLabels(Element n, Set<Label> labels){
-        return n.getLabels()
+        return labels == null ||
+                n.getLabels()
                 .allMatch(labels::contains)
                 || labels.isEmpty();
     }
 
     public static boolean matchesLabel(Element n, Label label){
-        return n.getLabels()
+        return label == null ||
+                n.getLabels()
                 .anyMatch(l -> l.name().equals(label.name()))
                 || label.name().isEmpty();
     }
 
     public static boolean matchesAllProperties(Element n, Set<PropertyValuePair> properties){
-        return properties.stream()
+        return properties == null ||
+                properties.stream()
                 .allMatch(p ->
                         n.getProperty(p.property).equals(p.value)
                 ) || properties.isEmpty();
     }
 
     public static boolean matchesAnyProperties(Element n, Set<PropertyValuePair> properties){
-        return properties.stream()
+        return properties == null ||
+                properties.stream()
                 .anyMatch(p ->
                         n.getProperty(p.property).equals(p.value)
-                ) || properties.isEmpty();
+                )
+                || properties.isEmpty();
     }
 
     public static boolean matchesProperty(Element n, PropertyValuePair property){
-        return property == null ? true : n.getProperty(property.property) == property.value;
+        return property == null || n.getProperty(property.property) == property.value;
     }
     
 }
