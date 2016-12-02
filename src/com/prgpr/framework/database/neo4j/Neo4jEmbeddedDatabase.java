@@ -82,18 +82,18 @@ public class Neo4jEmbeddedDatabase implements EmbeddedDatabase {
         Neo4jTransactionManager.success(graphDb);
     }
 
-    public Element createElement(String index, long id, Callback<Element> callback){
+    public Element createElement(String index, long hash, Callback<Element> callback){
         Neo4jEmbeddedDatabase db = this;
         return transaction(() -> {
             UniqueFactory<Node> factory = new UniqueFactory.UniqueNodeFactory(graphDb, index) {
                 @Override
                 protected void initialize(Node created, Map<String, Object> properties) {
-                    created.setProperty("id", id);
+                    created.setProperty("hash", hash);
                     new Neo4jElement(db, created).update(callback);
                 }
             };
 
-            return new Neo4jElement(db, factory.getOrCreate("id", id));
+            return new Neo4jElement(db, factory.getOrCreate("hash", hash));
         });
     }
 
@@ -123,8 +123,8 @@ public class Neo4jEmbeddedDatabase implements EmbeddedDatabase {
 
     private long relationshipHash(Element start, Element end, RelationshipType relType) {
 
-        long startId = (long) start.getProperty(Page.PageAttribute.id);
-        long endId = (long) end.getProperty(Page.PageAttribute.id);
+        long startId = (long) start.getProperty(Page.PageAttribute.hash);
+        long endId = (long) end.getProperty(Page.PageAttribute.hash);
         long relHash = relType.hashCode();
 
         long result = startId ^ (startId >>> 32);

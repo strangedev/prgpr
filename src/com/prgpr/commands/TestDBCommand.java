@@ -69,7 +69,7 @@ public class TestDBCommand extends Command{
         Element vertix = graphDb.createElement("Elements", 1, (node) -> {});
 
         graphDb.getAllElements().forEach((element) -> {
-            System.out.print(element.getProperty(Page.PageAttribute.id) + " ");
+            System.out.print(element.getProperty(Page.PageAttribute.hash) + " ");
             System.out.println(element.getLabels().count());
         });
 
@@ -83,7 +83,7 @@ public class TestDBCommand extends Command{
             }
         }, RelationshipTypes.categoryLink, new LinkedHashSet<PropertyValuePair>())
                 .forEach((neighbor) -> {
-                    System.out.print(neighbor.getProperty(Page.PageAttribute.id) + " ");
+                    System.out.print(neighbor.getProperty(Page.PageAttribute.hash) + " ");
                     System.out.println(neighbor.getLabels().count());
                 });
 

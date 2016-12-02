@@ -30,7 +30,7 @@ public class Page {
     
     public enum PageAttribute implements Property
     {
-        id,
+        hash,
         articleID,
         namespaceID,
         title,
@@ -54,7 +54,7 @@ public class Page {
     }
 
     public long getID() {
-        return (long)node.getProperty(PageAttribute.id);
+        return (long)node.getProperty(PageAttribute.hash);
     }
 
     public long getArticleID() {
@@ -88,7 +88,7 @@ public class Page {
                 RelationshipTypes.categoryLink,
                 (PropertyValuePair) null)
                 .stream()
-                .map(e -> new Page(e)).collect(Collectors.toCollection(LinkedHashSet::new));
+                .map(Page::new).collect(Collectors.toCollection(LinkedHashSet::new));
     }
 
     private static int hashCode(int namespaceID, String title) {
