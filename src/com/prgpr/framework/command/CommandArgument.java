@@ -2,6 +2,8 @@ package com.prgpr.framework.command;
 
 import com.prgpr.exceptions.InvalidArgument;
 
+import java.util.Objects;
+
 /**
  * Created by kito on 20.11.16.
  */
@@ -9,6 +11,20 @@ public abstract class CommandArgument {
     public String value;
 
     public abstract String getName();
+
+    public abstract String getDescription();
+
+    public String getFullDescription(){
+        String name = getName();
+        String desc = getDescription();
+
+        if(desc == null){
+            return name;
+        }
+
+        return String.format("%s : %s", name, desc);
+    }
+
     public abstract void test(String arg) throws InvalidArgument;
 
     public void set(String arg) throws InvalidArgument {
@@ -18,5 +34,15 @@ public abstract class CommandArgument {
 
     public String get() {
         return value;
+    }
+
+    @Override
+    public int hashCode(){
+        return getClass().hashCode();
+    }
+
+    @Override
+    public boolean equals(Object o) {
+        return this == o || getClass() ==  o.getClass();
     }
 }

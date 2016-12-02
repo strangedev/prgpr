@@ -17,6 +17,11 @@ public class HtmlInputFileArgument extends CommandArgument {
     }
 
     @Override
+    public String getDescription() {
+        return "Wiki-dump used for importing.";
+    }
+
+    @Override
     public void test(String arg) throws InvalidArgument {
         File f = new File(arg);
 

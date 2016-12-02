@@ -13,6 +13,11 @@ public class PageTitleArgument extends CommandArgument {
     }
 
     @Override
+    public String getDescription() {
+        return "The page title";
+    }
+
+    @Override
     public void test(String arg) throws InvalidArgument {
 
     }

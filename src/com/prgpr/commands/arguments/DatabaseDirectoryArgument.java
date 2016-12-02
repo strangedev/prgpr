@@ -17,6 +17,11 @@ public class DatabaseDirectoryArgument extends CommandArgument {
     }
 
     @Override
+    public String getDescription() {
+        return "Directory where the database will store its files.";
+    }
+
+    @Override
     public void test(String arg) throws InvalidArgument {
         File f = new File(arg);
 
