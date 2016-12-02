@@ -1,6 +1,7 @@
 package com.prgpr.framework.database;
 
 import java.util.*;
+import java.util.stream.Collectors;
 
 /**
  * Created by strange on 11/20/16.
@@ -93,7 +94,7 @@ public class SearchProvider {
         Set<Element> ret = new LinkedHashSet<>();
 
         db.getTraversalProvider()
-                .traverseIncomingUnique(start, relTypes)
+                .traverseIncomingUnique(start, relTypes, 1)
                 .filter(n -> NodePredicates.matchesAllLabels(n, nodeLabels))
                 .filter(n -> NodePredicates.matchesAllProperties(n, properties))
                 .forEach(ret::add);
@@ -112,7 +113,7 @@ public class SearchProvider {
         Set<Element> ret = new LinkedHashSet<>();
 
         db.getTraversalProvider()
-                .traverseIncomingUnique(start, relTypes)
+                .traverseIncomingUnique(start, relTypes, 1)
                 .filter(n -> NodePredicates.matchesAnyLabel(n, nodeLabels))
                 .filter(n -> NodePredicates.matchesAllProperties(n, properties))
                 .forEach(ret::add);
@@ -131,7 +132,7 @@ public class SearchProvider {
         Set<Element> ret = new LinkedHashSet<>();
 
         db.getTraversalProvider()
-                .traverseOutgoingUnique(start, relType)
+                .traverseOutgoingUnique(start, relType, 1)
                 .filter(n -> NodePredicates.matchesLabel(n, nodeLabel))
                 .filter(n -> NodePredicates.matchesAllProperties(n, properties))
                 .forEach(ret::add);
@@ -150,7 +151,7 @@ public class SearchProvider {
         Set<Element> ret = new LinkedHashSet<>();
 
         db.getTraversalProvider()
-                .traverseIncomingUnique(start, relType)
+                .traverseIncomingUnique(start, relType, 1)
                 .filter(n -> NodePredicates.matchesLabel(n, nodeLabel))
                 .filter(n -> NodePredicates.matchesAllProperties(n, properties))
                 .forEach(ret::add);
@@ -169,7 +170,7 @@ public class SearchProvider {
         Set<Element> ret = new LinkedHashSet<>();
 
         db.getTraversalProvider()
-                .traverseOutgoingUnique(start, relType)
+                .traverseOutgoingUnique(start, relType, 1)
                 .filter(n -> NodePredicates.matchesLabel(n, nodeLabel))
                 .filter(n -> NodePredicates.matchesProperty(n, property))
                 .forEach(ret::add);
@@ -188,12 +189,28 @@ public class SearchProvider {
         Set<Element> ret = new LinkedHashSet<>();
 
         db.getTraversalProvider()
-                .traverseIncomingUnique(start, relType)
+                .traverseIncomingUnique(start, relType, 1)
                 .filter(n -> NodePredicates.matchesLabel(n, nodeLabel))
                 .filter(n -> NodePredicates.matchesProperty(n, property))
                 .forEach(ret::add);
 
         return ret;
+    }
+
+    public static Set<Element> findAllInSubgraph(
+        Element start,
+        Label nodeLabel,
+        RelationshipType relType,
+        PropertyValuePair property
+    ){
+        EmbeddedDatabase db = start.getDatabase();
+        db.transaction();
+
+        return db.getTraversalProvider()
+                .traverseOutgoingUnique(start, relType)
+                .filter(n -> NodePredicates.matchesLabel(n, nodeLabel))
+                .filter(n -> NodePredicates.matchesProperty(n, property))
+                .collect(Collectors.toCollection(LinkedHashSet::new));
     }
 
 }

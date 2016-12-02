@@ -10,6 +10,7 @@ import org.apache.logging.log4j.Logger;
 import java.util.LinkedHashSet;
 import java.util.Set;
 import java.util.concurrent.Callable;
+import java.util.stream.Collector;
 import java.util.stream.Collectors;
 
 import static com.prgpr.LinkExtraction.extractArticles;
@@ -88,7 +89,19 @@ public class Page {
                 RelationshipTypes.categoryLink,
                 (PropertyValuePair) null)
                 .stream()
-                .map(Page::new).collect(Collectors.toCollection(LinkedHashSet::new));
+                .map(Page::new)
+                .collect(Collectors.toCollection(LinkedHashSet::new));
+    }
+
+    public Set<Page> getAllRelatedCategories() {
+        return SearchProvider.findAllInSubgraph(
+                this.node,
+                WikiNamespaces.PageLabel.Category,
+                RelationshipTypes.categoryLink,
+                null)
+                .stream()
+                .map(PageFactory::getPage)
+                .collect(Collectors.toCollection(LinkedHashSet::new));
     }
 
     private static int hashCode(int namespaceID, String title) {

@@ -14,39 +14,41 @@ public abstract class TraversalProvider {
     }
 
     public Stream<Element> traverseOutgoingUnique(Element from, List<RelationshipType> relTypes){
-        return getUniqueTraversal(from, relTypes, 1, Direction.OUTGOING);
+        return getUniqueTraversal(from, relTypes, Direction.OUTGOING);
     };
     
     public Stream<Element> traverseOutgoingUnique(Element from, RelationshipType relType){
-        return getUniqueTraversal(from, Collections.singletonList(relType), 1, Direction.OUTGOING);
+        return getUniqueTraversal(from, Collections.singletonList(relType), Direction.OUTGOING);
     };
 
     public Stream<Element> traverseOutgoingUnique(Element from, List<RelationshipType> relTypes, int depth){
-        return getUniqueTraversal(from, relTypes, 1, Direction.OUTGOING);
+        return getUniqueDepthLimitedTraversal(from, relTypes, depth, Direction.OUTGOING);
     }
 
     public Stream<Element> traverseOutgoingUnique(Element from, RelationshipType relType, int depth){
-        return getUniqueTraversal(from, Collections.singletonList(relType), depth, Direction.OUTGOING);
+        return getUniqueDepthLimitedTraversal(from, Collections.singletonList(relType), depth, Direction.OUTGOING);
     };
 
 
     public Stream<Element> traverseIncomingUnique(Element from, List<RelationshipType> relTypes){
-        return getUniqueTraversal(from, relTypes, 1, Direction.INCOMING);
+        return getUniqueTraversal(from, relTypes, Direction.INCOMING);
     };
 
     public Stream<Element> traverseIncomingUnique(Element from, List<RelationshipType> relTypes, int depth){
-        return getUniqueTraversal(from, relTypes, depth, Direction.INCOMING);
+        return getUniqueDepthLimitedTraversal(from, relTypes, depth, Direction.INCOMING);
     };
 
     public Stream<Element> traverseIncomingUnique(Element from, RelationshipType relType){
-        return getUniqueTraversal(from, Collections.singletonList(relType), 1, Direction.INCOMING);
+        return getUniqueTraversal(from, Collections.singletonList(relType), Direction.INCOMING);
     };
 
     public Stream<Element> traverseIncomingUnique(Element from, RelationshipType relType, int depth){
-        return getUniqueTraversal(from, Collections.singletonList(relType), depth, Direction.INCOMING);
+        return getUniqueDepthLimitedTraversal(from, Collections.singletonList(relType), depth, Direction.INCOMING);
     };
 
 
-    protected abstract Stream<Element> getUniqueTraversal(Element from, List<RelationshipType> relTypes, int depth, Direction direction);
+    protected abstract Stream<Element> getUniqueDepthLimitedTraversal(Element from, List<RelationshipType> relTypes, int depth, Direction direction);
+
+    protected abstract Stream<Element> getUniqueTraversal(Element from, List<RelationshipType> relTypes, Direction direction);
 
 }
