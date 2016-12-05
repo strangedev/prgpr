@@ -18,14 +18,7 @@ public class NamespaceIDArgument extends CommandArgument {
 
     @Override
     public String getDescription() {
-        List<String> output = new LinkedList<>();
-        output.add("The namespace id of a page or article");
-        output.add("\tValues:");
-        Arrays.stream(WikiNamespaces.PageLabel.values())
-                .filter(label -> label != WikiNamespaces.PageLabel.Unknown)
-                .map(label -> String.format("\t\t%s: %s", label.name(), WikiNamespaces.fromPageLabel(label)))
-                .collect(Collectors.toCollection(() -> output));
-        return output.stream().collect(Collectors.joining("\n"));
+        return "The namespace id of a page or article";
     }
 
     @Override

@@ -1,5 +1,6 @@
 package com.prgpr.commands;
 
+import com.prgpr.framework.AsciiTable;
 import com.prgpr.framework.command.Command;
 import com.prgpr.framework.command.CommandArgument;
 import com.prgpr.framework.command.CommandBroker;
@@ -49,30 +50,37 @@ public class HelpCommand extends Command {
         List<String> output = new LinkedList<>();
 
         output.add("-------------------------------------------------");
-        output.add("Available Command Arguments");
+        output.add("Commands");
         output.add("-------------------------------------------------");
+
+        AsciiTable t = new AsciiTable();
+        t.setColumns("Command", "Arguments", "Description");
+        t.addRow(this.getName(), this.getArgumentsAsString(), this.getDescription());
+
+        commandBroker.getRegisteredCommands()
+                .stream()
+                .filter(command -> !Objects.equals(command.getName(), getName()))
+                .sorted((c1, c2) -> String.CASE_INSENSITIVE_ORDER.compare(c1.getName(), c2.getName()))
+                .forEach((command) -> t.addRow(command.getName(), command.getArgumentsAsString(), command.getDescription()));
+
+        output.add(t.toString());
+
+        output.add("-------------------------------------------------");
+        output.add("Command Arguments");
+        output.add("-------------------------------------------------");
+
+        AsciiTable t1 = new AsciiTable();
+        t1.setColumns("Argument", "Description");
 
         commandBroker.getRegisteredCommands()
                 .stream()
                 .filter(command -> !Objects.equals(command.getName(), getName()))
                 .flatMap(command -> Arrays.stream(command.getArguments()))
                 .distinct()
-                .map(CommandArgument::getFullDescription)
-                .collect(Collectors.toCollection(() -> output));
+                .sorted((a1, a2) -> String.CASE_INSENSITIVE_ORDER.compare(a1.getName(), a2.getName()))
+                .forEach((arg) -> t1.addRow(arg.getName(), arg.getDescription()));
 
-        output.add("-------------------------------------------------");
-        output.add("Available Commands");
-        output.add("-------------------------------------------------");
-
-        output.add(getFullDescription());
-
-        commandBroker.getRegisteredCommands()
-                .stream()
-                .filter(command -> !Objects.equals(command.getName(), getName()))
-                .map(Command::getFullDescription)
-                .sorted(String.CASE_INSENSITIVE_ORDER)
-                .collect(Collectors.toCollection(() -> output));
-
+        output.add(t1.toString());
 
         System.out.println(
                 output.stream().collect(Collectors.joining("\n"))
