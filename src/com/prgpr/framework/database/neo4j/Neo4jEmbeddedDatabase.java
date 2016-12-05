@@ -21,6 +21,7 @@ public class Neo4jEmbeddedDatabase implements EmbeddedDatabase {
 
     private Neo4jTraversalProvider traversalProvider;
     private GraphDatabaseService graphDb;
+    private static final String idIndex = "hash";
 
     Neo4jEmbeddedDatabase() {}
 
@@ -89,12 +90,12 @@ public class Neo4jEmbeddedDatabase implements EmbeddedDatabase {
             UniqueFactory<Node> factory = new UniqueFactory.UniqueNodeFactory(graphDb, index) {
                 @Override
                 protected void initialize(Node created, Map<String, Object> properties) {
-                    created.setProperty("id", hash);
+                    created.setProperty(idIndex, hash);
                     new Neo4jElement(db, created).update(callback);
                 }
             };
 
-            return new Neo4jElement(db, factory.getOrCreate("id", hash));
+            return new Neo4jElement(db, factory.getOrCreate(idIndex, hash));
         });
     }
 
@@ -114,12 +115,12 @@ public class Neo4jEmbeddedDatabase implements EmbeddedDatabase {
                                                 ((Neo4jElement)end).getNode(),
                                                 org.neo4j.graphdb.RelationshipType.withName(relType.name())
                                         );
-                r.setProperty("id", relationshipHash(start, end, relType));
+                r.setProperty(idIndex, relationshipHash(start, end, relType));
                 return r;
             }
         };
 
-        return factory.getOrCreate("id", relationshipHash(start, end, relType));
+        return factory.getOrCreate(idIndex, relationshipHash(start, end, relType));
     }
 
     private long relationshipHash(Element start, Element end, RelationshipType relType) {
@@ -138,7 +139,7 @@ public class Neo4jEmbeddedDatabase implements EmbeddedDatabase {
     public Element getNodeFromIndex(String indexName, long id) {
         return transaction(() -> {
             ReadableIndex<Node> index = graphDb.index().forNodes(indexName);
-            Node node = index.get("id", id).getSingle();
+            Node node = index.get(idIndex, id).getSingle();
             if(node == null){
                 return null;
             }
