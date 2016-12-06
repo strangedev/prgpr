@@ -50,7 +50,7 @@ public class Neo4jTraversalProvider extends TraversalProvider {
     private TraversalDescription getTraversalDescription(List<RelationshipType> relTypes, Direction direction) {
         TraversalDescription tv = db.traversalDescription()
                 .breadthFirst()
-                .uniqueness(Uniqueness.NODE_PATH);
+                .uniqueness(Uniqueness.NODE_GLOBAL);
 
         org.neo4j.graphdb.Direction n4jDirection = org.neo4j.graphdb.Direction.valueOf(direction.name());
 
