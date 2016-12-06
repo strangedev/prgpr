@@ -188,7 +188,7 @@ public class SearchProvider {
         return start
                 .getDatabase()
                 .getTraversalProvider()
-                .traverseIncomingUnique(start, relType, 2)
+                .traverseIncomingUnique(start, relType, 1)
                 .filter(n -> NodePredicates.matchesLabel(n, nodeLabel))
                 .filter(n -> NodePredicates.matchesProperty(n, property))
                 .collect(Collectors.toCollection(LinkedHashSet::new));

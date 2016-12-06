@@ -189,12 +189,18 @@ public class Page {
 
         int namespace = WikiNamespaces.fromPageLabel(label);
         String pageTitle = this.getTitle();
+        log.info("------------------------------------");
+        log.info("Creating relationships of " + label + " for " + pageTitle);
+        log.info("------------------------------------");
 
         titles.forEach((title) -> {
             long hash = hashCode(namespace, title);
             Element elem = node.getDatabase().getNodeFromIndex(indexName, hash);
 
-            if(elem == null) return;
+            if(elem == null) {
+                log.info("Skipping " + label + " relationship to " + title);
+                return;
+            }
 
             node.createUniqueRelationshipTo(elem, relType);
             log.info("A relation from " + pageTitle + " to " + label + " " + title + " was created.");
