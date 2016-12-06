@@ -8,7 +8,7 @@ import com.prgpr.framework.database.Label;
 public class WikiNamespaces {
 
     public enum PageLabel implements Label {
-        Page,
+        Page, // @TODO: maybe move somewhere else
         Article,
         ArticleTalk,
         User,
@@ -46,7 +46,7 @@ public class WikiNamespaces {
 
     public static Label fromID(int namespaceID) {
         switch (namespaceID){
-            case -1: return PageLabel.Page;
+           //case -1: return PageLabel.Page;
             case 0: return PageLabel.Article;
             case 1: return PageLabel.ArticleTalk;
             case 2: return PageLabel.User;
@@ -85,7 +85,7 @@ public class WikiNamespaces {
 
     public static int fromPageLabel(PageLabel label) {
         switch (label.name()){
-            case "Page": return -1;
+            //case "Page": return -1;
             case "Article": return 0;
             case "ArticleTalk": return 1;
             case "User": return 2;

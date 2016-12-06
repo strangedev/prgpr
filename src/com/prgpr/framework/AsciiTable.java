@@ -27,6 +27,7 @@ public class AsciiTable {
 
     public void setColumns(String... cols){
         columns.clear();
+        clear();
         Stream.of(cols)
                 .forEachOrdered((col) -> columns.add(col));
     }
@@ -37,6 +38,10 @@ public class AsciiTable {
         }
 
         rows.add(cols);
+    }
+
+    public void clear(){
+        rows.clear();
     }
 
     public void print(){

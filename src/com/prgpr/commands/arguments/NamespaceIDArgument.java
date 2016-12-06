@@ -23,6 +23,10 @@ public class NamespaceIDArgument extends CommandArgument {
 
     @Override
     public void test(String arg) throws InvalidArgument {
-
+        try {
+            Integer.parseInt(arg);
+        }catch (NumberFormatException e){
+            throw new InvalidArgument("Invalid namespace id.");
+        }
     }
 }

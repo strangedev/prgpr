@@ -26,7 +26,7 @@ public class PageFinder {
         PageFinder.db = graphDb;
     }
 
-    public Page findByNamespaceAndTitle(int namespaceID, String title) {
+    public static Page findByNamespaceAndTitle(int namespaceID, String title) {
 
         Element e = SearchProvider.findNode(
                 db,
@@ -42,7 +42,7 @@ public class PageFinder {
 
     }
 
-    public Set<Page> findAllByNamespace(int namespaceID) {
+    public static Set<Page> findAllByNamespace(int namespaceID) {
 
         Set<Page> ret = new LinkedHashSet<>();
 
