@@ -1,5 +1,6 @@
 package com.prgpr.commands;
 
+import com.prgpr.PageFactory;
 import com.prgpr.commands.arguments.DatabaseDirectoryArgument;
 import com.prgpr.data.Page;
 import com.prgpr.exceptions.InvalidArgument;
@@ -64,9 +65,6 @@ public class CategoryLinksCommand extends Command {
                 for (Node node : db.getAllNodes()) {
                     Page page = new Page(new Neo4jElement(graphDb, node));
                     page.insertCategoryLinks();
-                    page.getCategories().forEach(catPage -> {
-                        System.out.println("Category from DB: " + catPage.getTitle());
-                    });
                 }
             });
         });

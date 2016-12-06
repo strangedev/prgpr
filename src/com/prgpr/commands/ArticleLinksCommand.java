@@ -1,5 +1,6 @@
 package com.prgpr.commands;
 
+import com.prgpr.PageFactory;
 import com.prgpr.commands.arguments.DatabaseDirectoryArgument;
 import com.prgpr.data.Page;
 import com.prgpr.exceptions.InvalidArgument;
@@ -58,13 +59,13 @@ public class ArticleLinksCommand extends Command {
         GraphDatabaseService db = new GraphDatabaseFactory().newEmbeddedDatabase(f);
         Neo4jEmbeddedDatabase graphDb = Neo4jEmbeddedDatabaseFactory.newEmbeddedDatabase(db);
 
-        graphDb.transaction();
-
         long time = Benchmark.run(()->{
-            for (Node node : db.getAllNodes()) {
-                Page page = new Page(new Neo4jElement(graphDb, node));
-                page.insertArticleLinks();
-            }
+            graphDb.transaction(() ->{
+                for (Node node : db.getAllNodes()) {
+                    Page page = new Page(new Neo4jElement(graphDb, node));
+                    page.insertArticleLinks();
+                }
+            });
         });
 
         log.info("It took so many seconds: " + time / 1000);

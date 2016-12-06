@@ -123,15 +123,15 @@ public class Neo4jEmbeddedDatabase implements EmbeddedDatabase {
         return factory.getOrCreate(idIndex, relationshipHash(start, end, relType));
     }
 
-    private long relationshipHash(Element start, Element end, RelationshipType relType) {
+    private int relationshipHash(Element start, Element end, RelationshipType relType) {
 
         long startId = (long) start.getProperty(Page.PageAttribute.hash);
         long endId = (long) end.getProperty(Page.PageAttribute.hash);
         long relHash = relType.hashCode();
 
-        long result = startId ^ (startId >>> 32);
-        result += endId ^ (endId >>> 32);
-        result += relHash ^ (relHash >>> 32);
+        int result = (int) (startId ^ (startId >>> 32));
+        result += 31 * result + (int)(endId ^ (endId >>> 32));
+        result += 31 * result + (int)(relHash ^ (relHash >>> 32));
         return result;
     }
 

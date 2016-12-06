@@ -5,9 +5,8 @@ import com.prgpr.framework.database.RelationshipType;
 import com.prgpr.framework.database.TraversalProvider;
 import org.neo4j.graphdb.GraphDatabaseService;
 import org.neo4j.graphdb.Node;
-import org.neo4j.graphdb.traversal.Evaluators;
-import org.neo4j.graphdb.traversal.TraversalDescription;
-import org.neo4j.graphdb.traversal.Uniqueness;
+import org.neo4j.graphdb.Path;
+import org.neo4j.graphdb.traversal.*;
 
 import java.util.List;
 import java.util.stream.Stream;
@@ -28,15 +27,16 @@ public class Neo4jTraversalProvider extends TraversalProvider {
 
     @Override
     protected Stream<Element> getUniqueDepthLimitedTraversal(Element from, List<RelationshipType> relTypes, int depth, Direction direction) {
-        TraversalDescription tv = getTraversalDescription(relTypes, direction);
-        tv.evaluator(Evaluators.atDepth(depth));
+        TraversalDescription tv = getTraversalDescription(relTypes, direction)
+                                        .evaluator(Evaluators.excludeStartPosition())
+                                        .evaluator(Evaluators.toDepth(depth));
         return traverse((Neo4jElement) from, tv);
     }
 
     @Override
     protected Stream<Element> getUniqueTraversal(Element from, List<RelationshipType> relTypes, Direction direction) {
-        TraversalDescription tv = getTraversalDescription(relTypes, direction);
-        tv.evaluator(Evaluators.excludeStartPosition());
+        TraversalDescription tv = getTraversalDescription(relTypes, direction)
+                                        .evaluator(Evaluators.all());
         return traverse((Neo4jElement) from, tv);
     }
 
@@ -50,10 +50,14 @@ public class Neo4jTraversalProvider extends TraversalProvider {
     private TraversalDescription getTraversalDescription(List<RelationshipType> relTypes, Direction direction) {
         TraversalDescription tv = db.traversalDescription()
                 .breadthFirst()
-                .uniqueness(Uniqueness.NODE_GLOBAL);
+                .uniqueness(Uniqueness.NODE_PATH);
 
         org.neo4j.graphdb.Direction n4jDirection = org.neo4j.graphdb.Direction.valueOf(direction.name());
-        relTypes.forEach(r -> tv.relationships(org.neo4j.graphdb.RelationshipType.withName(r.name()), n4jDirection));
+
+        for(RelationshipType type : relTypes){
+            tv = tv.relationships(org.neo4j.graphdb.RelationshipType.withName(type.name()), n4jDirection);
+        }
+
         return tv;
     }
 }

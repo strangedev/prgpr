@@ -85,7 +85,7 @@ public class Page {
     }
 
     public Set<Page> getCategories() {
-        return SearchProvider.findImmediateIncoming(
+        return SearchProvider.findImmediateOutgoing(
                 this.node,
                 WikiNamespaces.PageLabel.Category,
                 RelationshipTypes.categoryLink,
@@ -102,7 +102,7 @@ public class Page {
                 RelationshipTypes.categoryLink,
                 null)
                 .stream()
-                .map(PageFactory::getPage)
+                .map(Page::new)
                 .collect(Collectors.toCollection(LinkedHashSet::new));
     }
 
@@ -113,7 +113,7 @@ public class Page {
                 RelationshipTypes.articleLink,
                 (PropertyValuePair) null)
                 .stream()
-                .map(PageFactory::getPage)
+                .map(Page::new)
                 .collect(Collectors.toCollection(LinkedHashSet::new));
     }
 
@@ -124,7 +124,7 @@ public class Page {
                 RelationshipTypes.articleLink,
                 (PropertyValuePair) null)
                 .stream()
-                .map(PageFactory::getPage)
+                .map(Page::new)
                 .collect(Collectors.toCollection(LinkedHashSet::new));
     }
 
@@ -197,8 +197,10 @@ public class Page {
             if(elem == null) return;
 
             node.createUniqueRelationshipTo(elem, relType);
-            log.info("A relation from " + pageTitle + " to article " + title + " was created.");
+            log.info("A relation from " + pageTitle + " to " + label + " " + title + " was created.");
         });
+
+        this.node.getDatabase().commit();
     }
 
 
