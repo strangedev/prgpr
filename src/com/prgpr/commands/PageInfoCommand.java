@@ -11,8 +11,14 @@ import com.prgpr.exceptions.InvalidNumberOfArguments;
 import com.prgpr.framework.AsciiTable;
 import com.prgpr.framework.command.Command;
 import com.prgpr.framework.command.CommandArgument;
+import com.prgpr.framework.database.Label;
+import com.prgpr.framework.database.PropertyValuePair;
+import com.prgpr.framework.database.SearchProvider;
 import com.prgpr.framework.database.neo4j.Neo4jEmbeddedDatabase;
 import com.prgpr.framework.database.neo4j.Neo4jEmbeddedDatabaseFactory;
+import com.prgpr.framework.database.neo4j.RelationshipTypes;
+
+import java.util.LinkedHashSet;
 
 /**
  * Created by kito on 02.12.16.

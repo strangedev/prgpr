@@ -63,26 +63,27 @@ public class TestDBCommand extends Command{
         Neo4jEmbeddedDatabase graphDb = Neo4jEmbeddedDatabaseFactory.newEmbeddedDatabase(db);
 
 
-        Element vertex = graphDb.createElement("Elements", 0, (node) -> {});
-        Element vertox = graphDb.createElement("Elements", 1, (node) -> {});
-        Element vertix = graphDb.createElement("Elements", 1, (node) -> {});
-
-        graphDb.getAllElements().forEach((element) -> {
-            System.out.print(element.getProperty(Page.PageAttribute.hash) + " ");
-            System.out.println(element.getLabels().count());
+        Element vertex = graphDb.createElement("Elements", 0, (node) -> {
+            node.setProperty(Page.PageAttribute.title, "Elem1");
+        });
+        Element vertox = graphDb.createElement("Elements", 1, (node) -> {
+            node.setProperty(Page.PageAttribute.title, "Elem2");
+        });
+        Element vertix = graphDb.createElement("Elements", 2, (node) -> {
+            node.setProperty(Page.PageAttribute.title, "Elem3");
         });
 
         vertex.createUniqueRelationshipTo(vertox, RelationshipTypes.categoryLink);
-        vertex.createUniqueRelationshipTo(vertox, RelationshipTypes.categoryLink);
+        vertex.createUniqueRelationshipTo(vertix, RelationshipTypes.categoryLink);
 
-        SearchProvider.findImmediateIncoming(vertox, new Label() {
+        SearchProvider.findImmediateOutgoing(vertex, new Label() {
             @Override
             public String name() {
                 return "";
             }
-        }, RelationshipTypes.categoryLink, new LinkedHashSet<PropertyValuePair>())
+        }, RelationshipTypes.categoryLink, (PropertyValuePair) null)
                 .forEach((neighbor) -> {
-                    System.out.print(neighbor.getProperty(Page.PageAttribute.hash) + " ");
+                    System.out.print(neighbor.getProperty(Page.PageAttribute.title) + " ");
                     System.out.println(neighbor.getLabels().count());
                 });
 

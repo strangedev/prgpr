@@ -28,37 +28,32 @@ public class Neo4jTraversalProvider extends TraversalProvider {
 
     @Override
     protected Stream<Element> getUniqueDepthLimitedTraversal(Element from, List<RelationshipType> relTypes, int depth, Direction direction) {
-        Node node = ((Neo4jElement)from).getNode(); // uhh it works -_(^_^)_-
-
-        TraversalDescription tv = db.traversalDescription()
-                .breadthFirst()
-                .uniqueness(Uniqueness.NODE_GLOBAL)
-                .evaluator(Evaluators.atDepth(depth));
-
-        org.neo4j.graphdb.Direction n4jDirection = org.neo4j.graphdb.Direction.valueOf(direction.name());
-        relTypes.forEach(r -> tv.relationships(org.neo4j.graphdb.RelationshipType.withName(r.name()), n4jDirection)); // <(^.^<) Check it out!
-
-        return tv.traverse(node)
-                .nodes()
-                .stream()
-                .map(n -> new Neo4jElement((Neo4jEmbeddedDatabase)from.getDatabase(), n));
+        TraversalDescription tv = getTraversalDescription(relTypes, direction);
+        tv.evaluator(Evaluators.atDepth(depth));
+        return traverse((Neo4jElement) from, tv);
     }
 
     @Override
     protected Stream<Element> getUniqueTraversal(Element from, List<RelationshipType> relTypes, Direction direction) {
-        Node node = ((Neo4jElement)from).getNode(); // uhh it works -_(^_^)_-
+        TraversalDescription tv = getTraversalDescription(relTypes, direction);
+        tv.evaluator(Evaluators.excludeStartPosition());
+        return traverse((Neo4jElement) from, tv);
+    }
 
-        TraversalDescription tv = db.traversalDescription()
-                .breadthFirst()
-                .uniqueness(Uniqueness.NODE_GLOBAL)
-                .evaluator(Evaluators.all());
-
-        org.neo4j.graphdb.Direction n4jDirection = org.neo4j.graphdb.Direction.valueOf(direction.name());
-        relTypes.forEach(r -> tv.relationships(org.neo4j.graphdb.RelationshipType.withName(r.name()), n4jDirection)); // <(^.^<) Check it out!
-
-        return tv.traverse(node)
+    private Stream<Element> traverse(Neo4jElement element, TraversalDescription tv){
+        return tv.traverse(element.getNode())
                 .nodes()
                 .stream()
-                .map(n -> new Neo4jElement((Neo4jEmbeddedDatabase)from.getDatabase(), n));
+                .map(n -> new Neo4jElement(element.getDatabase(), n));
+    }
+
+    private TraversalDescription getTraversalDescription(List<RelationshipType> relTypes, Direction direction) {
+        TraversalDescription tv = db.traversalDescription()
+                .breadthFirst()
+                .uniqueness(Uniqueness.NODE_GLOBAL);
+
+        org.neo4j.graphdb.Direction n4jDirection = org.neo4j.graphdb.Direction.valueOf(direction.name());
+        relTypes.forEach(r -> tv.relationships(org.neo4j.graphdb.RelationshipType.withName(r.name()), n4jDirection));
+        return tv;
     }
 }
