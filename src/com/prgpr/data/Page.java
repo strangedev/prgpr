@@ -238,15 +238,15 @@ public class Page {
     /**
      * A function for the category links to call addRelationship() inserting the relations into the database
      */
-    public void insertCategoryLinks() {
-        addRelationships(WikiNamespaces.PageLabel.Category, RelationshipTypes.categoryLink, () -> extractCategories(this.getHtml()));
+    public long insertCategoryLinks() {
+        return addRelationships(WikiNamespaces.PageLabel.Category, RelationshipTypes.categoryLink, () -> extractCategories(this.getHtml()));
     }
 
     /**
      * A function for the article links to call addRelationship() inserting the relations into the database
      */
-    public void insertArticleLinks() {
-        addRelationships(WikiNamespaces.PageLabel.Article, RelationshipTypes.articleLink, () -> extractArticles(this.getHtml()));
+    public long insertArticleLinks() {
+        return addRelationships(WikiNamespaces.PageLabel.Article, RelationshipTypes.articleLink, () -> extractArticles(this.getHtml()));
     }
 
     /**
@@ -256,14 +256,15 @@ public class Page {
      * @param relType Type of the relation to be inserted
      * @param callable a function to extract the Pages to create the relation to
      */
-    private void addRelationships(WikiNamespaces.PageLabel label, RelationshipType relType, Callable<Set<String>> callable) {
+    private long addRelationships(WikiNamespaces.PageLabel label, RelationshipType relType, Callable<Set<String>> callable) {
         Set<String> titles;
+        long relationshipsAdded = 0;
 
         try {
             titles = callable.call();
         } catch (Exception e) {
             log.error(e);
-            return;
+            return 0;
         }
 
         int namespace = WikiNamespaces.fromPageLabel(label);
@@ -272,20 +273,24 @@ public class Page {
         log.info("Creating relationships of " + label + " for " + pageTitle);
         log.info("------------------------------------");
 
-        titles.forEach((title) -> {
+        for(String title: titles) {
             long hash = hashCode(namespace, title);
             Element elem = node.getDatabase().getNodeFromIndex(indexName, hash);
 
             if(elem == null) {
                 log.info("Skipping " + label + " relationship to " + title);
-                return;
+                continue;
             }
 
             node.createUniqueRelationshipTo(elem, relType);
-            log.info("A relation from " + pageTitle + " to " + label + " " + title + " was created.");
-        });
 
-        this.node.getDatabase().commit();
+            relationshipsAdded++;
+            log.info("A relation from " + pageTitle + " to " + label + " " + title + " was created.");
+
+        }
+
+        return relationshipsAdded;
+        //this.node.getDatabase().commit();
     }
 
 
