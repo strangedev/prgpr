@@ -10,7 +10,7 @@ import com.prgpr.framework.database.Label;
 public class WikiNamespaces {
 
     public enum PageLabel implements Label {
-        Page, // @TODO: maybe move somewhere else
+        Page, // @TODO: maybe move to EntityTypes label class
         Article,
         ArticleTalk,
         User,
