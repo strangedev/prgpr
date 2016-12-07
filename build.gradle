@@ -14,7 +14,7 @@ plugins {
 }
 
 group 'com.prgpr'
-version ''
+version 'milestone-2'
 
 sourceSets {
     main {
@@ -50,6 +50,7 @@ dependencies {
 }
 
 shadowJar {
+    archiveName rootProject.name + ".jar"
     classifier = ''
     sourceCompatibility = 1.8
     mergeServiceFiles()
@@ -61,6 +62,19 @@ shadowJar {
     }
 
     configurations = [project.configurations.link]
+}
+
+task createProperties(dependsOn: processResources) {
+    new File("$buildDir/resources/main/build.properties").withWriter { w ->
+        Properties p = new Properties()
+        p['version'] = project.version.toString()
+        p['timestamp'] = new Date().toString()
+        p.store w, null
+    }
+}
+
+classes {
+    dependsOn createProperties
 }
 
 build.dependsOn shadowJar

@@ -75,6 +75,7 @@ public class HelpCommand extends Command {
         commandBroker.getRegisteredCommands()
                 .stream()
                 .filter(command -> !Objects.equals(command.getName(), getName()))
+                .filter(command -> command.getArguments() != null)
                 .flatMap(command -> Arrays.stream(command.getArguments()))
                 .distinct()
                 .sorted((a1, a2) -> String.CASE_INSENSITIVE_ORDER.compare(a1.getName(), a2.getName()))

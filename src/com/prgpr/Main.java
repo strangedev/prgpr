@@ -42,7 +42,8 @@ public class Main {
                 new CategoryLinksCommand(),
                 new ArticleLinksCommand(),
                 new TestDBCommand(),
-                new PageInfoCommand()
+                new PageInfoCommand(),
+                new VersionCommand()
         });
 
         try {
