@@ -1,6 +1,5 @@
 package com.prgpr.commands;
 
-import com.prgpr.PageFactory;
 import com.prgpr.PageFinder;
 import com.prgpr.commands.arguments.DatabaseDirectoryArgument;
 import com.prgpr.commands.arguments.NamespaceIDArgument;
@@ -11,14 +10,8 @@ import com.prgpr.exceptions.InvalidNumberOfArguments;
 import com.prgpr.framework.AsciiTable;
 import com.prgpr.framework.command.Command;
 import com.prgpr.framework.command.CommandArgument;
-import com.prgpr.framework.database.Label;
-import com.prgpr.framework.database.PropertyValuePair;
-import com.prgpr.framework.database.SearchProvider;
 import com.prgpr.framework.database.neo4j.Neo4jEmbeddedDatabase;
-import com.prgpr.framework.database.neo4j.Neo4jEmbeddedDatabaseFactory;
-import com.prgpr.framework.database.neo4j.RelationshipTypes;
-
-import java.util.LinkedHashSet;
+import com.prgpr.framework.database.EmbeddedDatabaseFactory;
 
 /**
  * Created by kito on 02.12.16.
@@ -59,7 +52,7 @@ public class PageInfoCommand extends Command {
 
     @Override
     public void run() {
-        Neo4jEmbeddedDatabase graphDb = Neo4jEmbeddedDatabaseFactory.newEmbeddedDatabase(arguments[0].get());
+        Neo4jEmbeddedDatabase graphDb = EmbeddedDatabaseFactory.newEmbeddedDatabase(arguments[0].get());
         PageFinder.setDatabase(graphDb);
         Page page = PageFinder.findByNamespaceAndTitle(Integer.valueOf(arguments[1].get()), arguments[2].get());
         assert page != null;

@@ -23,9 +23,9 @@ public class Neo4jEmbeddedDatabase implements EmbeddedDatabase {
     private GraphDatabaseService graphDb;
     private static final String idIndex = "hash";
 
-    Neo4jEmbeddedDatabase() {}
+    public Neo4jEmbeddedDatabase() {}
 
-    Neo4jEmbeddedDatabase(GraphDatabaseService db) {
+    public Neo4jEmbeddedDatabase(GraphDatabaseService db) {
         this.graphDb = db;
         this.traversalProvider = new Neo4jTraversalProvider(db);
         registerShutdownHook(graphDb);

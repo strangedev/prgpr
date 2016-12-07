@@ -11,7 +11,7 @@ import com.prgpr.framework.database.Label;
 import com.prgpr.framework.database.PropertyValuePair;
 import com.prgpr.framework.database.SearchProvider;
 import com.prgpr.framework.database.neo4j.Neo4jEmbeddedDatabase;
-import com.prgpr.framework.database.neo4j.Neo4jEmbeddedDatabaseFactory;
+import com.prgpr.framework.database.EmbeddedDatabaseFactory;
 import com.prgpr.framework.database.neo4j.RelationshipTypes;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
@@ -19,7 +19,6 @@ import org.neo4j.graphdb.GraphDatabaseService;
 import org.neo4j.graphdb.factory.GraphDatabaseFactory;
 
 import java.io.File;
-import java.util.LinkedHashSet;
 
 /**
  * Created by strange on 11/25/16.
@@ -60,7 +59,7 @@ public class TestDBCommand extends Command{
     public void run() {
         File f = new File(arguments[0].get());
         GraphDatabaseService db = new GraphDatabaseFactory().newEmbeddedDatabase(f);
-        Neo4jEmbeddedDatabase graphDb = Neo4jEmbeddedDatabaseFactory.newEmbeddedDatabase(db);
+        Neo4jEmbeddedDatabase graphDb = EmbeddedDatabaseFactory.newEmbeddedDatabase(db);
 
 
         Element vertex = graphDb.createElement("Elements", 0, (node) -> {
