@@ -35,6 +35,7 @@ public class Main {
 
         Command help = new HelpCommand();
 
+        // Initializes the possible commands which can be executed.
         commandBroker.register(new Command[] {
                 help,
                 new ResetDBCommand(),

@@ -1,11 +1,20 @@
 package com.prgpr.exceptions;
 
 /**
- * Created by kito on 20.11.16.
+ * @author Kyle Rinfreschi
+ *
+ * A Class to catch exceptions where the command was not found
  */
-public class InvalidArgument extends Exception {
+public class InvalidArgument extends Exception
+{
+    /**
+     * A function to trow an exception.
+     */
     public InvalidArgument(){}
 
+    /**
+     * A function to trow an exception with a message.
+     */
     public InvalidArgument(String message)
     {
         super(message);

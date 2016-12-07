@@ -3,7 +3,9 @@ package com.prgpr.data;
 import com.prgpr.framework.database.Label;
 
 /**
- * Created by strange on 11/20/16.
+ * @author Noah Hummel
+ *
+ * A Class to transfer the namespaceID to the type of the Wikipage
  */
 public class WikiNamespaces {
 
@@ -44,6 +46,12 @@ public class WikiNamespaces {
         Unknown
     }
 
+    /**
+     * A function to transfer from namespaceID to the label
+     *
+     * @param namespaceID of the Page
+     * @return the label
+     */
     public static Label fromID(int namespaceID) {
         switch (namespaceID){
            //case -1: return PageLabel.Page;
@@ -83,6 +91,12 @@ public class WikiNamespaces {
         }
     }
 
+    /**
+     * A function to transfer from label to the namespaceID
+     *
+     * @param label of the Page
+     * @return the namespaceID
+     */
     public static int fromPageLabel(PageLabel label) {
         switch (label.name()){
             //case "Page": return -1;

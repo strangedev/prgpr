@@ -111,7 +111,7 @@ public class PageExport implements Consumer<Page> {
         Element page = doc.createElement("page");
 
         page.setAttribute("namespaceID", Integer.toString(p.getNamespaceID()));
-        page.setAttribute("pageId", Long.toString(p.getID()));
+        page.setAttribute("pageId", Long.toString(p.getHashCode()));
         page.setAttribute("title", p.getTitle());
 
         Element categories = doc.createElement("categories");

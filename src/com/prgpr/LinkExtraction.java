@@ -15,7 +15,6 @@ import org.apache.logging.log4j.Logger;
 
 
 /**
- * Created by lisa on 10/24/16.
  * @author Elizaveta Kovalevskaya
  *
  * A LinkExtraction class which provides static methods for extracting information from wiki articles.

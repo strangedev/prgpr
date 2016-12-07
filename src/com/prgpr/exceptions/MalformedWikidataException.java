@@ -8,8 +8,14 @@ package com.prgpr.exceptions;
  */
 public class MalformedWikidataException extends RuntimeException
 {
+    /**
+     * A function to trow an exception.
+     */
     public MalformedWikidataException(){}
 
+    /**
+     * A function to trow an exception with a message.
+     */
     public MalformedWikidataException(String message)
     {
         super(message);

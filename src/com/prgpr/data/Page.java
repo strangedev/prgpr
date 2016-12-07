@@ -1,6 +1,5 @@
 package com.prgpr.data;
 
-import com.prgpr.PageFactory;
 import com.prgpr.framework.database.*;
 
 import com.prgpr.framework.database.neo4j.RelationshipTypes;
@@ -56,34 +55,74 @@ public class Page {
         });
     }
 
-    public long getID() {
+    /**
+     * Gets the ID of the Page object (calculated by hashCode()).
+     *
+     * @return page hash
+     */
+    public long getHashCode() {
         return (long)node.getProperty(PageAttribute.hash);
     }
 
+    /**
+     * Gets the ID of the Page object of the actual article
+     *
+     * @return page arctileID
+     */
     public long getArticleID() {
         return (long)node.getProperty(PageAttribute.articleID);
     }
 
+    /**
+     * Gets the namespaceID of the Page object
+     *
+     * @return page namespace
+     */
     public int getNamespaceID(){
         return (int)node.getProperty(PageAttribute.namespaceID);
     }
 
+    /**
+     * Gets the title of the Page object
+     *
+     * @return page tite
+     */
     public String getTitle(){
         return (String)node.getProperty(PageAttribute.title);
     }
 
+    /**
+     * Sets the html-content to the Page object
+     *
+     * @param html page html-content
+     */
     public void setHtml(String html){
         node.setProperty(PageAttribute.html, html);
     }
 
+    /**
+     * Sets the html-content to the Page object by calling the setHtml function with a String
+     *
+     * @param html page html-content
+     */
     public void setHtml(StringBuilder html){
         setHtml(html.toString());
     }
 
+    /**
+     * Gets the html content of the Page object casted to a String
+     *
+     * @return page html content as a String
+     */
     public String getHtml(){
         return (String)node.getProperty(PageAttribute.html);
     }
 
+    /**
+     * Gets the immediate categories of the page
+     *
+     * @return A Set with all immediate categories of the page
+     */
     public Set<Page> getCategories() {
         return SearchProvider.findImmediateOutgoing(
                 this.node,
@@ -95,6 +134,11 @@ public class Page {
                 .collect(Collectors.toCollection(LinkedHashSet::new));
     }
 
+    /**
+     * Gets the all related categories of the page
+     *
+     * @return A Set with all categories of the page
+     */
     public Set<Page> getAllRelatedCategories() {
         return SearchProvider.findAllInSubgraph(
                 this.node,
@@ -106,6 +150,11 @@ public class Page {
                 .collect(Collectors.toCollection(LinkedHashSet::new));
     }
 
+    /**
+     * Gets articles linked by the page.
+     *
+     * @return Articles the page links to
+     */
     public Set<Page> getLinkedArticles() {
         return SearchProvider.findImmediateOutgoing(
                 this.node,
@@ -117,6 +166,11 @@ public class Page {
                 .collect(Collectors.toCollection(LinkedHashSet::new));
     }
 
+    /**
+     * Gets articles linking to the page.
+     *
+     * @return Articles linking to the page
+     */
     public Set<Page> getLinkingArticles() {
         return SearchProvider.findImmediateIncoming(
                 this.node,
@@ -129,13 +183,25 @@ public class Page {
     }
 
     /**
+     * A function to calculate a unique hash to find out fast if the Node/Page already exists.
+     *
+     * @return the hash of the Page
+     */
+    @Override
+    public int hashCode() {
+        return hashCode(getNamespaceID(), getTitle());
+    }
+
+    /**
+     * Calculates the hash.
+     *
      * http://eclipsesource.com/blogs/2012/09/04/the-3-things-you-should-know-about-hashcode/
      * http://preshing.com/20110504/hash-collision-probabilities/
      * http://stackoverflow.com/questions/1867191/probability-of-sha1-collisions
      *
-     * @param namespaceID
-     * @param title
-     * @return
+     * @param namespaceID of the page
+     * @param title of the page
+     * @return the hash
      */
     private static int hashCode(int namespaceID, String title) {
         byte[] titleHash;
@@ -150,6 +216,12 @@ public class Page {
         return (namespaceID * 31) + Arrays.hashCode(titleHash);
     }
 
+    /**
+     * Compares Page object to another Object
+     *
+     * @param o other Object to compare to
+     * @return if the objects are equal as a bool
+     */
     @Override
     public boolean equals(Object o) {
         if (this == o) return true;
@@ -157,26 +229,33 @@ public class Page {
 
         Page page = (Page) o;
 
-        if (getID() != page.getID()) return false;
+        if (getHashCode() != page.getHashCode()) return false;
         if (getNamespaceID() != page.getNamespaceID()) return false;
         return getTitle() != null ? getTitle().equals(page.getTitle()) : page.getTitle() == null;
 
     }
 
-    @Override
-    public int hashCode() {
-        return hashCode(getNamespaceID(), getTitle());
-    }
-
+    /**
+     * A function for the category links to call addRelationship() inserting the relations into the database
+     */
     public void insertCategoryLinks() {
         addRelationships(WikiNamespaces.PageLabel.Category, RelationshipTypes.categoryLink, () -> extractCategories(this.getHtml()));
     }
 
+    /**
+     * A function for the article links to call addRelationship() inserting the relations into the database
+     */
     public void insertArticleLinks() {
         addRelationships(WikiNamespaces.PageLabel.Article, RelationshipTypes.articleLink, () -> extractArticles(this.getHtml()));
     }
 
-    
+    /**
+     * A function inserting links into the database.
+     *
+     * @param label Type of the Page
+     * @param relType Type of the relation to be inserted
+     * @param callable a function to extract the Pages to create the relation to
+     */
     private void addRelationships(WikiNamespaces.PageLabel label, RelationshipType relType, Callable<Set<String>> callable) {
         Set<String> titles;
 

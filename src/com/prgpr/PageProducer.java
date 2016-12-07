@@ -15,7 +15,9 @@ import java.util.regex.Pattern;
 import java.util.stream.Stream;
 
 /**
- * Created by kito on 11/16/16.
+ * @author Kyle Rinfreschi
+ *
+ * A Class producing Pages by reading the input file and emitting Pages.
  */
 public class PageProducer extends Producer<Page> {
 
@@ -98,6 +100,7 @@ public class PageProducer extends Producer<Page> {
                         id = Long.parseLong(m.group(1));
                         namespaceId = Integer.parseInt(m.group(2));
                         title = m.group(3);
+                        System.out.println(title);
                     } catch (Exception e){  // first line had malformed metadata
                         throw new MalformedWikidataException("Could not convert metadata string to primitive types: " + e.getMessage());
                     }
