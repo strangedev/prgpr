@@ -10,6 +10,7 @@ import com.prgpr.exceptions.InvalidNumberOfArguments;
 import com.prgpr.framework.AsciiTable;
 import com.prgpr.framework.command.Command;
 import com.prgpr.framework.command.CommandArgument;
+import com.prgpr.framework.database.EmbeddedDatabase;
 import com.prgpr.framework.database.neo4j.Neo4jEmbeddedDatabase;
 import com.prgpr.framework.database.EmbeddedDatabaseFactory;
 
@@ -52,7 +53,7 @@ public class PageInfoCommand extends Command {
 
     @Override
     public void run() {
-        Neo4jEmbeddedDatabase graphDb = EmbeddedDatabaseFactory.newEmbeddedDatabase(arguments[0].get());
+        EmbeddedDatabase graphDb = EmbeddedDatabaseFactory.newEmbeddedDatabase(arguments[0].get());
         PageFinder.setDatabase(graphDb);
         Page page = PageFinder.findByNamespaceAndTitle(Integer.valueOf(arguments[1].get()), arguments[2].get());
         assert page != null;
