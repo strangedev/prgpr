@@ -3,7 +3,7 @@ package com.prgpr.exceptions;
 /**
  * @author Kyle Rinfreschi
  *
- * A Class to catch exceptions where the command was not found
+ * An Exception thrown when an invalid number of arguments was passed to a Command
  */
 
 public class InvalidNumberOfArguments extends Exception

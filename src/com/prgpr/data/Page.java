@@ -233,14 +233,14 @@ public class Page {
     }
 
     /**
-     * A function for the category links to call addRelationship() inserting the relations into the database
+     * A function which calls addRelationship() to insert category relationships into the database
      */
     public long insertCategoryLinks() {
         return addRelationships(WikiNamespaces.PageLabel.Category, RelationshipTypes.categoryLink, () -> extractCategories(this.getHtml()));
     }
 
     /**
-     * A function for the article links to call addRelationship() inserting the relations into the database
+     * A function which calls addRelationship() to insert article relationships into the database
      */
     public long insertArticleLinks() {
         this.t = getTitle(); // TODO remove
@@ -288,7 +288,6 @@ public class Page {
         }
 
         return relationshipsAdded;
-        //this.node.getDatabase().success();
     }
 
 

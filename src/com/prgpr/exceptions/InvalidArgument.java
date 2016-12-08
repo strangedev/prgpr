@@ -3,7 +3,7 @@ package com.prgpr.exceptions;
 /**
  * @author Kyle Rinfreschi
  *
- * A Class to catch exceptions where the command was not found
+ * An Exception thrown when an invalid argument was passed to a command
  */
 public class InvalidArgument extends Exception
 {

@@ -3,7 +3,7 @@ package com.prgpr.exceptions;
 /**
  * @author Kyle Rinfreschi
  *
- * A Class to catch exceptions where the command was not found
+ * An Exception thrown when an unknown command was requested from CommandBroker
  */
 public class CommandNotFound extends Exception
 {

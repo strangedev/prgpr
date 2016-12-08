@@ -5,7 +5,7 @@ import com.prgpr.framework.database.Label;
 /**
  * @author Noah Hummel
  *
- * A Class to transfer the namespaceID to the type of the Wikipage
+ * A Class to transfer the namespaceID to the appropriate type of label for a Wikipage
  */
 public class WikiNamespaces {
 
