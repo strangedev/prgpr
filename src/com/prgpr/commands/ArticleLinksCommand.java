@@ -6,10 +6,7 @@ import com.prgpr.exceptions.InvalidArgument;
 import com.prgpr.exceptions.InvalidNumberOfArguments;
 import com.prgpr.framework.command.Command;
 import com.prgpr.framework.command.CommandArgument;
-import com.prgpr.framework.database.BatchTransactionHandler;
-import com.prgpr.framework.database.BatchTransactionProducer;
-import com.prgpr.framework.database.EmbeddedDatabase;
-import com.prgpr.framework.database.EmbeddedDatabaseFactory;
+import com.prgpr.framework.database.*;
 import com.prgpr.helpers.Benchmark;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
@@ -56,15 +53,16 @@ public class ArticleLinksCommand extends Command {
     public void run() {
         EmbeddedDatabase graphDb = EmbeddedDatabaseFactory.newEmbeddedDatabase(arguments[0].get());
 
-        BatchTransactionHandler b = new BatchTransactionHandler(graphDb, batchSize);
-        BatchTransactionProducer p = new BatchTransactionProducer(
-                graphDb.getAllElements()
-                        .map(Page::new)
-                        .map(pg -> (Callable<Long>) pg::insertArticleLinks)
+        long time = Benchmark.run(() -> {
+            BatchTransaction.run(
+                    graphDb,
+                    batchSize,
+                    graphDb.getAllElements()
+                            .map(Page::new)
+                            .map(pg -> (Callable<Long>) pg::insertArticleLinks)
+                );
+            }
         );
-
-        b.subscribeTo(p);
-        long time = Benchmark.run(p);
 
         log.info(getName() + " took " + time / 1000 + " seconds");
     }

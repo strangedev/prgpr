@@ -72,6 +72,6 @@ public class ImportHtmlCommand extends Command {
             log.info(graphDb.getAllElements().count());
         });
 
-        log.info("Counted nodes in: " + (time / 1000.0) + " s");
+        log.info("Counted all nodes in: " + (time / 1000.0) + " seconds");
     }
 }
