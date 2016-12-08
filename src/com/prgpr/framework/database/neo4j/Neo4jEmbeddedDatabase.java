@@ -1,10 +1,12 @@
 package com.prgpr.framework.database.neo4j;
 
 import com.prgpr.data.Page;
+import com.prgpr.exceptions.NotInTransactionException;
 import com.prgpr.framework.database.*;
-import com.prgpr.framework.database.Label;
-import com.prgpr.framework.database.RelationshipType;
-import org.neo4j.graphdb.*;
+import com.prgpr.framework.database.transaction.TransactionManager;
+import org.neo4j.graphdb.GraphDatabaseService;
+import org.neo4j.graphdb.Node;
+import org.neo4j.graphdb.Relationship;
 import org.neo4j.graphdb.factory.GraphDatabaseFactory;
 import org.neo4j.graphdb.index.ReadableIndex;
 import org.neo4j.graphdb.index.UniqueFactory;
@@ -20,18 +22,18 @@ import java.util.stream.Stream;
 public class Neo4jEmbeddedDatabase implements EmbeddedDatabase {
 
     private Neo4jTraversalProvider traversalProvider;
+    private TransactionManager transactionManager;
+
     private GraphDatabaseService graphDb;
     private static final String idIndex = "hash";
 
     public Neo4jEmbeddedDatabase() {}
 
     public Neo4jEmbeddedDatabase(GraphDatabaseService db) {
-        this.graphDb = db;
-        this.traversalProvider = new Neo4jTraversalProvider(db);
-        registerShutdownHook(graphDb);
+        init(db);
     }
 
-    private static void registerShutdownHook(final GraphDatabaseService graphDb )
+    private static void registerShutdownHook(final GraphDatabaseService graphDb, final TransactionManager tm)
     {
         // Registers a shutdown hook for the Neo4j instance so that it
         // shuts down nicely when the VM exits (even if you "Ctrl-C" the
@@ -42,7 +44,7 @@ public class Neo4jEmbeddedDatabase implements EmbeddedDatabase {
             @Override
             public void run()
             {
-                Neo4jTransactionManager.shutdown();
+                tm.shutdown();
                 graphDb.shutdown();
             }
         } );
@@ -51,9 +53,14 @@ public class Neo4jEmbeddedDatabase implements EmbeddedDatabase {
     @Override
     public void create(String path) {
         File dbf = new File(path);
-        graphDb = new GraphDatabaseFactory().newEmbeddedDatabase(dbf);
-        traversalProvider = new Neo4jTraversalProvider(graphDb);
-        registerShutdownHook(graphDb);
+        init(new GraphDatabaseFactory().newEmbeddedDatabase(dbf));
+    }
+
+    private void init(GraphDatabaseService db){
+        this.graphDb = db;
+        this.traversalProvider = new Neo4jTraversalProvider(db);
+        this.transactionManager = new TransactionManager(new Neo4jTransactionFactory(db));
+        registerShutdownHook(graphDb, transactionManager);
     }
 
     @Override
@@ -63,25 +70,25 @@ public class Neo4jEmbeddedDatabase implements EmbeddedDatabase {
     }
 
     @Override
-    public void transaction() {
-        Neo4jTransactionManager.getTransaction(graphDb);
-    }
-
-    @Override
     public void transaction(Runnable runnable)
     {
-        Neo4jTransactionManager.getTransaction(graphDb, runnable);
+        transactionManager.execute(runnable);
     }
 
     @Override
     public <T> T transaction(Callable<T> callable)
     {
-        return Neo4jTransactionManager.getTransaction(graphDb, callable);
+        return transactionManager.execute(callable);
     }
 
     @Override
-    public void commit() {
-        Neo4jTransactionManager.success(graphDb);
+    public void success() throws NotInTransactionException {
+        transactionManager.success();
+    }
+
+    @Override
+    public void failure() throws NotInTransactionException {
+        transactionManager.failure();
     }
 
     public Element createElement(String index, long hash, Callback<Element> callback){

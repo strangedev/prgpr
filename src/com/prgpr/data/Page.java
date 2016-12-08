@@ -290,7 +290,7 @@ public class Page {
         }
 
         return relationshipsAdded;
-        //this.node.getDatabase().commit();
+        //this.node.getDatabase().success();
     }
 
 

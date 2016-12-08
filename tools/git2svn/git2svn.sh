@@ -68,7 +68,7 @@ zip example_output.zip ./example_output/*
 rm -rf ./example_output
 
 if [ "$DRY_RUN" == 1 ]; then
-    echo "Dry run with commit message '${COMMIT_MSG}'"
+    echo "Dry run with success message '${COMMIT_MSG}'"
     exit
 fi
 

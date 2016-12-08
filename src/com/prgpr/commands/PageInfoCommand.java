@@ -63,20 +63,32 @@ public class PageInfoCommand extends Command {
         t.addRow(page.getTitle(), page.getNamespaceID(), page.getArticleID());
         t.print();
 
-        t.setColumns("Direct Categories", "NamespaceID");
-        page.getCategories().stream().map(cat -> new Object[]{cat.getTitle(), cat.getNamespaceID()}).forEach(t::addRow);
+        t.setColumns("Direct Categories");
+        page.getCategories().stream()
+                .map(Page::getTitle)
+                .sorted(String.CASE_INSENSITIVE_ORDER)
+                .forEach(t::addRow);
         t.print();
 
-        t.setColumns("Related Categories", "NamespaceID");
-        page.getAllRelatedCategories().stream().map(cat -> new Object[]{cat.getTitle(), cat.getNamespaceID()}).forEach(t::addRow);
+        t.setColumns("Related Categories");
+        page.getAllRelatedCategories().stream()
+                .map(Page::getTitle)
+                .sorted(String.CASE_INSENSITIVE_ORDER)
+                .forEach(t::addRow);
         t.print();
 
-        t.setColumns("Linked Articles", "NamespaceID");
-        page.getLinkedArticles().stream().map(article -> new Object[]{article.getTitle(), article.getNamespaceID()}).forEach(t::addRow);
+        t.setColumns("Linked Articles");
+        page.getLinkedArticles().stream()
+                .map(Page::getTitle)
+                .sorted(String.CASE_INSENSITIVE_ORDER)
+                .forEach(t::addRow);
         t.print();
 
-        t.setColumns("Linking Articles", "NamespaceID");
-        page.getLinkingArticles().stream().map(article -> new Object[]{article.getTitle(), article.getNamespaceID()}).forEach(t::addRow);
+        t.setColumns("Linking Articles");
+        page.getLinkingArticles().stream()
+                .map(Page::getTitle)
+                .sorted(String.CASE_INSENSITIVE_ORDER)
+                .forEach(t::addRow);
         t.print();
 
     }

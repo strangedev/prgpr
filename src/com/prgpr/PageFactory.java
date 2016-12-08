@@ -1,6 +1,7 @@
 package com.prgpr;
 
 import com.prgpr.data.Page;
+import com.prgpr.exceptions.NotInTransactionException;
 import com.prgpr.framework.consumer.Producer;
 import com.prgpr.framework.database.Element;
 import com.prgpr.framework.database.EmbeddedDatabase;
@@ -71,6 +72,10 @@ public class PageFactory extends Producer<Page> {
      */
     public static void commit()
     {
-        db.commit();
+        try {
+            db.success();
+        } catch (NotInTransactionException e) {
+            log.catching(e);
+        }
     }
 }

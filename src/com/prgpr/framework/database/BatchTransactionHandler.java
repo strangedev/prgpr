@@ -1,10 +1,10 @@
 package com.prgpr.framework.database;
 
+import com.prgpr.exceptions.NotInTransactionException;
 import com.prgpr.framework.consumer.Consumer;
 import com.prgpr.framework.consumer.Producer;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
-import org.neo4j.graphdb.GraphDatabaseService;
 
 /**
  * Created by strange on 12/7/16.
@@ -28,7 +28,11 @@ public class BatchTransactionHandler implements Consumer<Long> {
 
         if (this.received >= this.batchSize){
             log.info("Committing batch (size: "+ received +") to database.");
-            this.db.commit();
+            try {
+                this.db.success();
+            } catch (NotInTransactionException e) {
+                log.catching(e);
+            }
             this.received = 0;
         }
     }
@@ -36,6 +40,10 @@ public class BatchTransactionHandler implements Consumer<Long> {
     @Override
     public void onUnsubscribed(Producer<Long> producer) {
         log.info("Committing batch (size: "+ received +") to database.");
-        this.db.commit();
+        try {
+            this.db.success();
+        } catch (NotInTransactionException e) {
+            log.catching(e);
+        }
     }
 }
