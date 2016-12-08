@@ -62,17 +62,19 @@ public class LinkExtraction {
 
         try {
             Document articles = Jsoup.parse(article);
-            Elements links = articles.select("p a"); // As the files are too old, they don't have the format of the real wikipages
+            Elements links = articles.select("a"); // As the files are too old, they don't have the format of the real wikipages
             Pattern r = Pattern.compile("/wiki/([^:]*\")"); // Only the /wiki/articlename are the internal articles are taken
 
             for (Element link : links) {
                 String test = link.toString();
                 Matcher m = r.matcher(test); // Parsing the link String to see if he is valid
-                if (m.find()) { articleLinks.add(link.text()); }
+                if (m.find()) { articleLinks.add(link.attr("title")); }
             }
         } catch (Exception except) {
             log.error("Couldn't find articles in this article.");
         }
+
+        articleLinks.stream().sorted().forEach(System.out::println);
         return articleLinks;
     }
 }
