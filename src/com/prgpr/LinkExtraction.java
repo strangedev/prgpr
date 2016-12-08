@@ -37,7 +37,7 @@ public class LinkExtraction {
             Document articles = Jsoup.parse(article);
             Elements links = articles.select("div#catlinks li a");
 
-            links.forEach(link -> categories.add(link.text()));
+            links.forEach(link -> categories.add(link.attr("title")));
 
         } catch (Exception except) {
             log.error("Couldn't find categories in this article.");
@@ -74,7 +74,6 @@ public class LinkExtraction {
             log.error("Couldn't find articles in this article.");
         }
 
-        articleLinks.stream().sorted().forEach(System.out::println);
         return articleLinks;
     }
 }
