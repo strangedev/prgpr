@@ -4,20 +4,19 @@ import com.prgpr.framework.consumer.Consumer;
 import com.prgpr.framework.consumer.Producer;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
-import org.neo4j.graphdb.GraphDatabaseService;
 
 /**
  * Created by strange on 12/7/16.
  * @author Noah Hummel
  */
-public class BatchTransactionHandler implements Consumer<Long> {
+public class BatchTransactionConsumer implements Consumer<Long> {
 
-    private static final Logger log = LogManager.getFormatterLogger(BatchTransactionHandler.class);
+    private static final Logger log = LogManager.getFormatterLogger(BatchTransactionConsumer.class);
     private EmbeddedDatabase db;
     private final long batchSize;
     private long received = 0;
 
-    public BatchTransactionHandler(EmbeddedDatabase db, long batchSize) {
+    public BatchTransactionConsumer(EmbeddedDatabase db, long batchSize) {
         this.db = db;
         this.batchSize = batchSize;
     }
