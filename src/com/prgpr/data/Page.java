@@ -30,6 +30,7 @@ public class Page {
     private static final String indexName = "Pages";
     private static final String stringHashFunction = "SHA-1";
     private Element node;
+    private String t = "";
 
     public enum PageAttribute implements Property
     {
@@ -126,9 +127,8 @@ public class Page {
     public Set<Page> getCategories() {
         return SearchProvider.findImmediateOutgoing(
                 this.node,
-                WikiNamespaces.PageLabel.Category,
-                RelationshipTypes.categoryLink,
-                (PropertyValuePair) null)
+                RelationshipTypes.categoryLink
+        )
                 .stream()
                 .map(Page::new)
                 .collect(Collectors.toCollection(LinkedHashSet::new));
@@ -142,9 +142,8 @@ public class Page {
     public Set<Page> getAllRelatedCategories() {
         return SearchProvider.findAllInSubgraph(
                 this.node,
-                WikiNamespaces.PageLabel.Category,
-                RelationshipTypes.categoryLink,
-                null)
+                RelationshipTypes.categoryLink
+                )
                 .stream()
                 .map(Page::new)
                 .collect(Collectors.toCollection(LinkedHashSet::new));
@@ -158,9 +157,8 @@ public class Page {
     public Set<Page> getLinkedArticles() {
         return SearchProvider.findImmediateOutgoing(
                 this.node,
-                WikiNamespaces.PageLabel.Article,
-                RelationshipTypes.articleLink,
-                (PropertyValuePair) null)
+                RelationshipTypes.articleLink
+        )
                 .stream()
                 .map(Page::new)
                 .collect(Collectors.toCollection(LinkedHashSet::new));
@@ -174,9 +172,8 @@ public class Page {
     public Set<Page> getLinkingArticles() {
         return SearchProvider.findImmediateIncoming(
                 this.node,
-                WikiNamespaces.PageLabel.Article,
-                RelationshipTypes.articleLink,
-                (PropertyValuePair) null)
+                RelationshipTypes.articleLink
+        )
                 .stream()
                 .map(Page::new)
                 .collect(Collectors.toCollection(LinkedHashSet::new));
@@ -236,16 +233,17 @@ public class Page {
     }
 
     /**
-     * A function for the category links to call addRelationship() inserting the relations into the database
+     * A function which calls addRelationship() to insert category relationships into the database
      */
     public long insertCategoryLinks() {
         return addRelationships(WikiNamespaces.PageLabel.Category, RelationshipTypes.categoryLink, () -> extractCategories(this.getHtml()));
     }
 
     /**
-     * A function for the article links to call addRelationship() inserting the relations into the database
+     * A function which calls addRelationship() to insert article relationships into the database
      */
     public long insertArticleLinks() {
+        this.t = getTitle(); // TODO remove
         return addRelationships(WikiNamespaces.PageLabel.Article, RelationshipTypes.articleLink, () -> extractArticles(this.getHtml()));
     }
 
@@ -290,7 +288,6 @@ public class Page {
         }
 
         return relationshipsAdded;
-        //this.node.getDatabase().success();
     }
 
 

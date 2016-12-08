@@ -7,7 +7,6 @@ import com.prgpr.exceptions.InvalidNumberOfArguments;
 import com.prgpr.framework.command.Command;
 import com.prgpr.framework.command.CommandArgument;
 import com.prgpr.framework.database.*;
-import com.prgpr.framework.database.neo4j.Neo4jEmbeddedDatabase;
 import com.prgpr.framework.database.neo4j.RelationshipTypes;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
@@ -71,12 +70,7 @@ public class TestDBCommand extends Command{
         vertex.createUniqueRelationshipTo(vertox, RelationshipTypes.categoryLink);
         vertex.createUniqueRelationshipTo(vertix, RelationshipTypes.categoryLink);
 
-        SearchProvider.findImmediateOutgoing(vertex, new Label() {
-            @Override
-            public String name() {
-                return "";
-            }
-        }, RelationshipTypes.categoryLink, (PropertyValuePair) null)
+        SearchProvider.findImmediateOutgoing(vertex, RelationshipTypes.categoryLink)
                 .forEach((neighbor) -> {
                     System.out.print(neighbor.getProperty(Page.PageAttribute.title) + " ");
                     System.out.println(neighbor.getLabels().count());

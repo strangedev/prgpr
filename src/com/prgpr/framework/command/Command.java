@@ -9,7 +9,11 @@ import java.util.List;
 import java.util.Optional;
 
 /**
+ * @author Noah Hummel
  * Created by kito on 19.11.16.
+ *
+ * An abstract superclass for a Command design pattern.
+ * A command has a name, a number of arguments and can be run.
  */
 public abstract class Command implements Runnable {
 

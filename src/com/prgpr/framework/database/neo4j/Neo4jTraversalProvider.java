@@ -36,6 +36,7 @@ public class Neo4jTraversalProvider extends TraversalProvider {
     @Override
     protected Stream<Element> getUniqueTraversal(Element from, List<RelationshipType> relTypes, Direction direction) {
         TraversalDescription tv = getTraversalDescription(relTypes, direction)
+                                        .evaluator(Evaluators.excludeStartPosition())
                                         .evaluator(Evaluators.all());
         return traverse((Neo4jElement) from, tv);
     }
