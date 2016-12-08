@@ -8,6 +8,8 @@ import java.nio.file.Path;
 
 /**
  * Created by kito on 20.11.16.
+ *
+ * A Command Argument specifying a filepath to an embedded database storage.
  */
 public class DatabaseDirectoryArgument extends CommandArgument {
 

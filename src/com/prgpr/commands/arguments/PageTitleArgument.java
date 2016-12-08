@@ -5,6 +5,8 @@ import com.prgpr.framework.command.CommandArgument;
 
 /**
  * Created by kito on 02.12.16.
+ *
+ * A command Argument specifying a title of a wiki page.
  */
 public class PageTitleArgument extends CommandArgument {
     @Override
