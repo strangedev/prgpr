@@ -24,7 +24,7 @@ public class LinkExtraction {
     private static final Logger log = LogManager.getFormatterLogger(LinkExtraction.class);
 
     /**
-     * Gets the categories from an article.
+     * Gets categories from an article.
      *
      * @param article A String of html-formatted text.
      * @return A LinkedHashSet of categories extracted from the article.
@@ -48,7 +48,7 @@ public class LinkExtraction {
     }
 
     /**
-     * Gets the article links from an article.
+     * Gets article links from an article.
      * Jsoup parses trough the text part and extracts all links.
      * By the regex all the files and external links will be deleted, so that only the internal links to the articles stay.
      *

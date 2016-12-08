@@ -15,12 +15,11 @@ import java.util.Set;
 /**
  * @author Noah Hummel
  *
- * A Class (as the name implies) to find Page in the database.
+ * A Class (as the name implies) to find Pages in the database.
  */
 public class PageFinder {
 
     private static final Logger log = LogManager.getFormatterLogger(PageFinder.class);
-
     private static EmbeddedDatabase db;
 
     /**
@@ -33,7 +32,7 @@ public class PageFinder {
     }
 
     /**
-     * Searches the Page by given namespaceID and title.
+     * Searches for Page by given namespaceID and title.
      *
      * @param namespaceID of the Page to find
      * @param title of the Page to find
@@ -47,6 +46,7 @@ public class PageFinder {
                 Page.PageAttribute.title,
                 title
         );
+
         if (e != null) {
             return PageFactory.getPage(e);
         }
@@ -56,7 +56,7 @@ public class PageFinder {
     }
 
     /**
-     * Searches all Pages of pages from one namespace.
+     * Searches for all Pages from one namespace.
      *
      * @param namespaceID of the Pages to find
      * @return A Set of all Page-Objects from given namespace
@@ -72,8 +72,7 @@ public class PageFinder {
         );
 
         if (!es.isEmpty()) {
-            es.stream()
-                    .map(PageFactory::getPage);
+            es.stream().map(PageFactory::getPage);
         }
 
         return ret;

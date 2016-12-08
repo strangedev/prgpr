@@ -23,9 +23,7 @@ public class Main {
 
 
     /**
-     * Creates producer and consumer instances,
-     * then subscribes them to each other.
-     * Executes the PageFactory to run the program.
+     * Provides an entry point for the Command Pattern and starts the program.
      *
      * @param args Command line arguments.
      */

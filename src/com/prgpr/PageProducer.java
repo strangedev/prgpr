@@ -100,7 +100,6 @@ public class PageProducer extends Producer<Page> {
                         id = Long.parseLong(m.group(1));
                         namespaceId = Integer.parseInt(m.group(2));
                         title = m.group(3);
-                        log.info("Found article: " +  title);
                     } catch (Exception e){  // first line had malformed metadata
                         throw new MalformedWikidataException("Could not convert metadata string to primitive types: " + e.getMessage());
                     }
