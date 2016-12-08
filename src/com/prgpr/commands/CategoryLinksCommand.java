@@ -23,7 +23,7 @@ import java.util.concurrent.Callable;
 public class CategoryLinksCommand extends Command{
 
     private static final Logger log = LogManager.getFormatterLogger(Page.class);
-    private static final long batchSize = 10000;  // Specifies the batch size for batched transactions
+    private static final int batchSize = 10000;  // Specifies the batch size for batched transactions
 
     protected final CommandArgument[] arguments = new CommandArgument[]{
             new DatabaseDirectoryArgument()
@@ -55,18 +55,13 @@ public class CategoryLinksCommand extends Command{
 
     @Override
     public void run() {
-        EmbeddedDatabase graphDb = EmbeddedDatabaseFactory.newEmbeddedDatabase(arguments[0].get());
+        EmbeddedDatabase graphDb = EmbeddedDatabaseFactory.newEmbeddedDatabase(arguments[0].get(), batchSize);
 
         long time = Benchmark.run(() -> {
-            BatchTransaction.run(
-                    graphDb,
-                    batchSize,
-                    graphDb.getAllElements()
-                            .map(Page::new)
-                            .map(pg -> (Callable<Long>) pg::insertCategoryLinks)
-                );
-            }
-        );
+            graphDb.getAllElements()
+                    .map(Page::new)
+                    .forEach(Page::insertCategoryLinks);
+        });
 
         log.info(getName() + " took " + time / 1000 + " seconds");
     }

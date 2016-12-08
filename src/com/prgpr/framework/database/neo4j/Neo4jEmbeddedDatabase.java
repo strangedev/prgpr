@@ -3,6 +3,8 @@ package com.prgpr.framework.database.neo4j;
 import com.prgpr.data.Page;
 import com.prgpr.exceptions.NotInTransactionException;
 import com.prgpr.framework.database.*;
+import com.prgpr.framework.database.transaction.SimpleTransactionManager;
+import com.prgpr.framework.database.transaction.TransactionFactory;
 import com.prgpr.framework.database.transaction.TransactionManager;
 import org.neo4j.graphdb.GraphDatabaseService;
 import org.neo4j.graphdb.Node;
@@ -22,15 +24,14 @@ import java.util.stream.Stream;
 public class Neo4jEmbeddedDatabase implements EmbeddedDatabase {
 
     private Neo4jTraversalProvider traversalProvider;
+    private Neo4jTransactionFactory transactionFactory;
     private TransactionManager transactionManager;
 
     private GraphDatabaseService graphDb;
     private static final String idIndex = "hash";
 
-    public Neo4jEmbeddedDatabase() {}
-
     public Neo4jEmbeddedDatabase(GraphDatabaseService db) {
-        init(db);
+        this.graphDb = db;
     }
 
     private static void registerShutdownHook(final GraphDatabaseService graphDb, final TransactionManager tm)
@@ -50,16 +51,12 @@ public class Neo4jEmbeddedDatabase implements EmbeddedDatabase {
         } );
     }
 
-    @Override
-    public void create(String path) {
+    public Neo4jEmbeddedDatabase(String path) {
         File dbf = new File(path);
-        init(new GraphDatabaseFactory().newEmbeddedDatabase(dbf));
-    }
-
-    private void init(GraphDatabaseService db){
-        this.graphDb = db;
-        this.traversalProvider = new Neo4jTraversalProvider(db);
-        this.transactionManager = new TransactionManager(new Neo4jTransactionFactory(db));
+        this.graphDb = new GraphDatabaseFactory().newEmbeddedDatabase(dbf);
+        this.traversalProvider = new Neo4jTraversalProvider(graphDb);
+        this.transactionFactory = new Neo4jTransactionFactory(graphDb);
+        this.transactionManager = new SimpleTransactionManager(this.transactionFactory);
         registerShutdownHook(graphDb, transactionManager);
     }
 
@@ -67,6 +64,21 @@ public class Neo4jEmbeddedDatabase implements EmbeddedDatabase {
     public TraversalProvider getTraversalProvider() {
         return transaction(() -> this.traversalProvider );
 
+    }
+
+    @Override
+    public TransactionFactory getTransactionFactory() {
+        return this.transactionFactory;
+    }
+
+    @Override
+    public TransactionManager getTransactionManager(){
+        return this.transactionManager;
+    }
+
+    @Override
+    public void setTransactionManager(TransactionManager tm) {
+        this.transactionManager = tm;
     }
 
     @Override
@@ -113,21 +125,23 @@ public class Neo4jEmbeddedDatabase implements EmbeddedDatabase {
     }
 
     public Relationship createUniqueRelationshipTo(Element start, Element end, com.prgpr.framework.database.RelationshipType relType) {
-        UniqueFactory<Relationship> factory = new UniqueFactory.UniqueRelationshipFactory(graphDb, relType.name()) {
-            @Override
-            protected Relationship create(Map<String, Object> properties) {
-                Relationship r =  ((Neo4jElement)start)
-                                        .getNode()
-                                        .createRelationshipTo(
-                                                ((Neo4jElement)end).getNode(),
-                                                org.neo4j.graphdb.RelationshipType.withName(relType.name())
-                                        );
-                r.setProperty(idIndex, relationshipHash(start, end, relType));
-                return r;
-            }
-        };
+        return transaction(() -> {
+            UniqueFactory<Relationship> factory = new UniqueFactory.UniqueRelationshipFactory(graphDb, relType.name()) {
+                @Override
+                protected Relationship create(Map<String, Object> properties) {
+                    Relationship r = ((Neo4jElement) start)
+                            .getNode()
+                            .createRelationshipTo(
+                                    ((Neo4jElement) end).getNode(),
+                                    org.neo4j.graphdb.RelationshipType.withName(relType.name())
+                            );
+                    r.setProperty(idIndex, relationshipHash(start, end, relType));
+                    return r;
+                }
+            };
 
-        return factory.getOrCreate(idIndex, relationshipHash(start, end, relType));
+            return factory.getOrCreate(idIndex, relationshipHash(start, end, relType));
+        });
     }
 
     private int relationshipHash(Element start, Element end, RelationshipType relType) {
