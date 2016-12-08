@@ -19,7 +19,7 @@ import java.util.concurrent.Callable;
 public class ArticleLinksCommand extends Command {
 
     private static final Logger log = LogManager.getFormatterLogger(Page.class);
-    private static final long batchSize = 10000;
+    private static final int batchSize = 10000;
 
     protected final CommandArgument[] arguments = new CommandArgument[]{
             new DatabaseDirectoryArgument()
@@ -51,18 +51,13 @@ public class ArticleLinksCommand extends Command {
 
     @Override
     public void run() {
-        EmbeddedDatabase graphDb = EmbeddedDatabaseFactory.newEmbeddedDatabase(arguments[0].get());
+        EmbeddedDatabase graphDb = EmbeddedDatabaseFactory.newEmbeddedDatabase(arguments[0].get(), batchSize);
 
         long time = Benchmark.run(() -> {
-            BatchTransaction.run(
-                    graphDb,
-                    batchSize,
-                    graphDb.getAllElements()
-                            .map(Page::new)
-                            .map(pg -> (Callable<Long>) pg::insertArticleLinks)
-                );
-            }
-        );
+            graphDb.getAllElements()
+                    .map(Page::new)
+                    .forEach(Page::insertArticleLinks);
+        });
 
         log.info(getName() + " took " + time / 1000 + " seconds");
     }

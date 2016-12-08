@@ -55,23 +55,24 @@ public class ImportHtmlCommand extends Command {
 
     @Override
     public void run() {
-        EmbeddedDatabase graphDb = EmbeddedDatabaseFactory.newEmbeddedDatabase(arguments[0].get());
+        EmbeddedDatabase graphDb = EmbeddedDatabaseFactory.newEmbeddedDatabase(arguments[0].get(), 500);
 
         PageFactory.setDatabase(graphDb);
 
         PageProducer pageProducer = new PageProducer(arguments[1].get());
 
         // Logging units
-        ProducerLogger<Page> pageFactoryLogger = new ProducerLogger<>(true);
-        pageFactoryLogger.subscribeTo(pageProducer);
+        //ProducerLogger<Page> pageFactoryLogger = new ProducerLogger<>(true);
+        //pageFactoryLogger.subscribeTo(pageProducer);
 
         // Execute
-        pageProducer.run();
+        long timeImport = Benchmark.run(pageProducer);
 
-        long time = Benchmark.run(()->{
+        long timeCount = Benchmark.run(()->{
             log.info(graphDb.getAllElements().count());
         });
 
-        log.info("Counted all nodes in: " + (time / 1000.0) + " seconds");
+        log.info("Import took: " + (timeImport / 1000) + " seconds");
+        log.info("Counted all nodes in: " + (timeCount / 1000.0) + " seconds");
     }
 }
