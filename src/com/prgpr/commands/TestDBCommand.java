@@ -7,7 +7,7 @@ import com.prgpr.exceptions.InvalidNumberOfArguments;
 import com.prgpr.framework.command.Command;
 import com.prgpr.framework.command.CommandArgument;
 import com.prgpr.framework.database.*;
-import com.prgpr.framework.database.neo4j.RelationshipTypes;
+import com.prgpr.framework.database.RelationshipTypes;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 import org.neo4j.graphdb.GraphDatabaseService;
