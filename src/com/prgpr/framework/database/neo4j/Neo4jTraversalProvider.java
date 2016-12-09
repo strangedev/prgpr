@@ -21,7 +21,7 @@ public class Neo4jTraversalProvider extends TraversalProvider {
 
     private GraphDatabaseService db;
 
-    public Neo4jTraversalProvider(GraphDatabaseService db) {
+    Neo4jTraversalProvider(GraphDatabaseService db) {
         this.db = db;
     }
 

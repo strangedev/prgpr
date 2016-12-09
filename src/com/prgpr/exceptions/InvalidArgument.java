@@ -14,6 +14,7 @@ public class InvalidArgument extends Exception
 
     /**
      * A function to trow an exception with a message.
+     * @param message the message to be displayed
      */
     public InvalidArgument(String message)
     {

@@ -53,30 +53,6 @@ public abstract class Command implements Runnable {
     }
 
     /**
-     * @return A full human readable description of the command, including arguments and name.
-     * Used to display help messages.
-     */
-    public String getFullDescription(){
-        String name = getName();
-        String args = getArgumentsAsString();
-        String desc = getDescription();
-
-        if(args == null && desc == null){
-            return name;
-        }
-
-        if(args == null){
-            return String.format("%s : %s", name, desc);
-        }
-
-        if(desc == null){
-            return String.format("%s %s", name, args);
-        }
-
-        return String.format("%s %s : %s", name, args, desc);
-    }
-
-    /**
      * Method used to pass arguments as strings to the command. The command will either accept the given commands or
      * throw an exception if the arguments are invalid. Must be run before the command can be run, if the command takes
      * any arguments.

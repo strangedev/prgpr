@@ -38,7 +38,7 @@ rm -f ${GIT_DIR}/build/libs/*
 cd ${GIT_DIR}
 sed -i "s/${PROJECT_NAME_REAL}/${PROJECT_NAME_ALIAS}/g" build.gradle
 sed -i "s/${PROJECT_NAME_REAL}/${PROJECT_NAME_ALIAS}/g" settings.gradle
-./gradlew jar
+./gradlew build
 ./gradlew javadoc
 git reset --hard HEAD
 

@@ -6,6 +6,10 @@ package com.prgpr.framework.command;
 public class CommandBrokerFactory {
     private static CommandBroker commandBroker;
 
+    /**
+     * Instantiates the CommandBroker class.
+     * @return an instance of the CommandBroker
+     */
     public static CommandBroker getCommandBroker(){
         if(commandBroker == null){
             commandBroker = new CommandBroker();

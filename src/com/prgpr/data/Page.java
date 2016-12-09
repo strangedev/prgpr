@@ -30,7 +30,6 @@ public class Page {
     private static final String indexName = "Pages";
     private static final String stringHashFunction = "SHA-1";
     private Element node;
-    private String t = "";
 
     public enum PageAttribute implements Property
     {
@@ -47,7 +46,7 @@ public class Page {
 
     public Page(EmbeddedDatabase db, long id, int namespaceID, String title, String html) {
         this.node = db.createElement(indexName, hashCode(namespaceID, title), (node) -> {
-            node.addLabel(WikiNamespaces.PageLabel.Page);
+            node.addLabel(EntityTypes.Page);
             node.addLabel(WikiNamespaces.fromID(namespaceID));
             node.setProperty(PageAttribute.articleID, id);
             node.setProperty(PageAttribute.namespaceID, namespaceID);
@@ -234,6 +233,7 @@ public class Page {
 
     /**
      * A function which calls addRelationship() to insert category relationships into the database
+     * @return the amount of relationships created
      */
     public long insertCategoryLinks() {
         return addRelationships(WikiNamespaces.PageLabel.Category, RelationshipTypes.categoryLink, () -> extractCategories(this.getHtml()));
@@ -241,9 +241,9 @@ public class Page {
 
     /**
      * A function which calls addRelationship() to insert article relationships into the database
+     * @return the amount of relationships created
      */
     public long insertArticleLinks() {
-        this.t = getTitle(); // TODO remove
         return addRelationships(WikiNamespaces.PageLabel.Article, RelationshipTypes.articleLink, () -> extractArticles(this.getHtml()));
     }
 
@@ -253,10 +253,11 @@ public class Page {
      * @param label Type of the Page
      * @param relType Type of the relation to be inserted
      * @param callable a function to extract the Pages to create the relation to
+     * @return the amount of relationships created
      */
     private long addRelationships(WikiNamespaces.PageLabel label, RelationshipType relType, Callable<Set<String>> callable) {
         Set<String> titles;
-        long relationshipsAdded = 0;
+        final long[] relationshipsAdded = {0};
 
         try {
             titles = callable.call();
@@ -271,23 +272,25 @@ public class Page {
         log.info("Creating relationships of " + label + " for " + pageTitle);
         log.info("------------------------------------");
 
-        for(String title: titles) {
-            long hash = hashCode(namespace, title);
-            Element elem = node.getDatabase().getNodeFromIndex(indexName, hash);
+        node.getDatabase().transaction(() -> {
+            for(String title: titles) {
+                long hash = hashCode(namespace, title);
+                Element elem = node.getDatabase().getNodeFromIndex(indexName, hash);
 
-            if(elem == null) {
-                log.info("Skipping " + label + " relationship to " + title);
-                continue;
+                if(elem == null) {
+                    log.info("Skipping " + label + " relationship to " + title);
+                    continue;
+                }
+
+                node.createUniqueRelationshipTo(elem, relType);
+
+                relationshipsAdded[0]++;
+                log.info("A relation from " + pageTitle + " to " + label + " " + title + " was created.");
+
             }
+        });
 
-            node.createUniqueRelationshipTo(elem, relType);
-
-            relationshipsAdded++;
-            log.info("A relation from " + pageTitle + " to " + label + " " + title + " was created.");
-
-        }
-
-        return relationshipsAdded;
+        return relationshipsAdded[0];
     }
 
 

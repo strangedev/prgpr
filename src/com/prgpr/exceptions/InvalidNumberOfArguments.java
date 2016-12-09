@@ -15,6 +15,7 @@ public class InvalidNumberOfArguments extends Exception
 
     /**
      * A function to trow an exception with a message.
+     * @param message the message to be displayed
      */
     public InvalidNumberOfArguments(String message)
     {

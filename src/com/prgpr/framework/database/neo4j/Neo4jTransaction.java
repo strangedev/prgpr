@@ -11,12 +11,18 @@ public class Neo4jTransaction implements Transaction {
     Neo4jTransaction(org.neo4j.graphdb.Transaction tx){
         this.tx = tx;
     }
-    
+
+    /**
+     * The transaction was successful
+     */
     @Override
     public void success() {
         tx.success();
     }
 
+    /**
+     * The transaction was not successful
+     */
     @Override
     public void failure() {
         tx.failure();

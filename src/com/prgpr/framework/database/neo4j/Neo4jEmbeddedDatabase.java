@@ -125,6 +125,7 @@ public class Neo4jEmbeddedDatabase implements EmbeddedDatabase {
     }
 
     public Relationship createUniqueRelationshipTo(Element start, Element end, com.prgpr.framework.database.RelationshipType relType) {
+        long hash = relationshipHash(start, end, relType);
         return transaction(() -> {
             UniqueFactory<Relationship> factory = new UniqueFactory.UniqueRelationshipFactory(graphDb, relType.name()) {
                 @Override
@@ -135,12 +136,12 @@ public class Neo4jEmbeddedDatabase implements EmbeddedDatabase {
                                     ((Neo4jElement) end).getNode(),
                                     org.neo4j.graphdb.RelationshipType.withName(relType.name())
                             );
-                    r.setProperty(idIndex, relationshipHash(start, end, relType));
+                    r.setProperty(idIndex, hash);
                     return r;
                 }
             };
 
-            return factory.getOrCreate(idIndex, relationshipHash(start, end, relType));
+            return factory.getOrCreate(idIndex, hash);
         });
     }
 

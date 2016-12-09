@@ -14,17 +14,6 @@ public abstract class CommandArgument {
 
     public abstract String getDescription();
 
-    public String getFullDescription(){
-        String name = getName();
-        String desc = getDescription();
-
-        if(desc == null){
-            return name;
-        }
-
-        return String.format("%s : %s", name, desc);
-    }
-
     public abstract void test(String arg) throws InvalidArgument;
 
     public void set(String arg) throws InvalidArgument {
