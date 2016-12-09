@@ -13,13 +13,23 @@ import java.util.stream.StreamSupport;
  */
 public class NodePredicates {
 
+    /**
+     * @param n The Element to decide on.
+     * @param labels A set of labels to check against.
+     * @return Whether any of the Element's labels matche any of a set of given labels.
+     */
     public static boolean matchesAnyLabel(Element n, Set<Label> labels){
-        return labels == null ||
+        return labels == null ||  // allows the user to pass null as well, automatically matches
                 n.getLabels()
                 .anyMatch(labels::contains)
-                || labels.isEmpty();
+                || labels.isEmpty();  // allows the user to pass empty sets as well, automatically matches
     }
 
+    /**
+     * @param n The Element to decide on.
+     * @param labels A set of labels to check against.
+     * @return Whether all of the Element's labels match any of a set of given labels.
+     */
     public static boolean matchesAllLabels(Element n, Set<Label> labels){
         return labels == null ||
                 n.getLabels()
@@ -27,6 +37,11 @@ public class NodePredicates {
                 || labels.isEmpty();
     }
 
+    /**
+     * @param n The Element to decide on.
+     * @param label A label to check against.
+     * @return Whether any of the Element's labels matches the given label.
+     */
     public static boolean matchesLabel(Element n, Label label){
         return label == null ||
                 n.getLabels()
@@ -34,6 +49,11 @@ public class NodePredicates {
                 || label.name().isEmpty();
     }
 
+    /**
+     * @param n The Element to decide on.
+     * @param properties A set of properties to check against.
+     * @return Whether all of the given properties match the Element's properties.
+     */
     public static boolean matchesAllProperties(Element n, Set<PropertyValuePair> properties){
         return properties == null ||
                 properties.stream()
@@ -42,6 +62,11 @@ public class NodePredicates {
                 ) || properties.isEmpty();
     }
 
+    /**
+     * @param n The Element to decide on.
+     * @param properties A set of properties to check against.
+     * @return Whether any of the given properties match the Element's properties.
+     */
     public static boolean matchesAnyProperties(Element n, Set<PropertyValuePair> properties){
         return properties == null ||
                 properties.stream()
@@ -51,6 +76,11 @@ public class NodePredicates {
                 || properties.isEmpty();
     }
 
+    /**
+     * @param n The Element to decide on.
+     * @param property A property to check against.
+     * @return Whether given property matches the Element's property.
+     */
     public static boolean matchesProperty(Element n, PropertyValuePair property){
         return property == null || n.getProperty(property.property) == property.value;
     }
