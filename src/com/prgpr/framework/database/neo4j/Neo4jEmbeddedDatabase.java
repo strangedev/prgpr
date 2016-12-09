@@ -19,7 +19,11 @@ import java.util.concurrent.Callable;
 import java.util.stream.Stream;
 
 /**
+ * @author kyle Rinfreschi
  * Created by kito on 21.11.16.
+ *
+ * Docstrings are kept to a minimum, since all overridden methods are described in
+ * detail in the superclass.
  */
 public class Neo4jEmbeddedDatabase implements EmbeddedDatabase {
 
@@ -103,6 +107,7 @@ public class Neo4jEmbeddedDatabase implements EmbeddedDatabase {
         transactionManager.failure();
     }
 
+    @Override
     public Element createElement(String index, long hash, Callback<Element> callback){
         Neo4jEmbeddedDatabase db = this;
         return transaction(() -> {
@@ -118,6 +123,7 @@ public class Neo4jEmbeddedDatabase implements EmbeddedDatabase {
         });
     }
 
+    @Override
     public Stream<Element> getAllElements() {
         return transaction(() -> graphDb.getAllNodes()
                                             .stream()

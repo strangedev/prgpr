@@ -2,7 +2,7 @@ package com.prgpr.data;
 
 import com.prgpr.framework.database.*;
 
-import com.prgpr.framework.database.neo4j.RelationshipTypes;
+import com.prgpr.framework.database.RelationshipTypes;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 

@@ -5,45 +5,66 @@ import org.neo4j.graphdb.Relationship;
 import java.util.stream.Stream;
 
 /**
+ * @author Kyle Rinfreschi
  * Created by kito on 21.11.16.
+ *
+ * An abstract database Element a.k.a. a graph node.
+ * Elements are typed (labeled) and have an arbitrary amount of properties.
  */
 public interface Element {
 
     /**
-     * Assigns a label to the element.
-     * @param label the label of the element
+     * Adds a label to the Element.
+     * Labels can be viewed as the type of the Element.
+     * Elements can have no labels, or an arbitrary amount of labels.
+     *
+     * @param label The label to apply to the Element.
      */
     void addLabel(Label label);
 
     /**
-     * @return a stream of current assigned labels.
+     * @return A Stream of all labels applied to this Element.
      */
     Stream<Label> getLabels();
 
     /**
-     * @param property property of the element
-     * @return the current value assigned to the requested property
+     * Gets the value of one of the Element's properties by property description.
+     * Properties should be enumerated somewhere accessible to all Objects related to the Elements using it.
+     *
+     * @param property The property for which to get the value.
+     * @return The value of the property.
      */
     Object getProperty(Property property);
 
     /**
-     * @param <E> the template type
-     * @param property the given property
-     * @param val the value to be assigned to the given property
+     * Sets the value of one of the Element's properties by property description.
+     * Properties should be enumerated somewhere accessible to all Objects related to the Elements using it.
+     *
+     * @param property The property to set the value of.
+     * @param val The value of the property.
      */
     <E> void setProperty(Property property, E val);
 
     /**
-     * Update multiple properties and values of a node simultaneously
-     * @param callback a function to be called
+     * Creates a  unique relationship a.k.a. an edge from this Element to another.
+     * Relationships are typed, so the type of the relationship has to be passed as well.
+     * If a relationship from this Element to the given Element of the given type does already exist,
+     * no action is performed and the already existing relationship is returned.
+     *
+     * @param to The Element to which to create a relationship to.
+     * @param relationshipType The type of the new relationship.
+     * @return The created or already existing relationship.
+     */
+    Relationship createUniqueRelationshipTo(Element to, RelationshipType relationshipType);
+
+    /**
+     *  TODO no idea why this exists.
+     * @param callback
      */
     void update(Callback<Element> callback);
 
-    //@TODO:
-    Relationship createUniqueRelationshipTo(Element ingoing, RelationshipType relation);
-
     /**
-     * @return the database the element belongs to.
+     * @return The database to which this element belongs.
      */
     EmbeddedDatabase getDatabase();
 
