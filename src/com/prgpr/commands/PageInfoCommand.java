@@ -52,7 +52,7 @@ public class PageInfoCommand extends Command {
 
     @Override
     public String getDescription() {
-        return null;
+        return "Outputs gathered information about the requested page.";
     }
 
     @Override
