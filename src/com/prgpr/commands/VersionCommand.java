@@ -13,7 +13,7 @@ import java.util.stream.Collectors;
 
 /**
  * Created by kito on 19.11.16.
- * @author Kyle Rinfreschi
+ * @autor Kyle Rinfreschi
  */
 public class VersionCommand extends Command {
     @Override
