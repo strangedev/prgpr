@@ -15,6 +15,7 @@ import com.prgpr.framework.database.neo4j.Neo4jEmbeddedDatabase;
 import com.prgpr.framework.database.EmbeddedDatabaseFactory;
 
 /**
+ * @author Kyle Rinfreschi
  * Created by kito on 02.12.16.
  */
 public class PageInfoCommand extends Command {
