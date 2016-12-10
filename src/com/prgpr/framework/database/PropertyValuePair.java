@@ -1,6 +1,7 @@
 package com.prgpr.framework.database;
 
 /**
+ * @author Noah Hummel
  * Created by strange on 11/20/16.
  *
  * A class representing a database Element's property as a tuple of property name and value.

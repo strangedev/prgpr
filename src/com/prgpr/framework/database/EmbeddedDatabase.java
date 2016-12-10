@@ -9,8 +9,8 @@ import java.util.concurrent.Callable;
 import java.util.stream.Stream;
 
 /**
- * Created by kito on 21.11.16.
  * @author Kyle Rinfreschi
+ * Created by kito on 21.11.16.
  *
  * An abstract embedded database.
  * Provides an interface for the database logic to depend on so that the actual database
@@ -21,13 +21,13 @@ public interface EmbeddedDatabase {
     // TODO Kyle, please write some docstrings, you know the transaction management best.
 
     /**
-     *
-     * @param runnable
+     * Creates a transaction if not already created before calling the callback
+     * @param runnable a runnable / lambda callback
      */
     void transaction(Runnable runnable);
 
     /**
-     *
+     * Creates a transaction if not already created before calling the callback
      * @param callable
      * @param <T>
      * @return

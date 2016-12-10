@@ -19,7 +19,7 @@ import java.util.concurrent.Callable;
 import java.util.stream.Stream;
 
 /**
- * @author kyle Rinfreschi
+ * @author Kyle Rinfreschi
  * Created by kito on 21.11.16.
  *
  * Docstrings are kept to a minimum, since all overridden methods are described in

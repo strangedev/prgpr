@@ -34,5 +34,8 @@ public interface TransactionManager {
      */
     void shutdown();
 
-    boolean inTransaction();
+    /**
+     * @return a boolean stating if we are currently in a transaction.
+     */
+    boolean isInTransaction();
 }

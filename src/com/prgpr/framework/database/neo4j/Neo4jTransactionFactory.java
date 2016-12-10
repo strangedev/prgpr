@@ -8,6 +8,7 @@ import org.neo4j.graphdb.DatabaseShutdownException;
 import org.neo4j.graphdb.GraphDatabaseService;
 
 /**
+ * @author Kyle Rinfreschi
  * Created by kito on 08.12.16.
  */
 public class Neo4jTransactionFactory implements TransactionFactory {
@@ -19,7 +20,7 @@ public class Neo4jTransactionFactory implements TransactionFactory {
     }
 
     /**
-     * @return create a new Transaction instance
+     * @return a newly created Transaction instance
      */
     @Override
     public Transaction createTransaction(){

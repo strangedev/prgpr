@@ -26,7 +26,7 @@ public class Neo4jElement implements Element {
      * @param db The neo4j database this Element exists in.
      * @param node The neo4j node this Element relates to.
      */
-    public Neo4jElement(Neo4jEmbeddedDatabase db, Node node){
+    Neo4jElement(Neo4jEmbeddedDatabase db, Node node){
         this.db = db;
         this.node = node;
     }
