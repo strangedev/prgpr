@@ -42,6 +42,7 @@ public interface Element {
      *
      * @param property The property to set the value of.
      * @param val The value of the property.
+     * @param <E> The type of the value.
      */
     <E> void setProperty(Property property, E val);
 
@@ -58,8 +59,7 @@ public interface Element {
     Relationship createUniqueRelationshipTo(Element to, RelationshipType relationshipType);
 
     /**
-     *  TODO no idea why this exists.
-     * @param callback
+     * @param callback update a number of properties and labels of a single element at once.
      */
     void update(Callback<Element> callback);
 

@@ -9,6 +9,7 @@ public interface TransactionManager {
     /**
      *
      * @param callable Run code block in the current transaction
+     * @param <T> the type to be returned by the callable
      * @return  the code block to be executed
      */
     <T> T execute(Callable<T> callable);

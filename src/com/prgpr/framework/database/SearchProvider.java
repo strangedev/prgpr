@@ -8,12 +8,10 @@ import java.util.stream.Collectors;
  * @author Noah Hummel
  *
  * A Class providing basic search functionality for neo4j.
- * <rant>
+ * begin rant
  *     Why would you even design a database without shipping the most basic search functionality?
  *     I mean neo4j makes even mysql look like the most advanced piece of tech ever devised by mankind.
- *     You might be able to brainwash all those buzzword-hungry, piece-of-shit know-nothings with all of your marketing
- *     wank, but seriously, noone should have to use this piece of crap you call a database.
- * </rant>
+ * end rant
  */
 public class SearchProvider {
 
@@ -47,6 +45,7 @@ public class SearchProvider {
      * @param label The label to filter with
      * @param property The name of the property to filter with
      * @param val The value of the property to filter with
+     * @param <E> the type of the value
      * @return The first matching Element
      */
     public static <E> Element findNode(EmbeddedDatabase db, Label label, Property property, E val){

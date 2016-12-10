@@ -28,7 +28,7 @@ public interface EmbeddedDatabase {
      * Creates a transaction if not already created before calling the callback
      * @param callable  a Callable / lambda callback
      * @param <T> the type to be returned by the callable
-     * @return the type defined by <T>
+     * @return the type defined by T
      */
     <T> T transaction(Callable<T> callable);
 
