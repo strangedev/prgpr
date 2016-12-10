@@ -44,7 +44,7 @@ public class HelpCommand extends Command {
             System.out.println('\t' + args[2]);
         }
 
-        System.out.println();  // FIXME dafuq?
+        System.out.println();
     }
 
     @Override

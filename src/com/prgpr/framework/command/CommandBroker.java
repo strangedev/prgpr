@@ -65,8 +65,8 @@ public class CommandBroker {
      *
      * @param args An array of command line parameters as strings.
      * @throws CommandNotFound When the command name is not recognized and no default command was set.
-     * @throws InvalidNumberOfArguments When the command is recognized, but a wrong number of arguments was passed.
-     * @throws InvalidArgument When the command is recognized, but a malformed argument was passed.
+     * @throws InvalidNumberOfArguments  A wrong number of arguments was passed to the default command.
+     * @throws InvalidArgument A malformed argument was passed to the default command.
      */
     public void process(String[] args) throws CommandNotFound, InvalidNumberOfArguments, InvalidArgument {
         if(args.length == 0){  // If no command is specified, use the default command.
@@ -84,7 +84,7 @@ public class CommandBroker {
                     e.getMessage()
             };
             executeDefaultCommand(args);  // if an error occurred, execute the default command
-        }                                 // TODO: maybe change, since no exception is ever thrown.
+        }
     }
 
     /**

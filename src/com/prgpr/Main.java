@@ -50,7 +50,7 @@ public class Main {
             commandBroker.setDefaultCommand(help.getName());
             commandBroker.process(args);
         } catch (CommandNotFound | InvalidNumberOfArguments | InvalidArgument e) {
-            e.printStackTrace();
+            log.catching(e);
         }
     }
 }
