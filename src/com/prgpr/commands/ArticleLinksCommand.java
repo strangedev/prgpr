@@ -11,6 +11,9 @@ import com.prgpr.helpers.Benchmark;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 
+import java.util.Collection;
+import java.util.stream.BaseStream;
+
 /**
  * Created by lisa on 11/23/16.
  *
@@ -64,9 +67,20 @@ public class ArticleLinksCommand extends Command {
         EmbeddedDatabase graphDb = EmbeddedDatabaseFactory.newEmbeddedDatabase(arguments[0].get(), batchSize);
 
         long time = Benchmark.run(() -> {
-            graphDb.getAllElements()
-                    .map(Page::new)
-                    .forEach(Page::insertArticleLinks);
+            try {
+                graphDb.getAllElements()
+                        .map(Page::new)
+                        .map((page) -> {
+                            log.info("------------------------------------");
+                            log.info("Creating relationships of type Article for " + page.getTitle());
+                            log.info("------------------------------------");
+                            return page.insertArticleLinks();
+                        })
+                        .flatMap(BaseStream::sequential)
+                        .forEach(log::info);
+            } catch (Exception e){
+                log.catching(e);
+            }
         });
 
         log.info(getName() + "command took " + time / 1000 + " seconds");

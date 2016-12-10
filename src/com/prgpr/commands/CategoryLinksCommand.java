@@ -11,7 +11,9 @@ import com.prgpr.helpers.Benchmark;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 
+import java.util.Collection;
 import java.util.concurrent.Callable;
+import java.util.stream.BaseStream;
 
 /**
  * Created by kito on 19.11.16.
@@ -67,9 +69,20 @@ public class CategoryLinksCommand extends Command{
         EmbeddedDatabase graphDb = EmbeddedDatabaseFactory.newEmbeddedDatabase(arguments[0].get(), batchSize);
 
         long time = Benchmark.run(() -> {
-            graphDb.getAllElements()
-                    .map(Page::new)
-                    .forEach(Page::insertCategoryLinks);
+            try {
+                graphDb.getAllElements()
+                        .map(Page::new)
+                        .map((page) -> {
+                            log.info("------------------------------------");
+                            log.info("Creating relationships of type Category for " + page.getTitle());
+                            log.info("------------------------------------");
+                            return page.insertCategoryLinks();
+                        })
+                        .flatMap(BaseStream::sequential)
+                        .forEach(log::info);
+            } catch (Exception e){
+                log.catching(e);
+            }
         });
 
         log.info(getName() + " took " + time / 1000 + " seconds");

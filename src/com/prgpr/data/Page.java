@@ -7,15 +7,14 @@ import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 
 import java.security.NoSuchAlgorithmException;
-import java.util.Arrays;
-import java.util.LinkedHashSet;
-import java.util.Set;
+import java.util.*;
 import java.util.concurrent.Callable;
 import java.util.stream.Collectors;
 
 import static com.prgpr.LinkExtraction.extractArticles;
 import static com.prgpr.LinkExtraction.extractCategories;
 import java.security.MessageDigest;
+import java.util.stream.Stream;
 
 /**
  *
@@ -234,17 +233,17 @@ public class Page {
 
     /**
      * A function which calls addRelationship() to insert category relationships into the database
-     * @return the amount of relationships created
+     * @return the list of titles for created relationships
      */
-    public long insertCategoryLinks() {
+    public Stream<String> insertCategoryLinks() {
         return addRelationships(WikiNamespaces.PageLabel.Category, RelationshipTypes.categoryLink, () -> extractCategories(this.getHtml()));
     }
 
     /**
      * A function which calls addRelationship() to insert article relationships into the database
-     * @return the amount of relationships created
+     * @return the list of titles for created relationships
      */
-    public long insertArticleLinks() {
+    public Stream<String> insertArticleLinks() {
         return addRelationships(WikiNamespaces.PageLabel.Article, RelationshipTypes.articleLink, () -> extractArticles(this.getHtml()));
     }
 
@@ -254,24 +253,20 @@ public class Page {
      * @param label Type of the Page
      * @param relType Type of the relation to be inserted
      * @param callable a function to extract the Pages to create the relation to
-     * @return the amount of relationships created
+     * @return the list of titles for created relationships
      */
-    private long addRelationships(WikiNamespaces.PageLabel label, RelationshipType relType, Callable<Set<String>> callable) {
+    private Stream<String> addRelationships(WikiNamespaces.PageLabel label, RelationshipType relType, Callable<Set<String>> callable) {
         Set<String> titles;
-        final long[] relationshipsAdded = {0};
+        List<String> related = new LinkedList<>();
 
         try {
             titles = callable.call();
         } catch (Exception e) {
-            log.error(e);
-            return 0;
+            log.catching(e);
+            return related.stream();
         }
 
         int namespace = WikiNamespaces.fromPageLabel(label);
-        String pageTitle = this.getTitle();
-        log.info("------------------------------------");
-        log.info("Creating relationships of " + label + " for " + pageTitle);
-        log.info("------------------------------------");
 
         node.getDatabase().transaction(() -> {
             for(String title: titles) {
@@ -279,19 +274,16 @@ public class Page {
                 Element elem = node.getDatabase().getNodeFromIndex(indexName, hash);
 
                 if(elem == null) {
-                    log.info("Skipping " + label + " relationship to " + title);
                     continue;
                 }
 
                 node.createUniqueRelationshipTo(elem, relType);
 
-                relationshipsAdded[0]++;
-                log.info("A relation from " + pageTitle + " to " + label + " " + title + " was created.");
-
+                related.add(title);
             }
         });
 
-        return relationshipsAdded[0];
+        return related.stream();
     }
 
 
