@@ -20,15 +20,14 @@ public class Main {
 
     private static final Logger log = LogManager.getFormatterLogger(Main.class);
 
-
-
-
     /**
      * Provides an entry point for the Command Pattern and starts the program.
      *
      * @param args Command line arguments.
      */
     public static void main(String[] args) {
+
+        log.info("WikiXtractor has started!");
 
         CommandBroker commandBroker = CommandBrokerFactory.getCommandBroker();
 
@@ -41,7 +40,6 @@ public class Main {
                 new ImportHtmlCommand(),
                 new CategoryLinksCommand(),
                 new ArticleLinksCommand(),
-                //new TestDBCommand(),
                 new PageInfoCommand(),
                 new VersionCommand()
         });

@@ -47,6 +47,7 @@ public class BatchTransactionManager implements TransactionManager {
     @Override
     public void success() {
         accumulator = 0;
+        log.debug("Committing batch transaction");
         tm.success();
     }
 
@@ -84,7 +85,6 @@ public class BatchTransactionManager implements TransactionManager {
      */
     private void batchCommit(){
         if(accumulator % batchSize == 0){
-            log.debug("Committing batch transaction");
             success();
         }
     }
