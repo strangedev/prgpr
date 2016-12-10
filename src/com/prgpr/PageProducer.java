@@ -25,7 +25,6 @@ public class PageProducer extends Producer<Page> {
     private static final Logger log = LogManager.getFormatterLogger(PageProducer.class);
 
     private boolean insideArticle = false;
-    private Page current;
     private StringBuilder currentDocument = new StringBuilder();
     private final String wikiFilePath;
     private long id;

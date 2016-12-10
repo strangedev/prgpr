@@ -56,10 +56,14 @@ public class ImportHtmlCommand extends Command {
 
     @Override
     public void run() {
-        EmbeddedDatabase graphDb = EmbeddedDatabaseFactory.newEmbeddedDatabase(arguments[0].get(), 500);
+        EmbeddedDatabase graphDb = EmbeddedDatabaseFactory.newEmbeddedDatabase(arguments[0].get());
 
         PageFactory.setDatabase(graphDb);
+
         PageProducer pageProducer = new PageProducer(arguments[1].get());
+
+        ProducerLogger<Page> producerLogger = new ProducerLogger<>(true);
+        producerLogger.subscribeTo(pageProducer);
 
         long timeImport = Benchmark.run(pageProducer);
 
