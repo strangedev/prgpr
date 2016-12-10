@@ -62,10 +62,6 @@ public class ProducerLogger<T> implements Consumer<T> {
     public void consume(T consumable) {
         this.consumed++;  // count all the consumables.
 
-        if(this.consumed % 500 == 0){
-            PageFactory.commit();
-        }
-
         long timeNow = System.currentTimeMillis();
         long timeSince = timeNow - this.lastTime;
 
@@ -102,7 +98,6 @@ public class ProducerLogger<T> implements Consumer<T> {
      */
     @Override
     public void onUnsubscribed(Producer<T> producer) {
-        PageFactory.commit();
 
         LongAdder adder = new LongAdder();
         int numConsumablesPerSecond = consumablesPerSecond.size();

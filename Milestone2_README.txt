@@ -227,7 +227,7 @@ The price discovering this mess was high, they even had to give up their name...
         Noah:   Testing, Transaction model, LinkExtraction
 
 
-    4.3 Finalizing
+    4.4 Finalizing
     --------------
 
         To complete the assignment, multiple code reviews and pair programming
@@ -239,7 +239,7 @@ The price discovering this mess was high, they even had to give up their name...
         Noah:   docstrings
 
 
-    4.4 Packaging
+    4.5 Packaging
     -------------
 
         An artifact was built.
