@@ -10,6 +10,10 @@ import java.util.concurrent.LinkedBlockingDeque;
 
 /**
  * Created by kito on 18.11.16.
+ *
+ * @author Kyle Rinfreschi
+ * Docstrings are kept to a minimum, since all overridden methods are described in
+ * detail in the superclass.
  */
 public class SimpleTransactionManager implements TransactionManager {
     private static final Logger log = LogManager.getFormatterLogger(SimpleTransactionManager.class);
@@ -17,12 +21,16 @@ public class SimpleTransactionManager implements TransactionManager {
     private final TransactionFactory tf;
     private final LinkedBlockingDeque<Transaction> queue = new LinkedBlockingDeque<>();
     private int depth = 0;
-    private Callback<Transaction> transactionAction = null;
+    private Callback<Transaction> action = null;
+    private static final Callback<Transaction> dominatingAction = Transaction::failure;
 
     public SimpleTransactionManager(TransactionFactory tf){
         this.tf = tf;
     }
 
+    /**
+     * Creates a new transaction and adds it to the queue
+     */
     private void newTransaction(){
         Transaction tx = tf.createTransaction();
         queue.addFirst(tx);
@@ -45,7 +53,7 @@ public class SimpleTransactionManager implements TransactionManager {
             depth--;
         }
 
-        handleTransactionAction();
+        handleAction();
 
         return retVal;
     }
@@ -65,7 +73,7 @@ public class SimpleTransactionManager implements TransactionManager {
             depth--;
         }
 
-        handleTransactionAction();
+        handleAction();
     }
 
     @Override
@@ -86,17 +94,22 @@ public class SimpleTransactionManager implements TransactionManager {
         }
     }
 
+    /**
+     * Commit the current transaction
+     * @param cb the callback
+     * @throws NotInTransactionException should not be called when not in a transaction
+     */
     private void commit(Callback<Transaction> cb) throws NotInTransactionException {
         if(queue.isEmpty()){
             throw new NotInTransactionException();
         }
 
-        if(depth > 0){
-            transactionAction = cb;
+        if(depth > 0 && (action == null || action == dominatingAction)){
+            action = cb;
             return;
         }
 
-        transactionAction = null;
+        action = null;
 
         try (Transaction tx = queue.pop()) {
             cb.call(tx);
@@ -123,17 +136,20 @@ public class SimpleTransactionManager implements TransactionManager {
     }
 
     @Override
-    public boolean inTransaction() {
+    public boolean isInTransaction() {
         return !queue.isEmpty();
     }
 
-    private void handleTransactionAction() {
-        if(depth > 0 || transactionAction == null){
+    /**
+     * Only commit if we are at depth 0
+     */
+    private void handleAction() {
+        if(depth > 0 || action == null){
             return;
         }
 
         try {
-            commit(transactionAction);
+            commit(action);
         } catch (NotInTransactionException e) {
             log.catching(e);
         }

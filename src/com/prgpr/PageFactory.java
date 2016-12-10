@@ -9,9 +9,10 @@ import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 
 /**
- * @author Noah Hummel
  *
  * A Page Factory getting the text of the Wikidata used to generate Page objects.
+ *
+ * @author Noah Hummel
  */
 public class PageFactory extends Producer<Page> {
 

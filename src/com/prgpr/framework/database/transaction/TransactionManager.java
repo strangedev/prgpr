@@ -4,17 +4,43 @@ import java.util.concurrent.Callable;
 
 /**
  * Created by kito on 08.12.16.
+ *
+ * Manages the transactions of the database
+ *
+ * @author Kyle Rinfreschi
  */
 public interface TransactionManager {
+    /**
+     *
+     * @param callable Run code block in the current transaction
+     * @param <T> the type to be returned by the callable
+     * @return  the code block to be executed
+     */
     <T> T execute(Callable<T> callable);
 
+    /**
+     * Run code block in the current transaction
+     * @param runnable the code block to be executed
+     */
     void execute(Runnable runnable);
 
+    /**
+     * The transaction was successful
+     */
     void success();
 
+    /**
+     * The transaction was not successful
+     */
     void failure();
 
+    /**
+     * Close all open transactions
+     */
     void shutdown();
 
-    boolean inTransaction();
+    /**
+     * @return a boolean stating if we are currently in a transaction.
+     */
+    boolean isInTransaction();
 }

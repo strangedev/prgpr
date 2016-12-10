@@ -11,15 +11,25 @@ import com.prgpr.helpers.Benchmark;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 
-import java.util.concurrent.Callable;
-
 /**
  * Created by lisa on 11/23/16.
+ *
+ * Command which implements the articlelinks command from Milestone2:
+ * From OLAT:
+ *
+ * "Analog zur Extraktion der Kategorien-Links sollen auch Links zwischen Artikeln
+ *  extrahiert und als typisierte Relationships in der Datenbank repräsentiert werden.
+ *  Dabei sollen nur solche Links berücksichtigt werden, für welche die Zielseite
+ *  auch tatsächlich in der Datenbank vorhanden ist."
+ *
+ * "Links zwischen Artikeln extrahieren und in Datenbank einfügen"
+ *
+ * @author Elizaveta Kovalevskaya, Kyle Rinfreschi
  */
 public class ArticleLinksCommand extends Command {
 
     private static final Logger log = LogManager.getFormatterLogger(Page.class);
-    private static final int batchSize = 10000;
+    private static final int batchSize = 10000;  // Specifies the batch size for batched transactions
 
     protected final CommandArgument[] arguments = new CommandArgument[]{
             new DatabaseDirectoryArgument()
@@ -32,7 +42,7 @@ public class ArticleLinksCommand extends Command {
 
     @Override
     public String getDescription() {
-        return "Inserts the links of the articles.";
+        return "Extracts links between articles.";
     }
 
     @Override
@@ -59,7 +69,7 @@ public class ArticleLinksCommand extends Command {
                     .forEach(Page::insertArticleLinks);
         });
 
-        log.info(getName() + " took " + time / 1000 + " seconds");
+        log.info(getName() + "command took " + time / 1000 + " seconds");
     }
 }
 

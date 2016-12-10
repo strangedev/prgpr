@@ -10,6 +10,8 @@ import java.io.File;
  * Created by kito on 20.11.16.
  *
  * A command Argument specifying a filepath to an html file.
+ *
+ * @author Kyle Rinfreschi
  */
 public class HtmlInputFileArgument extends CommandArgument {
 

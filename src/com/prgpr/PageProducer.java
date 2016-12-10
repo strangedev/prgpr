@@ -15,9 +15,10 @@ import java.util.regex.Pattern;
 import java.util.stream.Stream;
 
 /**
- * @author Kyle Rinfreschi
  *
  * A Class producing Pages by reading the input file and emitting Pages.
+ *
+ * @author Kyle Rinfreschi
  */
 public class PageProducer extends Producer<Page> {
 

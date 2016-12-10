@@ -11,9 +11,10 @@ import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 
 /**
- * @author Elizaveta Kovalevskaya
  *
  * The Main Class which bootstraps the execution.
+ *
+ * @author Elizaveta Kovalevskaya
  */
 public class Main {
 
@@ -40,7 +41,7 @@ public class Main {
                 new ImportHtmlCommand(),
                 new CategoryLinksCommand(),
                 new ArticleLinksCommand(),
-                new TestDBCommand(),
+                //new TestDBCommand(),
                 new PageInfoCommand(),
                 new VersionCommand()
         });

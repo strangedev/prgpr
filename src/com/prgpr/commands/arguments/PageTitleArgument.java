@@ -7,6 +7,8 @@ import com.prgpr.framework.command.CommandArgument;
  * Created by kito on 02.12.16.
  *
  * A command Argument specifying a title of a wiki page.
+ *
+ * @author Kyle Rinfreschi
  */
 public class PageTitleArgument extends CommandArgument {
     @Override
@@ -16,7 +18,7 @@ public class PageTitleArgument extends CommandArgument {
 
     @Override
     public String getDescription() {
-        return "The page title";
+        return "The page title.";
     }
 
     @Override

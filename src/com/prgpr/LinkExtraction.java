@@ -15,9 +15,10 @@ import org.apache.logging.log4j.Logger;
 
 
 /**
- * @author Elizaveta Kovalevskaya
  *
  * A LinkExtraction class which provides static methods for extracting information from wiki articles.
+ *
+ * @author Elizaveta Kovalevskaya
  */
 public class LinkExtraction {
 
@@ -62,12 +63,12 @@ public class LinkExtraction {
 
         try {
             Document articles = Jsoup.parse(article);
-            Elements links = articles.select("a"); // As the files are too old, they don't have the format of the real wikipages
-            Pattern r = Pattern.compile("/wiki/([^:]*\")"); // Only the /wiki/articlename are the internal articles are taken
+            Elements links = articles.select("a");  // Because the files are too old, they don't have the format of the real wikipages
+            Pattern r = Pattern.compile("/wiki/([^:]*\")");  // Only the /wiki/articlename are the internal articles and are taken
 
             for (Element link : links) {
                 String test = link.toString();
-                Matcher m = r.matcher(test); // Parsing the link String to see if he is valid
+                Matcher m = r.matcher(test);  // Parsing the link String to see if he is valid
                 if (m.find()) { articleLinks.add(link.attr("title")); }
             }
         } catch (Exception except) {

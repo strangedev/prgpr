@@ -7,7 +7,7 @@ import com.prgpr.exceptions.InvalidNumberOfArguments;
 import com.prgpr.framework.command.Command;
 import com.prgpr.framework.command.CommandArgument;
 import com.prgpr.framework.database.*;
-import com.prgpr.framework.database.neo4j.RelationshipTypes;
+import com.prgpr.framework.database.RelationshipTypes;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 import org.neo4j.graphdb.GraphDatabaseService;
@@ -17,10 +17,11 @@ import java.io.File;
 
 /**
  * Created by strange on 11/25/16.
+ * @author Noah Hummel
  */
 public class TestDBCommand extends Command{
 
-    private static final Logger log = LogManager.getFormatterLogger(Page.class);
+    private static final Logger log = LogManager.getFormatterLogger(TestDBCommand.class);
 
     protected final CommandArgument[] arguments = new CommandArgument[]{
             new DatabaseDirectoryArgument()

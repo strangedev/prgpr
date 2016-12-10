@@ -9,15 +9,19 @@ import org.neo4j.graphdb.GraphDatabaseService;
 
 /**
  * Created by kito on 08.12.16.
+ * @author Kyle Rinfreschi
  */
-public class Neo4jTransactionFactory implements TransactionFactory {
+class Neo4jTransactionFactory implements TransactionFactory {
     private static final Logger log = LogManager.getFormatterLogger(Neo4jTransactionFactory.class);
     private final GraphDatabaseService db;
 
-    public Neo4jTransactionFactory(GraphDatabaseService db){
+    Neo4jTransactionFactory(GraphDatabaseService db){
         this.db = db;
     }
 
+    /**
+     * @return a newly created Transaction instance
+     */
     @Override
     public Transaction createTransaction(){
         try {

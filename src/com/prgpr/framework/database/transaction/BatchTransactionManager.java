@@ -7,6 +7,11 @@ import java.util.concurrent.Callable;
 
 /**
  * Created by kito on 08.12.16.
+ *
+ * @author Kyle Rinfreschi
+ * Wraps an instance of a TransactionManager to allow for batching
+ * Docstrings are kept to a minimum, since all overridden methods are described in
+ * detail in the superclass.
  */
 public class BatchTransactionManager implements TransactionManager {
     private static final Logger log = LogManager.getFormatterLogger(BatchTransactionManager.class);
@@ -60,19 +65,26 @@ public class BatchTransactionManager implements TransactionManager {
     }
 
     @Override
-    public boolean inTransaction() {
-        return tm.inTransaction();
+    public boolean isInTransaction() {
+        return tm.isInTransaction();
     }
 
+    /**
+     * only add to count if we are in a transaction
+     */
     private void accumulate() {
-        if(tm.inTransaction()) {
+        if(tm.isInTransaction()) {
             accumulator++;
             batchCommit();
         }
     }
 
+    /**
+     * commit if count is same as the batch size
+     */
     private void batchCommit(){
         if(accumulator % batchSize == 0){
+            log.debug("Committing batch transaction");
             success();
         }
     }

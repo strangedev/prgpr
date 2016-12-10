@@ -16,11 +16,11 @@ import java.io.IOException;
 
 /**
  * Created by lisa on 11/21/16.
+ * @author Elizaveta Kovalevskaya
  */
 public class ResetDBCommand extends Command {
 
-
-    private static final Logger log = LogManager.getFormatterLogger(Page.class);
+    private static final Logger log = LogManager.getFormatterLogger(ResetDBCommand.class);
 
     protected final CommandArgument[] arguments = new CommandArgument[]{
             new DatabaseDirectoryArgument()

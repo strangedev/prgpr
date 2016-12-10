@@ -1,16 +1,18 @@
 package com.prgpr.framework;
 
-import org.neo4j.cypher.internal.compiler.v2_3.commands.expressions.Collect;
-
 import java.util.*;
-import java.util.stream.Collectors;
 import java.util.stream.Stream;
 
 /**
  * Created by kito on 05.12.16.
+ *
+ * A class for generating auto scaling ascii tables for printing data
+ * to the console.
+ *
+ * @author Kyle Rinfreschi
  */
 public class AsciiTable {
-    private String separator = "|";
+    private String separator = "|";  // Separates items in one row
     private Set<String> columns = new LinkedHashSet<>();
     private List<Object[]> rows = new LinkedList<>();
 
@@ -25,6 +27,11 @@ public class AsciiTable {
         this.separator = separator;
     }
 
+    /**
+     * Sets the header of the table
+     *
+     * @param cols A number of strings representing the header row
+     */
     public void setColumns(String... cols){
         columns.clear();
         clear();
@@ -32,6 +39,12 @@ public class AsciiTable {
                 .forEachOrdered((col) -> columns.add(col));
     }
 
+    /**
+     * Adds a row of data underneath the last added row.
+     *
+     * @param cols The data to be put into the row in the same order as was specified in setColumns
+     * @throws RuntimeException If the passed row is too wide or narrow according to setCloumns
+     */
     public void addRow(Object... cols) throws RuntimeException {
         if(cols.length != columns.size()){
             throw new RuntimeException("Invalid column length");
@@ -40,14 +53,23 @@ public class AsciiTable {
         rows.add(cols);
     }
 
+    /**
+     * Clears the table of all rows, but keeps the header.
+     */
     public void clear(){
         rows.clear();
     }
 
+    /**
+     * Prints the table to stdout.
+     */
     public void print(){
         System.out.print(toString());
     }
 
+    /**
+     * @return A string representation of the tables current state.
+     */
     @Override
     public String toString(){
         StringBuilder output = new StringBuilder();
@@ -66,6 +88,12 @@ public class AsciiTable {
         return output.toString();
     }
 
+    /**
+     * Returns a formatable string of the appropriate length to accommodate all of the data without overlaps.
+     *
+     * @param rows The data to be put into the table
+     * @return A base format which will fit all rows
+     */
     private String calculateFormat(List<Object[]> rows) {
         Integer[] maximums = columns.stream()
                                 .map(String::length)
@@ -95,6 +123,10 @@ public class AsciiTable {
         return String.format("| %s |", colFormat);
     }
 
+    /**
+     * @param s The item to be displayed
+     * @return A string long enough for the given item
+     */
     private String itemFormat(int s) {
         try {
             return String.format("%%-%ss", s);

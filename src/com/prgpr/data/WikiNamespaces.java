@@ -3,14 +3,14 @@ package com.prgpr.data;
 import com.prgpr.framework.database.Label;
 
 /**
- * @author Noah Hummel
  *
  * A Class to transfer the namespaceID to the appropriate type of label for a Wikipage
+ *
+ * @author Noah Hummel
  */
 public class WikiNamespaces {
 
     public enum PageLabel implements Label {
-        Page, // @TODO: maybe move to EntityTypes label class
         Article,
         ArticleTalk,
         User,
@@ -54,7 +54,6 @@ public class WikiNamespaces {
      */
     public static Label fromID(int namespaceID) {
         switch (namespaceID){
-           //case -1: return PageLabel.Page;
             case 0: return PageLabel.Article;
             case 1: return PageLabel.ArticleTalk;
             case 2: return PageLabel.User;
@@ -99,7 +98,6 @@ public class WikiNamespaces {
      */
     public static int fromPageLabel(PageLabel label) {
         switch (label.name()){
-            //case "Page": return -1;
             case "Article": return 0;
             case "ArticleTalk": return 1;
             case "User": return 2;

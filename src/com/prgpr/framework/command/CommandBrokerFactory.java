@@ -1,18 +1,18 @@
 package com.prgpr.framework.command;
 
 /**
- * @author Kyle Rinfreschi
  * Created by kito on 20.11.16.
  *
  * Singleton factory for CommandBroker.
- * Makes sure no more than one CommandBroker is ever created.
+ *
+ * @author Kyle Rinfreschi
  */
 public class CommandBrokerFactory {
-
     private static CommandBroker commandBroker;
 
     /**
-     * @return The singleton CommandBroker instance.
+     * Instantiates the CommandBroker class.
+     * @return an instance of the CommandBroker
      */
     public static CommandBroker getCommandBroker(){
         if(commandBroker == null){

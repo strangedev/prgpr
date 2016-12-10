@@ -20,10 +20,11 @@ import java.util.LinkedHashSet;
 import java.util.Set;
 
 /**
- * @author Kyle Rinfreschi
  *
  * An Export Class for creating an output file in xml format
  * and appending data to it in batches.
+ *
+ * @author Kyle Rinfreschi
  */
 public class PageExport implements Consumer<Page> {
 

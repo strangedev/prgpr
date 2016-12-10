@@ -6,6 +6,8 @@ import com.prgpr.framework.database.*;
 import com.prgpr.framework.database.transaction.SimpleTransactionManager;
 import com.prgpr.framework.database.transaction.TransactionFactory;
 import com.prgpr.framework.database.transaction.TransactionManager;
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
 import org.neo4j.graphdb.GraphDatabaseService;
 import org.neo4j.graphdb.Node;
 import org.neo4j.graphdb.Relationship;
@@ -20,12 +22,17 @@ import java.util.stream.Stream;
 
 /**
  * Created by kito on 21.11.16.
+ *
+ * @author Kyle Rinfreschi
+ * Docstrings are kept to a minimum, since all overridden methods are described in
+ * detail in the superclass.
  */
 public class Neo4jEmbeddedDatabase implements EmbeddedDatabase {
 
     private Neo4jTraversalProvider traversalProvider;
     private Neo4jTransactionFactory transactionFactory;
     private TransactionManager transactionManager;
+    private static final Logger log = LogManager.getFormatterLogger(Neo4jEmbeddedDatabase.class);
 
     private GraphDatabaseService graphDb;
     private static final String idIndex = "hash";
@@ -45,10 +52,12 @@ public class Neo4jEmbeddedDatabase implements EmbeddedDatabase {
             @Override
             public void run()
             {
+                log.info("Shutdown hook triggered, closing database connection");
                 tm.shutdown();
                 graphDb.shutdown();
             }
         } );
+        log.info("Registered jvm shutdown hook for database connection");
     }
 
     public Neo4jEmbeddedDatabase(String path) {
@@ -58,6 +67,7 @@ public class Neo4jEmbeddedDatabase implements EmbeddedDatabase {
         this.transactionFactory = new Neo4jTransactionFactory(graphDb);
         this.transactionManager = new SimpleTransactionManager(this.transactionFactory);
         registerShutdownHook(graphDb, transactionManager);
+        log.info("Database connection established.");
     }
 
     @Override
@@ -103,6 +113,7 @@ public class Neo4jEmbeddedDatabase implements EmbeddedDatabase {
         transactionManager.failure();
     }
 
+    @Override
     public Element createElement(String index, long hash, Callback<Element> callback){
         Neo4jEmbeddedDatabase db = this;
         return transaction(() -> {
@@ -118,6 +129,7 @@ public class Neo4jEmbeddedDatabase implements EmbeddedDatabase {
         });
     }
 
+    @Override
     public Stream<Element> getAllElements() {
         return transaction(() -> graphDb.getAllNodes()
                                             .stream()
@@ -125,6 +137,7 @@ public class Neo4jEmbeddedDatabase implements EmbeddedDatabase {
     }
 
     public Relationship createUniqueRelationshipTo(Element start, Element end, com.prgpr.framework.database.RelationshipType relType) {
+        long hash = relationshipHash(start, end, relType);
         return transaction(() -> {
             UniqueFactory<Relationship> factory = new UniqueFactory.UniqueRelationshipFactory(graphDb, relType.name()) {
                 @Override
@@ -135,12 +148,12 @@ public class Neo4jEmbeddedDatabase implements EmbeddedDatabase {
                                     ((Neo4jElement) end).getNode(),
                                     org.neo4j.graphdb.RelationshipType.withName(relType.name())
                             );
-                    r.setProperty(idIndex, relationshipHash(start, end, relType));
+                    r.setProperty(idIndex, hash);
                     return r;
                 }
             };
 
-            return factory.getOrCreate(idIndex, relationshipHash(start, end, relType));
+            return factory.getOrCreate(idIndex, hash);
         });
     }
 

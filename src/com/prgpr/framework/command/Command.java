@@ -8,12 +8,13 @@ import java.util.Collections;
 import java.util.List;
 
 /**
- * @author Kyle Rinfreschi
  * Created by kito on 19.11.16.
  *
  * An abstract superclass for a Command design pattern.
  * A command has a name, a number of arguments and can be run.
  * Commands are managed by a command broker, which can decide which command to run given a certain command line input.
+ *
+ * @author Kyle Rinfreschi
  */
 public abstract class Command implements Runnable {
 
@@ -50,30 +51,6 @@ public abstract class Command implements Runnable {
         return getArgumentsList().stream()
                 .map((arg) -> String.format("<%s>", arg.getName()))
                 .reduce((a1, a2) -> String.format("%s %s", a1, a2)).orElse(null);
-    }
-
-    /**
-     * @return A full human readable description of the command, including arguments and name.
-     * Used to display help messages.
-     */
-    public String getFullDescription(){
-        String name = getName();
-        String args = getArgumentsAsString();
-        String desc = getDescription();
-
-        if(args == null && desc == null){
-            return name;
-        }
-
-        if(args == null){
-            return String.format("%s : %s", name, desc);
-        }
-
-        if(desc == null){
-            return String.format("%s %s", name, args);
-        }
-
-        return String.format("%s %s : %s", name, args, desc);
     }
 
     /**

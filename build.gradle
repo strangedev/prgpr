@@ -65,7 +65,9 @@ shadowJar {
 }
 
 task createProperties(dependsOn: processResources) {
-    new File("$buildDir/resources/main/build.properties").withWriter { w ->
+    File file = new File("$buildDir/resources/main/build.properties");
+    file.getParentFile().mkdirs();
+    file.withWriter { w ->
         Properties p = new Properties()
         p['version'] = project.version.toString()
         p['timestamp'] = new Date().toString()
