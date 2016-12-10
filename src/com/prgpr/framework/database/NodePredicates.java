@@ -6,10 +6,11 @@ import java.util.Set;
 import java.util.stream.StreamSupport;
 
 /**
- * @author Noah Hummel
  * Created by strange on 11/21/16.
  *
  * Provides basic predicates for filtering node streams.
+ *
+ * @author Noah Hummel
  */
 public class NodePredicates {
 

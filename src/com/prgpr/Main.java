@@ -11,9 +11,10 @@ import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 
 /**
- * @author Elizaveta Kovalevskaya
  *
  * The Main Class which bootstraps the execution.
+ *
+ * @author Elizaveta Kovalevskaya
  */
 public class Main {
 

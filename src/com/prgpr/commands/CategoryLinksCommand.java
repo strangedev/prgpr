@@ -14,7 +14,6 @@ import org.apache.logging.log4j.Logger;
 import java.util.concurrent.Callable;
 
 /**
- * @author Kyle Rinfreschi
  * Created by kito on 19.11.16.
  *
  * A Command which generates Database relationships between articles and
@@ -27,6 +26,8 @@ import java.util.concurrent.Callable;
  *  in der Neo4J Graphdatenbank repräsentiert werden."
  *
  * "Kategorien-Links extrahieren und in Datenbank einfügen"
+ *
+ * @author Elizaveta Kovalevskaya, Kyle Rinfreschi
  */
 public class CategoryLinksCommand extends Command{
 

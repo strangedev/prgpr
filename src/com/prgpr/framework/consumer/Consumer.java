@@ -2,7 +2,6 @@ package com.prgpr.framework.consumer;
 
 /**
  * Created by strange on 10/26/16.
- * @author Noah Hummel
  *
  * An interface providing methods for interfacing between
  * objects. A consumer is capable of consuming objects
@@ -13,6 +12,8 @@ package com.prgpr.framework.consumer;
  *
  * Consumer can only be subscribed to producers od the same
  * type as the consumer.
+ *
+ * @author Noah Hummel
  */
 public interface Consumer<T> {
 

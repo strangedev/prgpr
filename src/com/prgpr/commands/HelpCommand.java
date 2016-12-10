@@ -10,11 +10,12 @@ import java.util.*;
 import java.util.stream.Collectors;
 
 /**
- * @author Kyle Rinfreschi
  * Created by kito on 19.11.16.
  *
  * Default command.
  * Displays all available commands and their respective syntax.
+ *
+ * @author Kyle Rinfreschi
  */
 public class HelpCommand extends Command {
     @Override

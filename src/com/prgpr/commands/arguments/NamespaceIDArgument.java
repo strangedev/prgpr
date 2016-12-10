@@ -11,6 +11,8 @@ import java.util.stream.Collectors;
  * Created by kito on 02.12.16.
  *
  * A command Argument specifying a namespaceID of a wiki article.
+ *
+ * @author Kyle Rinfreschi
  */
 public class NamespaceIDArgument extends CommandArgument {
     @Override

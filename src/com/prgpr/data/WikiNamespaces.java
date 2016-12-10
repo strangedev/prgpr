@@ -3,9 +3,10 @@ package com.prgpr.data;
 import com.prgpr.framework.database.Label;
 
 /**
- * @author Noah Hummel
  *
  * A Class to transfer the namespaceID to the appropriate type of label for a Wikipage
+ *
+ * @author Noah Hummel
  */
 public class WikiNamespaces {
 

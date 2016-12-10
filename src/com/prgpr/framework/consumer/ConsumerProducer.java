@@ -2,12 +2,13 @@ package com.prgpr.framework.consumer;
 
 /**
  * Created by kito on 10/27/16.
- * @author Kyle Rinfreschi
  *
  * An abstract class providing methods for interfacing between
  * objects. A ConsumerProducer is a Consumer which consumes
  * consumables from another producer and emits consumables to
  * any number of consumers.
+ *
+ * @author Kyle Rinfreschi
  */
 public abstract class ConsumerProducer<TC,TP> extends Producer<TP> implements Consumer<TC> {
 

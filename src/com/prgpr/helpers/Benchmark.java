@@ -2,9 +2,10 @@ package com.prgpr.helpers;
 
 /**
  * Created by kito on 10/23/16.
- * @author Kyle Rinfreschi
  *
  * Better Benchmark to count teh timez
+ *
+ * @author Kyle Rinfreschi
  */
 public class Benchmark {
     public static long run(Runnable fn){

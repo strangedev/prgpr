@@ -1,8 +1,11 @@
 package com.prgpr.framework.database.transaction;
 
 /**
- * @author Kyle Rinfreschi
  * Created by kito on 08.12.16.
+ *
+ * Creates a new Transaction
+ *
+ * @author Kyle Rinfreschi
  */
 public interface TransactionFactory {
     /**

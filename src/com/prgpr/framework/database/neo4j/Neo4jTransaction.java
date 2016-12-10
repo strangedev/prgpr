@@ -8,7 +8,7 @@ import com.prgpr.framework.database.transaction.Transaction;
  *
  * A wrapper class for the neo4j transaction
  */
-public class Neo4jTransaction implements Transaction {
+class Neo4jTransaction implements Transaction {
     private org.neo4j.graphdb.Transaction tx;
 
     Neo4jTransaction(org.neo4j.graphdb.Transaction tx){

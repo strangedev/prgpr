@@ -13,9 +13,10 @@ import java.util.LinkedHashSet;
 import java.util.Set;
 
 /**
- * @author Noah Hummel
  *
  * A Class (as the name implies) to find Pages in the database.
+ *
+ * @author Noah Hummel
  */
 public class PageFinder {
 

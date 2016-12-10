@@ -17,8 +17,8 @@ import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 
 /**
- * @author Kyle Rinfreschi
  * Created by kito on 19.11.16.
+ * @author Kyle Rinfreschi
  */
 public class ImportHtmlCommand extends Command {
 

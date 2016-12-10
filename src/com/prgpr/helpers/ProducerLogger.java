@@ -13,10 +13,11 @@ import java.util.concurrent.atomic.LongAdder;
 
 /**
  * Created by strange on 11/4/16.
- * @author Noah Hummel
  *
  * A Consumer class which generates statistics for the producer it is
  * subscribed to. Uses log4j to log the satistics in real-time.
+ *
+ * @author Noah Hummel
  */
 public class ProducerLogger<T> implements Consumer<T> {
 

@@ -4,6 +4,10 @@ import java.util.concurrent.Callable;
 
 /**
  * Created by kito on 08.12.16.
+ *
+ * Manages the transactions of the database
+ *
+ * @author Kyle Rinfreschi
  */
 public interface TransactionManager {
     /**

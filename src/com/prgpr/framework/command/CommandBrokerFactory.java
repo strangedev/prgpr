@@ -1,10 +1,11 @@
 package com.prgpr.framework.command;
 
 /**
- * @author Kyle Rinfreschi
  * Created by kito on 20.11.16.
  *
  * Singleton factory for CommandBroker.
+ *
+ * @author Kyle Rinfreschi
  */
 public class CommandBrokerFactory {
     private static CommandBroker commandBroker;

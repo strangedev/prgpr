@@ -5,11 +5,12 @@ import org.neo4j.graphdb.Relationship;
 import java.util.stream.Stream;
 
 /**
- * @author Kyle Rinfreschi
  * Created by kito on 21.11.16.
  *
  * An abstract database Element a.k.a. a graph node.
  * Elements are typed (labeled) and have an arbitrary amount of properties.
+ *
+ * @author Kyle Rinfreschi
  */
 public interface Element {
 

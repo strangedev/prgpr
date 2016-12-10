@@ -8,12 +8,13 @@ import java.util.Collections;
 import java.util.List;
 
 /**
- * @author Kyle Rinfreschi
  * Created by kito on 19.11.16.
  *
  * An abstract superclass for a Command design pattern.
  * A command has a name, a number of arguments and can be run.
  * Commands are managed by a command broker, which can decide which command to run given a certain command line input.
+ *
+ * @author Kyle Rinfreschi
  */
 public abstract class Command implements Runnable {
 

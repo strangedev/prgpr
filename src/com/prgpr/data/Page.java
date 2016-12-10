@@ -18,10 +18,11 @@ import static com.prgpr.LinkExtraction.extractCategories;
 import java.security.MessageDigest;
 
 /**
- * @author Kyle Rinfreschi
  *
  * Page Class.
  * It represents a wikipedia page.
+ *
+ * @author Kyle Rinfreschi
  */
 public class Page {
 

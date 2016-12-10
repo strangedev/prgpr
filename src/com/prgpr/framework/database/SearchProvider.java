@@ -5,13 +5,14 @@ import java.util.stream.Collectors;
 
 /**
  * Created by strange on 11/20/16.
- * @author Noah Hummel
  *
  * A Class providing basic search functionality for neo4j.
  * begin rant
  *     Why would you even design a database without shipping the most basic search functionality?
  *     I mean neo4j makes even mysql look like the most advanced piece of tech ever devised by mankind.
  * end rant
+ *
+ * @author Noah Hummel
  */
 public class SearchProvider {
 

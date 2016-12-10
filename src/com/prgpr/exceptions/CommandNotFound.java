@@ -1,9 +1,10 @@
 package com.prgpr.exceptions;
 
 /**
- * @author Kyle Rinfreschi
  *
  * An Exception thrown when an unknown command was requested from CommandBroker
+ *
+ * @author Kyle Rinfreschi
  */
 public class CommandNotFound extends Exception
 {

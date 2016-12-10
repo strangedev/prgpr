@@ -16,7 +16,6 @@ import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 
 /**
- * @author Kyle Rinfreschi, Elizaveta Kovalevskaya
  * Created by kito on 02.12.16.
  *
  * Implements the pageinfo command from Milestone 2.
@@ -28,6 +27,8 @@ import org.apache.logging.log4j.Logger;
  *      Liste der direkten und indirekten Kategorien (im Kategorien-Graph)
  *      Liste der Artikel ausgeben auf welche die Seite verweist
  *      Liste der Artikel ausgeben welche auf den betreffenden Artikel verweisen"
+ *
+ * @author Kyle Rinfreschi, Elizaveta Kovalevskaya
  */
 public class PageInfoCommand extends Command {
 

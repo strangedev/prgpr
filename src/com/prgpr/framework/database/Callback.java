@@ -1,11 +1,12 @@
 package com.prgpr.framework.database;
 
 /**
- * @author Noah Hummel
  * Created by strange on 11/20/16.
  *
  * An interface for a Callable with no return type, and variable argument type.
  * Can be used to pass function references and guarantee type safety on the argument type.
+ *
+ * @author Noah Hummel
  */
 public interface Callback<T> {
 

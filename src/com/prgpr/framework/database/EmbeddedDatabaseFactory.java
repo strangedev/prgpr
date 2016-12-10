@@ -8,8 +8,9 @@ import org.apache.logging.log4j.Logger;
 import org.neo4j.graphdb.GraphDatabaseService;
 
 /**
- * @author Kyle Rinfreschi
  * Created by kito on 19.11.16.
+ *
+ * @author Kyle Rinfreschi
  */
 public class EmbeddedDatabaseFactory {
     private static final Logger log = LogManager.getFormatterLogger(EmbeddedDatabaseFactory.class);

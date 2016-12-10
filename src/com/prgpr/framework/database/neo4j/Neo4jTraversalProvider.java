@@ -10,10 +10,11 @@ import java.util.List;
 import java.util.stream.Stream;
 
 /**
- * @author Noah Hummel
  * Created by strange on 11/21/16.
  *
  * Provides basic TraversalDescriptions for neo4j.
+ *
+ * @author Noah Hummel
  * Docstrings are kept to a minimum, since all overridden methods are described in
  * detail in the superclass.
  */

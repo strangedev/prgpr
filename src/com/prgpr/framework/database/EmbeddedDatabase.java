@@ -8,12 +8,13 @@ import java.util.concurrent.Callable;
 import java.util.stream.Stream;
 
 /**
- * @author Kyle Rinfreschi
  * Created by kito on 21.11.16.
  *
  * An abstract embedded database.
  * Provides an interface for the database logic to depend on so that the actual database
  * backend is interchangeable.
+ *
+ * @author Kyle Rinfreschi
  */
 public interface EmbeddedDatabase {
 

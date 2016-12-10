@@ -4,11 +4,12 @@ import java.util.*;
 import java.util.stream.Stream;
 
 /**
- * @author Kyle Rinfreschi
  * Created by kito on 05.12.16.
  *
  * A class for generating auto scaling ascii tables for printing data
  * to the console.
+ *
+ * @author Kyle Rinfreschi
  */
 public class AsciiTable {
     private String separator = "|";  // Separates items in one row

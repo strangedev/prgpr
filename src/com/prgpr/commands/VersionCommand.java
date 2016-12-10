@@ -12,8 +12,8 @@ import java.util.*;
 import java.util.stream.Collectors;
 
 /**
- * @author Kyle Rinfreschi
  * Created by kito on 19.11.16.
+ * @author Kyle Rinfreschi
  */
 public class VersionCommand extends Command {
     @Override

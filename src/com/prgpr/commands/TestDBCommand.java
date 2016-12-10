@@ -16,8 +16,8 @@ import org.neo4j.graphdb.factory.GraphDatabaseFactory;
 import java.io.File;
 
 /**
- * @author Noah Hummel
  * Created by strange on 11/25/16.
+ * @author Noah Hummel
  */
 public class TestDBCommand extends Command{
 

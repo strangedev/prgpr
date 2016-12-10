@@ -7,10 +7,11 @@ import java.util.stream.Stream;
 import java.util.stream.StreamSupport;
 
 /**
- * @author Kyle Rinfreschi
  * Created by kito on 11/17/16.
  *
  * Implementation of Element for Neo4J.
+ *
+ * @author Kyle Rinfreschi
  * Docstrings are kept to a minimum, since all overridden methods are described in
  * detail in the superclass.
  */

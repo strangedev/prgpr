@@ -4,7 +4,6 @@ import java.util.LinkedHashSet;
 
 /**
  * Created by strange on 10/26/16.
- * @author Noah Hummel
  *
  * An abstract class providing methods for interfacing between
  * objects. A producer is capable of emiting objects
@@ -17,6 +16,8 @@ import java.util.LinkedHashSet;
  *
  * Producers can only have subscribers of the same type as
  * the producer itself.
+ *
+ * @author Noah Hummel
  */
 public abstract class Producer<T> implements Runnable {
 

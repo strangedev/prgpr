@@ -3,13 +3,14 @@ package com.prgpr.framework.command;
 import com.prgpr.exceptions.InvalidArgument;
 
 /**
- * @author Kyle Rinfreschi
  * Created by kito on 20.11.16.
  *
  * An abstract superclass for command Arguments.
  * Used by a Command object to specify it's required Arguments.
  * Arguments have a name, value and description and are responsible for checking whether
  * a given argument value is valid.
+ *
+ * @author Kyle Rinfreschi
  */
 public abstract class CommandArgument {
 

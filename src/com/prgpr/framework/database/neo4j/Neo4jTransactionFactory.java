@@ -8,10 +8,10 @@ import org.neo4j.graphdb.DatabaseShutdownException;
 import org.neo4j.graphdb.GraphDatabaseService;
 
 /**
- * @author Kyle Rinfreschi
  * Created by kito on 08.12.16.
+ * @author Kyle Rinfreschi
  */
-public class Neo4jTransactionFactory implements TransactionFactory {
+class Neo4jTransactionFactory implements TransactionFactory {
     private static final Logger log = LogManager.getFormatterLogger(Neo4jTransactionFactory.class);
     private final GraphDatabaseService db;
 

@@ -12,7 +12,6 @@ import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 
 /**
- * @author Elizaveta Kovalevskaya
  * Created by lisa on 11/23/16.
  *
  * Command which implements the articlelinks command from Milestone2:
@@ -24,6 +23,8 @@ import org.apache.logging.log4j.Logger;
  *  auch tatsächlich in der Datenbank vorhanden ist."
  *
  * "Links zwischen Artikeln extrahieren und in Datenbank einfügen"
+ *
+ * @author Elizaveta Kovalevskaya, Kyle Rinfreschi
  */
 public class ArticleLinksCommand extends Command {
 

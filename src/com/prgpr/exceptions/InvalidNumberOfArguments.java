@@ -1,9 +1,10 @@
 package com.prgpr.exceptions;
 
 /**
- * @author Kyle Rinfreschi
  *
  * An Exception thrown when an invalid number of arguments was passed to a Command
+ *
+ * @author Kyle Rinfreschi
  */
 
 public class InvalidNumberOfArguments extends Exception

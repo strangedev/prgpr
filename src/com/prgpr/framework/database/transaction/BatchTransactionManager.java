@@ -6,9 +6,9 @@ import org.apache.logging.log4j.Logger;
 import java.util.concurrent.Callable;
 
 /**
- * @author Kyle Rinfreschi
  * Created by kito on 08.12.16.
  *
+ * @author Kyle Rinfreschi
  * Wraps an instance of a TransactionManager to allow for batching
  * Docstrings are kept to a minimum, since all overridden methods are described in
  * detail in the superclass.

@@ -15,8 +15,8 @@ import java.io.File;
 import java.io.IOException;
 
 /**
- * @author Elizaveta Kovalevskaya
  * Created by lisa on 11/21/16.
+ * @author Elizaveta Kovalevskaya
  */
 public class ResetDBCommand extends Command {
 

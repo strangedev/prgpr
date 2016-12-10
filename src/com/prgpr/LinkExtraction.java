@@ -15,9 +15,10 @@ import org.apache.logging.log4j.Logger;
 
 
 /**
- * @author Elizaveta Kovalevskaya
  *
  * A LinkExtraction class which provides static methods for extracting information from wiki articles.
+ *
+ * @author Elizaveta Kovalevskaya
  */
 public class LinkExtraction {
 
