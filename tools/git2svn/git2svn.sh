@@ -2,7 +2,7 @@
 SVN_USER=$1
 COMMIT_MSG=$2
 ROOT_DIR=`realpath ${3:-external_files/personal_stash/svn_checkout}`
-DRY_RUN=1 # set to 1 for testing the script.
+DRY_RUN=0 # set to 1 for testing the script.
 
 GIT_DIR="git"
 GIT_REPO="ssh://git@github.com/strangedev/prgpr.git"
@@ -28,10 +28,10 @@ fi
 
 if ! [ -d "$SVN_DIR" ]; then
     mkdir ${SVN_DIR}
-    svn checkout --depth empty --username ${SVN_USER} ${SVN_REPO} ${SVN_DIR}
+    svn checkout --username ${SVN_USER} ${SVN_REPO} ${SVN_DIR}
 fi
-
-rm -rf ${SVN_DIR}/*
+(cd ${SVN_DIR} && svn update && svn rm --force *)
+find ${SVN_DIR} -maxdepth 1 ! -path ${SVN_DIR} ! -path "${SVN_DIR}/.svn" -exec rm -rf {} \;
 
 rm -f ${GIT_DIR}/build/libs/*
 
@@ -44,7 +44,7 @@ sed -i "s/${PROJECT_NAME_REAL}/${PROJECT_NAME_ALIAS}/g" settings.gradle
 
 cd ${ROOT_DIR}
 
-cp ${GIT_DIR}/README.txt ${SVN_DIR}/README.txt
+cp ${GIT_DIR}/*README.txt ${SVN_DIR}
 cp ${GIT_DIR}/settings.gradle ${SVN_DIR}/settings.gradle
 cp ${GIT_DIR}/build.gradle ${SVN_DIR}/build.gradle
 cp ${GIT_DIR}/gradlew ${SVN_DIR}/gradlew
@@ -65,5 +65,4 @@ if [ "$DRY_RUN" == 1 ]; then
 fi
 
 svn add --force ./*
-svn commit -m ${COMMIT_MSG}
-svn update
+svn commit -m "${COMMIT_MSG}"
