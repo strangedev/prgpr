@@ -21,7 +21,7 @@ import java.io.File;
  */
 public class TestDBCommand extends Command{
 
-    private static final Logger log = LogManager.getFormatterLogger(Page.class);
+    private static final Logger log = LogManager.getFormatterLogger(TestDBCommand.class);
 
     protected final CommandArgument[] arguments = new CommandArgument[]{
             new DatabaseDirectoryArgument()
