@@ -77,7 +77,7 @@ public class CommandBroker {
             Command command = getCommandByName(args[0]);
             command.execute(Arrays.copyOfRange(args, 1, args.length));
         } catch (CommandNotFound | InvalidNumberOfArguments | InvalidArgument e){
-            args = new String[] {  // print a simple error message
+            args = new String[] {
                     Arrays.stream(args).reduce((s1, s2) -> s1 + " " + s2).orElse(""),
                     e.getClass().getSimpleName(),
                     e.getMessage()

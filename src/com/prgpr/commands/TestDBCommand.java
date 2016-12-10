@@ -16,11 +16,12 @@ import org.neo4j.graphdb.factory.GraphDatabaseFactory;
 import java.io.File;
 
 /**
+ * @author Noah Hummel
  * Created by strange on 11/25/16.
  */
 public class TestDBCommand extends Command{
 
-    private static final Logger log = LogManager.getFormatterLogger(Page.class);
+    private static final Logger log = LogManager.getFormatterLogger(TestDBCommand.class);
 
     protected final CommandArgument[] arguments = new CommandArgument[]{
             new DatabaseDirectoryArgument()

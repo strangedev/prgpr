@@ -19,6 +19,14 @@ import java.util.concurrent.Callable;
  *
  * A Command which generates Database relationships between articles and
  * their corresponding categories.
+ * From OLAT:
+ *
+ * "Durch den Aufruf einer entsprechenden Methode soll es möglich sein,
+ *  dass systematisch alle Kategorien-Links der Wikipedia-Seiten in der Datenbank
+ *  extrahiert und als typisierte Relationships (Achtung: nicht als Properties)
+ *  in der Neo4J Graphdatenbank repräsentiert werden."
+ *
+ * "Kategorien-Links extrahieren und in Datenbank einfügen"
  */
 public class CategoryLinksCommand extends Command{
 

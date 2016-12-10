@@ -17,11 +17,12 @@ import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 
 /**
+ * @author Kyle Rinfreschi
  * Created by kito on 19.11.16.
  */
 public class ImportHtmlCommand extends Command {
 
-    private static final Logger log = LogManager.getFormatterLogger(Command.class);
+    private static final Logger log = LogManager.getFormatterLogger(ImportHtmlCommand.class);
 
     protected static final CommandArgument[] arguments = new CommandArgument[]{
             new DatabaseDirectoryArgument(),
@@ -58,14 +59,8 @@ public class ImportHtmlCommand extends Command {
         EmbeddedDatabase graphDb = EmbeddedDatabaseFactory.newEmbeddedDatabase(arguments[0].get(), 500);
 
         PageFactory.setDatabase(graphDb);
-
         PageProducer pageProducer = new PageProducer(arguments[1].get());
 
-        // Logging units
-        //ProducerLogger<Page> pageFactoryLogger = new ProducerLogger<>(true);
-        //pageFactoryLogger.subscribeTo(pageProducer);
-
-        // Execute
         long timeImport = Benchmark.run(pageProducer);
 
         long timeCount = Benchmark.run(()->{

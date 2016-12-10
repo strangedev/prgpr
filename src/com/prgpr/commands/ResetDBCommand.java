@@ -15,12 +15,12 @@ import java.io.File;
 import java.io.IOException;
 
 /**
+ * @author Elizaveta Kovalevskaya
  * Created by lisa on 11/21/16.
  */
 public class ResetDBCommand extends Command {
 
-
-    private static final Logger log = LogManager.getFormatterLogger(Page.class);
+    private static final Logger log = LogManager.getFormatterLogger(ResetDBCommand.class);
 
     protected final CommandArgument[] arguments = new CommandArgument[]{
             new DatabaseDirectoryArgument()
