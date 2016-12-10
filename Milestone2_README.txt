@@ -6,13 +6,14 @@
  \____/\__,_| .__/  |_| |_|  \/  \/|_|_|\_\_|\___|_|   \__,_|_| |_|\___|_| |_|
             | |
             |_|
+
 The second adventure has started...
 -------------------------------------------------------------------------------
 -------------------------------------------------------------------------------
 
 After a journey full of expiring the review of the first mission completed,
-the empassioned coders headed to a whole new island without shipping the most
-basic search functionality. Many dramatic experiences happend since then,
+the passionate coders headed to a whole new island without shipping the most
+basic search functionality. Many dramatic experiences happened since then,
 the coders could even imagine ...
 The price discovering this mess was high, they even had to give up their name...
 
@@ -26,9 +27,10 @@ The price discovering this mess was high, they even had to give up their name...
         1.1.1 Invocation by script
         --------------------------
 
-            Execute the script CapnWikicrunch.sh from within bash or similar:
+            Execute the script 'WikiXtractor' from within bash or similar:
 
-            "./WikiXtractor.sh COMMAND [DB-Directory] [OTHER ARGUMENTS]"
+            "./WikiXtractor COMMAND [ARGUMENTS]"
+            "sh ./WikiXtractor COMMAND [ARGUMENTS]"
 
 
         1.1.2 Manual invocation
@@ -36,7 +38,7 @@ The price discovering this mess was high, they even had to give up their name...
 
             Execute the following command from the command line of your choice:
 
-            "WikiXtractor.jar COMMAND [DB-Directory] [OTHER ARGUMENTS]"
+            "java -jar WikiXtractor.jar COMMAND [DB-Directory] [OTHER ARGUMENTS]"
 
 
     1.2 Description
@@ -54,7 +56,8 @@ The price discovering this mess was high, they even had to give up their name...
                     * Article categories
                     * Article articles
 
-        The following information will be given by calling the pageinfo:
+        The following output is an example of the 'pageinfo' command when all necessary data (articles and categories)
+        are imported.
 
         +--------------+-------------+-----------+
         | Current Page | NamespaceID | ArticleID |
@@ -91,16 +94,13 @@ The price discovering this mess was high, they even had to give up their name...
         | Zülpich                                                     |
         +-------------------------------------------------------------+
 
-        (Sadly, Pirates weren't available.)
+        (Sadly, the article 'Pirates' was not available.)
 
 
-    1.3 Required Arguments
-    ----------------------
+    1.3 Commands
+    -------------
 
-        1.3.1 COMMAND
-        -------------
-
-            What to execute.
+            What to execute:
 
             help
 
@@ -121,15 +121,16 @@ The price discovering this mess was high, they even had to give up their name...
 
             version       | Outputs the current version.
 
-    1.4 Other Arguments
+
+    1.4 Command Arguments
     -------------------
 
         1.4.1 Option ordering
         ---------------------
 
-            [OTHER ARGUMENTS] := <DB-Directory>
-                                | <DB-Directory> <HTML-Input-File>
-                                | <DB-Directory> <namespaceID> <page-title>
+            [ARGUMENTS] := <DB-Directory>
+                           | <DB-Directory> <HTML-Input-File>
+                           | <DB-Directory> <namespaceID> <page-title>
 
         1.4.1 DB-Directory
         ------------------
@@ -213,13 +214,13 @@ The price discovering this mess was high, they even had to give up their name...
         the new structure.
 
 
-    4.3 Debbuging
+    4.3 Debugging
     -------------
 
         After testing was possible, following bugs were found:
 
         Not all links were found and inserted.
-        Exeptions were not thrown.
+        Exceptions were not thrown.
 
         Kyle:   Testing, Transaction model
         Lisa:   Testing, LinkExtraction
