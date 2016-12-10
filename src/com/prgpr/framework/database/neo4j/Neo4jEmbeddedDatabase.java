@@ -6,6 +6,8 @@ import com.prgpr.framework.database.*;
 import com.prgpr.framework.database.transaction.SimpleTransactionManager;
 import com.prgpr.framework.database.transaction.TransactionFactory;
 import com.prgpr.framework.database.transaction.TransactionManager;
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
 import org.neo4j.graphdb.GraphDatabaseService;
 import org.neo4j.graphdb.Node;
 import org.neo4j.graphdb.Relationship;
@@ -30,6 +32,7 @@ public class Neo4jEmbeddedDatabase implements EmbeddedDatabase {
     private Neo4jTraversalProvider traversalProvider;
     private Neo4jTransactionFactory transactionFactory;
     private TransactionManager transactionManager;
+    private static final Logger log = LogManager.getFormatterLogger(Neo4jEmbeddedDatabase.class);
 
     private GraphDatabaseService graphDb;
     private static final String idIndex = "hash";
@@ -49,10 +52,12 @@ public class Neo4jEmbeddedDatabase implements EmbeddedDatabase {
             @Override
             public void run()
             {
+                log.info("Shutdown hook triggered, closing database connection");
                 tm.shutdown();
                 graphDb.shutdown();
             }
         } );
+        log.info("Registered jvm shutdown hook for database connection");
     }
 
     public Neo4jEmbeddedDatabase(String path) {
@@ -62,6 +67,7 @@ public class Neo4jEmbeddedDatabase implements EmbeddedDatabase {
         this.transactionFactory = new Neo4jTransactionFactory(graphDb);
         this.transactionManager = new SimpleTransactionManager(this.transactionFactory);
         registerShutdownHook(graphDb, transactionManager);
+        log.info("Database connection established.");
     }
 
     @Override

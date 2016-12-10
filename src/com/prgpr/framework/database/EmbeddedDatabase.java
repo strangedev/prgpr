@@ -1,7 +1,6 @@
 package com.prgpr.framework.database;
 
 import com.prgpr.exceptions.NotInTransactionException;
-import com.prgpr.framework.database.transaction.Transaction;
 import com.prgpr.framework.database.transaction.TransactionFactory;
 import com.prgpr.framework.database.transaction.TransactionManager;
 
