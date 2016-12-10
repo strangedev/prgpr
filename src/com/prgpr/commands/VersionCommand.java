@@ -13,7 +13,7 @@ import java.util.stream.Collectors;
 
 /**
  * Created by kito on 19.11.16.
- * @autor Kyle Rinfreschi
+ * @author Kyle Rinfreschi
  */
 public class VersionCommand extends Command {
     @Override
@@ -23,7 +23,7 @@ public class VersionCommand extends Command {
 
     @Override
     public String getDescription() {
-        return "Returns the current version.";
+        return "Outputs the current version.";
     }
 
     @Override

@@ -18,7 +18,7 @@ public class PageTitleArgument extends CommandArgument {
 
     @Override
     public String getDescription() {
-        return "The page title";
+        return "The page title.";
     }
 
     @Override

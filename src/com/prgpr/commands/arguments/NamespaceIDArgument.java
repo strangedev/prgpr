@@ -22,7 +22,7 @@ public class NamespaceIDArgument extends CommandArgument {
 
     @Override
     public String getDescription() {
-        return "The namespace id of a page or article";
+        return "The namespace id of a page or article.";
     }
 
     @Override
