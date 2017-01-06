@@ -8,5 +8,8 @@ import com.prgpr.framework.database.Label;
  * @author Kyle Rinfreschi
  */
 public enum EntityTypes implements Label {
-    Page
+    Page,
+    Person,
+    City,
+    Monument
 }

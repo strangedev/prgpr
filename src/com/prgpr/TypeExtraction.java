@@ -24,12 +24,12 @@ public class TypeExtraction {
      * @param page The page to discover
      * @return A Set of possible types, what the content of the page could be.
      */
-    public Set<Page> discover_type(Page page) {
+    public static Set<Page> discoverTypes(Page page) {
 
         Set<Page> categories = new LinkedHashSet<>();
         categories = page.getAllRelatedCategories();
 
-        Set<Page> entitytypes = categories
+        Set<Page> entityTypes = categories
                 .stream()
                 .filter(cat -> cat.getTitle() == "Person"
                                         || cat.getTitle() == "Ort"
@@ -37,7 +37,7 @@ public class TypeExtraction {
                  .collect(Collectors.toSet());       ;
 
         // Logging the type of a Page
-        entitytypes.forEach(cat ->
+        entityTypes.forEach(cat ->
         {   switch(cat.getTitle()) {
                 case "Person":
                     log.info(page.getTitle() + " is a person.");
@@ -49,7 +49,7 @@ public class TypeExtraction {
             }
         });
 
-        return entitytypes;
+        return entityTypes;
 
     }
 

@@ -9,5 +9,7 @@ package com.prgpr.framework.database;
  */
 public enum RelationshipTypes implements RelationshipType {
     categoryLink,  // article links to a category page
-    articleLink  // article links to another article
+    articleLink,  // article links to another article
+    sourceLink, // Entity's node of source
+    entityLink // copy of the articleLink if the page isn't just a page
 }

@@ -8,6 +8,8 @@ src/com/prgpr/mock/*
 *.log
 *build/*
 .idea/modules/*
+.idea/libraries/*
+neo4j/data/*
 
 ### Gradle
 .gradle
