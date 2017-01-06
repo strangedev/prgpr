@@ -1,15 +1,14 @@
 package com.prgpr.data;
 
-import com.prgpr.framework.database.Element;
-import com.prgpr.framework.database.EmbeddedDatabase;
-import com.prgpr.framework.database.Property;
+import com.prgpr.framework.database.*;
 
 import java.security.MessageDigest;
 import java.security.NoSuchAlgorithmException;
 import java.util.Arrays;
-import java.util.stream.Stream;
+import java.util.LinkedHashSet;
+import java.util.Set;
+import java.util.stream.Collectors;
 
-import com.prgpr.framework.database.RelationshipTypes;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 
@@ -46,6 +45,16 @@ public class Person extends EntityBase {
     public long getHashCode() { return (long)node.getProperty(PersonAttribute.hash); }
 
     public String getTitle() { return (String)node.getProperty(PersonAttribute.title); }
+
+    public Page getSource() {
+        return SearchProvider.findImmediateOutgoing(
+            this.node,
+            RelationshipTypes.sourceLink
+        )
+            .stream()
+            .map(Page::new)
+            .iterator().next();
+    }
 
     @Override
     public int hashCode() { return hashCode(getTitle()); }
@@ -90,6 +99,12 @@ public class Person extends EntityBase {
         return getTitle() != null ? getTitle().equals(person.getTitle()) : person.getTitle() == null;
     }
 
+    /**
+     * Inserts the sourceLink from the Person to his Page.
+     *
+     * @param page Source of the Wikidata
+     * @return Title of the source
+     */
     public String insertSourceLink(Page page) {
         node.getDatabase().transaction(() -> {
             Element elem = node.getDatabase().getNodeFromIndex("Pages", page.getHashCode());

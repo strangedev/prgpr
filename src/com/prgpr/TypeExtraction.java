@@ -31,10 +31,10 @@ public class TypeExtraction {
 
         Set<Page> entityTypes = categories
                 .stream()
-                .filter(cat -> cat.getTitle() == "Person"
-                                        || cat.getTitle() == "Ort"
-                                        || cat.getTitle() == "Denkmal")
-                 .collect(Collectors.toSet());       ;
+                .filter(cat -> cat.getTitle().equals("Person")
+                                        || cat.getTitle().equals("Ort")
+                                        || cat.getTitle().equals("Denkmal"))
+                 .collect(Collectors.toSet());
 
         // Logging the type of a Page
         entityTypes.forEach(cat ->

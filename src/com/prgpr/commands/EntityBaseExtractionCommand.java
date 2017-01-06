@@ -4,6 +4,7 @@ import com.prgpr.TypeExtraction;
 import com.prgpr.commands.arguments.DatabaseDirectoryArgument;
 import com.prgpr.data.EntityBase;
 import com.prgpr.data.Page;
+import com.prgpr.data.Person;
 import com.prgpr.exceptions.InvalidArgument;
 import com.prgpr.exceptions.InvalidNumberOfArguments;
 import com.prgpr.framework.command.Command;
@@ -17,6 +18,7 @@ import org.apache.logging.log4j.Logger;
 import java.util.LinkedHashSet;
 import java.util.Set;
 import java.util.stream.BaseStream;
+import java.util.stream.Collectors;
 
 import static com.prgpr.PageFinder.findAllByNamespace;
 
@@ -65,11 +67,26 @@ public class EntityBaseExtractionCommand extends Command {
                 Set<Page> pages = findAllByNamespace(0);
                 pages.stream().map( (page) -> {
                     Set<Page> entityTypes = TypeExtraction.discoverTypes(page);
-                    return null; //entityTypes.create something ;
-                    });
-                    //.flatMap(BaseStream::sequential)
-                    //.forEach(log::info);
-
+                    entityTypes.stream().map( (entity) ->
+                    {
+                        if (entity.getTitle().equals("Person")) {
+                            log.info("Person " + page.getTitle() + " has been added.");
+                            return new Person(graphDb, page);
+                        }
+                        /*
+                        else if (entity.getTitle().equals("Ort")) {
+                            log.info("City " + page.getTitle() + " has been added.");
+                            return new City(graphDb, page);
+                        }
+                        else if (entity.getTitle().equals("Denkmal")) {
+                            log.info("Monument " + page.getTitle() + " has been added.");
+                            return new Monument(graphDb, page);});
+                        */
+                        else { return null; }
+                    })
+                      .collect(Collectors.toSet());
+                    return entityTypes;
+                });
             } catch (Exception e){
                 log.catching(e);
             }
