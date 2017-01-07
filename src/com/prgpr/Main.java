@@ -41,7 +41,8 @@ public class Main {
                 new CategoryLinksCommand(),
                 new ArticleLinksCommand(),
                 new PageInfoCommand(),
-                new VersionCommand()
+                new VersionCommand(),
+                new EntityBaseExtractionCommand()
         });
 
         try {

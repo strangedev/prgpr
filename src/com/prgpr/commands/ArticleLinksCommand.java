@@ -83,7 +83,7 @@ public class ArticleLinksCommand extends Command {
             }
         });
 
-        log.info(getName() + "command took " + time / 1000 + " seconds");
+        log.info(getName() + " command took " + time / 1000 + " seconds");
     }
 }
 

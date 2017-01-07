@@ -70,8 +70,9 @@ public class PageInfoCommand extends Command {
     public void run() {
         EmbeddedDatabase graphDb = EmbeddedDatabaseFactory.newEmbeddedDatabase(arguments[0].get());
         PageFinder.setDatabase(graphDb);
-        Page page = PageFinder.findByNamespaceAndTitle(Integer.valueOf(arguments[1].get()), arguments[2].get());
+        Page page = PageFinder.findByNamespaceAndTitle(Integer.valueOf(arguments[1].get()), arguments[2].get() );
 
+        log.info(PageFinder.findAllByNamespace(Integer.valueOf(arguments[1].get())));
         if (page == null) {
             log.error("The requested page \"" + arguments[2].get() + "\" was not found. Make sure it was imported first!");
             return;

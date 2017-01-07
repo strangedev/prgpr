@@ -8,6 +8,7 @@ import java.util.Arrays;
 import java.util.LinkedHashSet;
 import java.util.Set;
 import java.util.stream.Collectors;
+import java.util.stream.Stream;
 
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
@@ -114,5 +115,29 @@ public class Person extends EntityBase {
         return page.getTitle();
     }
 
-    //public Stream<String> insertEntityLinks() { }
+    public Stream<String> insertEntityLinks() {
+        Page source = getSource();
+        Set<Page> elements = source.getLinkedArticles();
+
+        Set<String> related = null;
+
+        node.getDatabase().transaction(() -> {
+            for(Page page: elements) {
+
+                Set <Element> equivalentNode =  page.getSourcing();
+
+                for(Element elem: equivalentNode) {
+
+                    if (elem == null) { continue; }
+
+                    node.createUniqueRelationshipTo(elem, RelationshipTypes.entityLink);
+                }
+
+                related.add(page.getTitle());
+            }
+        });
+
+        return related.stream();
+
+    }
 }

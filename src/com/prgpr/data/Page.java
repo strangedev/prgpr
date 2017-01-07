@@ -178,6 +178,13 @@ public class Page {
                 .collect(Collectors.toCollection(LinkedHashSet::new));
     }
 
+    public Set<Element> getSourcing() {
+        return SearchProvider.findImmediateIncoming(
+                this.node,
+                RelationshipTypes.sourceLink
+        );
+    }
+
     /**
      * A function to calculate a unique hash to find out fast if the Node/Page already exists.
      *

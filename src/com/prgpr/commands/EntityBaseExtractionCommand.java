@@ -1,5 +1,6 @@
 package com.prgpr.commands;
 
+import com.prgpr.PageFinder;
 import com.prgpr.TypeExtraction;
 import com.prgpr.commands.arguments.DatabaseDirectoryArgument;
 import com.prgpr.data.EntityBase;
@@ -9,6 +10,7 @@ import com.prgpr.exceptions.InvalidArgument;
 import com.prgpr.exceptions.InvalidNumberOfArguments;
 import com.prgpr.framework.command.Command;
 import com.prgpr.framework.command.CommandArgument;
+import com.prgpr.framework.database.Element;
 import com.prgpr.framework.database.EmbeddedDatabase;
 import com.prgpr.framework.database.EmbeddedDatabaseFactory;
 import com.prgpr.helpers.Benchmark;
@@ -58,35 +60,58 @@ public class EntityBaseExtractionCommand extends Command {
         arguments[0].set(args[0]);
     }
 
+    public void insertEntityBaseLinks(Set<EntityBase> toAdd) {
+        toAdd
+            .stream()
+            .map((adding) -> {
+                log.info("------------------------------------");
+                log.info("Creating relationships of type Entity for " + adding.getTitle());
+                log.info("------------------------------------");
+                return adding.insertEntityLinks();
+            })
+            .flatMap(BaseStream::sequential)
+            .forEach(log::info);
+    }
+
+
     @Override
     public void run() {
         EmbeddedDatabase graphDb = EmbeddedDatabaseFactory.newEmbeddedDatabase(arguments[0].get(), batchSize);
+        PageFinder.setDatabase(graphDb);
 
         long time = Benchmark.run(() -> {
             try {
                 Set<Page> pages = findAllByNamespace(0);
+                log.info(pages);
+                Set<EntityBase> entities = new LinkedHashSet<>();
                 pages.stream().map( (page) -> {
                     Set<Page> entityTypes = TypeExtraction.discoverTypes(page);
                     entityTypes.stream().map( (entity) ->
                     {
                         if (entity.getTitle().equals("Person")) {
                             log.info("Person " + page.getTitle() + " has been added.");
-                            return new Person(graphDb, page);
+                            Person p = new Person(graphDb, page);
+                            entities.add(p);
+                            return p;
                         }
                         /*
                         else if (entity.getTitle().equals("Ort")) {
                             log.info("City " + page.getTitle() + " has been added.");
-                            return new City(graphDb, page);
+                            City c = new City(graphDb, page);
+                            entities.add(c);
+                            return c;
                         }
                         else if (entity.getTitle().equals("Denkmal")) {
                             log.info("Monument " + page.getTitle() + " has been added.");
-                            return new Monument(graphDb, page);});
+                            Monument m = new Monument(graphDb, page);
+                            entities.add(m);
+                            return m;
                         */
                         else { return null; }
-                    })
-                      .collect(Collectors.toSet());
+                    });
                     return entityTypes;
                 });
+                insertEntityBaseLinks(entities);
             } catch (Exception e){
                 log.catching(e);
             }
