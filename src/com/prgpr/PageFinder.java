@@ -11,6 +11,7 @@ import org.apache.logging.log4j.Logger;
 
 import java.util.LinkedHashSet;
 import java.util.Set;
+import java.util.stream.Collectors;
 
 /**
  *
@@ -73,7 +74,7 @@ public class PageFinder {
         );
 
         if (!es.isEmpty()) {
-            es.stream().map(PageFactory::getPage);
+            ret = es.stream().map(PageFactory::getPage).collect(Collectors.toCollection(LinkedHashSet::new));
         }
 
         return ret;
