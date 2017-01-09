@@ -20,7 +20,7 @@ import org.apache.logging.log4j.Logger;
  */
 public class Person extends EntityBase {
 
-    private static final Logger log = LogManager.getFormatterLogger(Page.class);
+    private static final Logger log = LogManager.getFormatterLogger(Person.class);
     private static final String indexName = "Persons";
     private static final String stringHashFunction = "SHA-1";
     private static final int ownNamespaceID = 16; // As wiki namespaces hasn't got the namespaceid 16, lets take this.
@@ -47,14 +47,14 @@ public class Person extends EntityBase {
 
     public String getTitle() { return (String)node.getProperty(PersonAttribute.title); }
 
-    public Page getSource() {
+    public Set<Page> getSource() {
         return SearchProvider.findImmediateOutgoing(
             this.node,
             RelationshipTypes.sourceLink
         )
             .stream()
             .map(Page::new)
-            .iterator().next();
+            .collect(Collectors.toSet());
     }
 
     @Override
@@ -116,28 +116,31 @@ public class Person extends EntityBase {
     }
 
     public Stream<String> insertEntityLinks() {
-        Page source = getSource();
-        Set<Page> elements = source.getLinkedArticles();
+        Set<Page> pages = getSource();
 
-        Set<String> related = null;
+        Set<String> related = new LinkedHashSet<>();
 
-        node.getDatabase().transaction(() -> {
-            for(Page page: elements) {
+        for (Page source : pages) {
+            Set<Page> elements = source.getLinkedArticles();
+            node.getDatabase().transaction(() -> {
+                for (Page page : elements) {
 
-                Set <Element> equivalentNode =  page.getSourcing();
+                    Set<Element> equivalentNode = page.getSourcing();
 
-                for(Element elem: equivalentNode) {
+                    for (Element elem : equivalentNode) {
 
-                    if (elem == null) { continue; }
+                        if (elem == null) {
+                            continue;
+                        }
 
-                    node.createUniqueRelationshipTo(elem, RelationshipTypes.entityLink);
+                        node.createUniqueRelationshipTo(elem, RelationshipTypes.entityLink);
+                    }
+
+                    related.add(page.getTitle());
                 }
-
-                related.add(page.getTitle());
-            }
-        });
-
+            });
+        }
         return related.stream();
-
     }
+
 }

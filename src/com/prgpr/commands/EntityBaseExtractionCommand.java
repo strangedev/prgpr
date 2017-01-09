@@ -29,7 +29,7 @@ import static com.prgpr.PageFinder.findAllByNamespace;
  */
 public class EntityBaseExtractionCommand extends Command {
 
-    private static final Logger log = LogManager.getFormatterLogger(Page.class);
+    private static final Logger log = LogManager.getFormatterLogger(EntityBaseExtractionCommand.class);
     private static final int batchSize = 10000;  // Specifies the batch size for batched transactions
 
     protected final CommandArgument[] arguments = new CommandArgument[]{
@@ -61,56 +61,42 @@ public class EntityBaseExtractionCommand extends Command {
     }
 
     public void insertEntityBaseLinks(Set<EntityBase> toAdd) {
-        toAdd
-            .stream()
-            .map((adding) -> {
-                log.info("------------------------------------");
+        for (EntityBase adding : toAdd) {
+                log.info("------------------------------------------");
                 log.info("Creating relationships of type Entity for " + adding.getTitle());
-                log.info("------------------------------------");
-                return adding.insertEntityLinks();
-            })
-            .flatMap(BaseStream::sequential)
-            .forEach(log::info);
+                log.info("------------------------------------------");
+                adding.insertEntityLinks().forEach(log::info);
+            }
     }
 
 
     @Override
     public void run() {
-        EmbeddedDatabase graphDb = EmbeddedDatabaseFactory.newEmbeddedDatabase(arguments[0].get(), batchSize);
+        EmbeddedDatabase graphDb = EmbeddedDatabaseFactory.newEmbeddedDatabase(arguments[0].get());
         PageFinder.setDatabase(graphDb);
 
         long time = Benchmark.run(() -> {
             try {
                 Set<Page> pages = findAllByNamespace(0);
-                log.info(pages);
                 Set<EntityBase> entities = new LinkedHashSet<>();
-                pages.stream().map( (page) -> {
+                for (Page page: pages) {
                     Set<Page> entityTypes = TypeExtraction.discoverTypes(page);
-                    entityTypes.stream().map( (entity) ->
-                    {
+                    for (Page entity : entityTypes) {
                         if (entity.getTitle().equals("Person")) {
+                            entities.add(new Person(graphDb, page));
                             log.info("Person " + page.getTitle() + " has been added.");
-                            Person p = new Person(graphDb, page);
-                            entities.add(p);
-                            return p;
                         }
                         /*
-                        else if (entity.getTitle().equals("Ort")) {
+                        if (entity.getTitle().equals("Ort")) {
+                            entities.add(new City(graphDb, page));
                             log.info("City " + page.getTitle() + " has been added.");
-                            City c = new City(graphDb, page);
-                            entities.add(c);
-                            return c;
                         }
-                        else if (entity.getTitle().equals("Denkmal")) {
+                        if (entity.getTitle().equals("Denkmal")) {
+                            entities.add(new Monument(graphDb, page));
                             log.info("Monument " + page.getTitle() + " has been added.");
-                            Monument m = new Monument(graphDb, page);
-                            entities.add(m);
-                            return m;
                         */
-                        else { return null; }
-                    });
-                    return entityTypes;
-                });
+                    }
+                }
                 insertEntityBaseLinks(entities);
             } catch (Exception e){
                 log.catching(e);
