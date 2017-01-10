@@ -8,9 +8,10 @@ import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 
 /**
- * @author Elizaveta Kovalevskaya
+ * The Person Class.
+ * It represents a Person, sourcing from a Wikipedia Page.
  *
- * A Class to create Person objects.
+ * @author Elizaveta Kovalevskaya
  */
 public class Person extends EntityBase {
 
@@ -42,7 +43,7 @@ public class Person extends EntityBase {
     public long getHashCode() { return (long)node.getProperty(PersonAttribute.hash); }
 
     /**
-     * @return the title of the Persons article from Wikipedia (the name of the Person)
+     * @return the title of the Person's article from Wikipedia (the name of the Person)
      */
     public String getTitle() { return (String)node.getProperty(PersonAttribute.title); }
 
@@ -58,10 +59,6 @@ public class Person extends EntityBase {
 
     /**
      * Calculates the hash.
-     *
-     * http://eclipsesource.com/blogs/2012/09/04/the-3-things-you-should-know-about-hashcode/
-     * http://preshing.com/20110504/hash-collision-probabilities/
-     * http://stackoverflow.com/questions/1867191/probability-of-sha1-collisions
      *
      * @param title of the page
      * @return the hash

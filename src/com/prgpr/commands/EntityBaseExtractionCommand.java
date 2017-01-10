@@ -3,14 +3,11 @@ package com.prgpr.commands;
 import com.prgpr.PageFinder;
 import com.prgpr.TypeExtraction;
 import com.prgpr.commands.arguments.DatabaseDirectoryArgument;
-import com.prgpr.data.EntityBase;
-import com.prgpr.data.Page;
-import com.prgpr.data.Person;
+import com.prgpr.data.*;
 import com.prgpr.exceptions.InvalidArgument;
 import com.prgpr.exceptions.InvalidNumberOfArguments;
 import com.prgpr.framework.command.Command;
 import com.prgpr.framework.command.CommandArgument;
-import com.prgpr.framework.database.Element;
 import com.prgpr.framework.database.EmbeddedDatabase;
 import com.prgpr.framework.database.EmbeddedDatabaseFactory;
 import com.prgpr.helpers.Benchmark;
@@ -19,13 +16,13 @@ import org.apache.logging.log4j.Logger;
 
 import java.util.LinkedHashSet;
 import java.util.Set;
-import java.util.stream.BaseStream;
-import java.util.stream.Collectors;
 
 import static com.prgpr.PageFinder.findAllByNamespace;
 
 /**
- * Created by lissie on 1/5/17.
+ * Command which implements the entitybaseextraction and inserts the entity links command from Milestone3
+ *
+ * @author Elizaveta Kovalevskaya
  */
 public class EntityBaseExtractionCommand extends Command {
 
@@ -80,13 +77,15 @@ public class EntityBaseExtractionCommand extends Command {
                 Set<Page> pages = findAllByNamespace(0);
                 Set<EntityBase> entities = new LinkedHashSet<>();
                 for (Page page: pages) {
+
+                    log.info("------------------------------------------");
                     Set<Page> entityTypes = TypeExtraction.discoverTypes(page);
                     for (Page entity : entityTypes) {
+
                         if (entity.getTitle().equals("Person")) {
                             entities.add(new Person(graphDb, page));
                             log.info("Person " + page.getTitle() + " has been added.");
                         }
-                        /*
                         if (entity.getTitle().equals("Ort")) {
                             entities.add(new City(graphDb, page));
                             log.info("City " + page.getTitle() + " has been added.");
@@ -94,7 +93,7 @@ public class EntityBaseExtractionCommand extends Command {
                         if (entity.getTitle().equals("Denkmal")) {
                             entities.add(new Monument(graphDb, page));
                             log.info("Monument " + page.getTitle() + " has been added.");
-                        */
+                        }
                     }
                 }
                 insertEntityBaseLinks(entities);
