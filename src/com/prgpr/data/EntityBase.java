@@ -1,7 +1,9 @@
 package com.prgpr.data;
 
 
+import com.prgpr.PageFactory;
 import com.prgpr.framework.database.Element;
+import com.prgpr.framework.database.Property;
 import com.prgpr.framework.database.RelationshipTypes;
 import com.prgpr.framework.database.SearchProvider;
 import org.apache.logging.log4j.LogManager;
@@ -10,7 +12,6 @@ import org.apache.logging.log4j.Logger;
 import java.security.MessageDigest;
 import java.security.NoSuchAlgorithmException;
 import java.util.Arrays;
-import java.util.Iterator;
 import java.util.LinkedHashSet;
 import java.util.Set;
 import java.util.stream.Collectors;
@@ -25,13 +26,29 @@ public abstract class EntityBase {
 
     private static final Logger log = LogManager.getFormatterLogger(EntityBase.class);
     private static final String stringHashFunction = "SHA-1";
+    protected int ownNamespaceID;
+    protected Element node;
+    protected Element source;
 
+    public enum EntityAttribute implements Property {
+        hash,
+        title,
+        ownNamespaceID
+        }
 
-    public abstract String getTitle();
+    @Override
+    public int hashCode() { return hashCode(getTitle(), ownNamespaceID); }
 
-    public abstract long getHashCode();
+    /**
+     * @return the hashcode of the Person
+     */
+    public long getHashCode() { return (long)node.getProperty(EntityAttribute.hash); }
 
-    public abstract int hashCode();
+    /**
+     * @return the title of the Person's article from Wikipedia (the name of the Person)
+     */
+    public String getTitle() { return (String)node.getProperty(EntityAttribute.title); }
+
 
     /**
      * Calculates the hash.
@@ -65,53 +82,77 @@ public abstract class EntityBase {
     /**
      * Searching for the Page, which is the source of the Wikidata
      *
-     * @param node Element (from the subclass)
      * @return the source Page
      */
-    protected Page getSource(Element node) {
-        Set<Page> source = new LinkedHashSet<>();
-        Iterator<Page> iterator = source.iterator();
+    protected Page getSource() { return PageFactory.getPage(source); }
 
-        source = SearchProvider.findImmediateOutgoing(
-                node,
-                RelationshipTypes.sourceLink
+
+    /**
+     * Gets entities linked by the entity.
+     *
+     * @return Entity objects the entity links to.
+     * So the Entity of the articles the source page links to.
+     */
+    public Set<EntityBase> getLinkedEntities() {
+        return SearchProvider.findImmediateOutgoing(
+                this.node,
+                RelationshipTypes.entityLink
         )
                 .stream()
-                .map(Page::new)
-                .collect(Collectors.toSet());
-        return source.iterator().next();
+                .map((linkedEntities) -> {
+                    if ((int)linkedEntities.getProperty(EntityAttribute.ownNamespaceID) == 16) { return new Person(linkedEntities); }
+                    if ((int)linkedEntities.getProperty(EntityAttribute.ownNamespaceID) == 17) { return new City(linkedEntities); }
+                    if ((int)linkedEntities.getProperty(EntityAttribute.ownNamespaceID) == 18) { return new Monument(linkedEntities); }
+                    else { return null; }
+                })
+                .collect(Collectors.toCollection(LinkedHashSet::new));
+    }
+
+    /**
+     * Gets entities linking the entity.
+     *
+     * @return Entity objects the entity is linked by.
+     * So the Entity of the articles the source page is linked by.
+     */
+    public Set<EntityBase> getLinkingEntities() {
+        return SearchProvider.findImmediateIncoming(
+                this.node,
+                RelationshipTypes.entityLink
+        )
+                .stream()
+                .map((linkedEntities) -> {
+                    if ((int)linkedEntities.getProperty(EntityAttribute.ownNamespaceID) == 16) { return new Person(linkedEntities); }
+                    if ((int)linkedEntities.getProperty(EntityAttribute.ownNamespaceID) == 17) { return new City(linkedEntities); }
+                    if ((int)linkedEntities.getProperty(EntityAttribute.ownNamespaceID) == 18) { return new Monument(linkedEntities); }
+                    else { return null; }
+                })
+                .collect(Collectors.toCollection(LinkedHashSet::new));
     }
 
     /**
      * Inserts the sourceLink from the Element to the Page with his Wikidata.
      *
-     * @param node Element (from the subclass)
-     * @param page Source Page
      * @return The title of the source
      */
-    protected String insertSourceLink(Element node, Page page) {
+    protected String insertSourceLink() {
         node.getDatabase().transaction(() -> {
-            Element elem = node.getDatabase().getNodeFromIndex("Pages", page.getHashCode());
+            Element elem = node.getDatabase().getNodeFromIndex("Pages", getSource().getHashCode());
             if(elem != null) { node.createUniqueRelationshipTo(elem, RelationshipTypes.sourceLink); }
         });
 
-        return page.getTitle();
+        return getSource().getTitle();
     }
-
-    public abstract Stream<String> insertEntityLinks();
 
     /**
      * Get's all the Elements to create the entity relation to and inserts it into the database.
      *
-     * @param node Element (from the subclass)
-     * @param source Source Page
-     * @return The titles of all entities, where links were inserted.
+     * @return The titles of all entities, where links were inserted, linking Persons, Cities and Monuments.
      */
-    protected Stream<String> insertEntityLinks(Element node, Page source) {
+    public Stream<String> insertEntityLinks() {
 
         Set<String> related = new LinkedHashSet<>();
 
-        Set<Page> elements = source.getLinkedArticles(); // get's all linked articles of the page
+        Set<Page> elements = getSource().getLinkedArticles(); // get's all linked articles of the page
         node.getDatabase().transaction(() -> {
             for (Page page : elements) {
 
@@ -133,4 +174,5 @@ public abstract class EntityBase {
 
         return related.stream();
     }
+
 }

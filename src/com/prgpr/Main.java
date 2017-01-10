@@ -42,7 +42,8 @@ public class Main {
                 new ArticleLinksCommand(),
                 new PageInfoCommand(),
                 new VersionCommand(),
-                new EntityBaseExtractionCommand()
+                new EntityBaseExtractionCommand(),
+                new EntityTest()
         });
 
         try {

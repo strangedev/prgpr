@@ -3,6 +3,7 @@ package com.prgpr.data;
 import com.prgpr.framework.database.Element;
 import com.prgpr.framework.database.EmbeddedDatabase;
 import com.prgpr.framework.database.Property;
+import com.prgpr.framework.database.SearchProvider;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 
@@ -18,53 +19,23 @@ public class City extends EntityBase {
 
     private static final Logger log = LogManager.getFormatterLogger(City.class);
     private static final String indexName = "Cities";
-    private static final int ownNamespaceID = 17; // As wiki namespaces hasn't got the namespaceid 17, lets take this.
-    private Element node;
 
-    public enum CityAttribute implements Property {
-        hash,
-        title
-    }
+    public enum CityAttribute implements Property { }
 
     public City(Element node) {
         this.node = node;
     }
 
     public City(EmbeddedDatabase db, Page page) {
-        this.node = db.createElement(indexName, hashCode(page.getTitle()), (node) -> {
+        this.ownNamespaceID = 17; // As wiki namespaces hasn't got the namespaceid 17, lets take this.
+        this.node = db.createElement(indexName, hashCode(page.getTitle(), ownNamespaceID), (node) -> {
             node.addLabel(EntityTypes.City);
-            node.setProperty(City.CityAttribute.title, page.getTitle());
+            node.setProperty(EntityAttribute.title, page.getTitle());
+            node.setProperty(EntityAttribute.ownNamespaceID, ownNamespaceID);
         });
-        insertSourceLink(page);
+        this.source = SearchProvider.findNode(db, EntityTypes.Page, Page.PageAttribute.hash, page.getHashCode());
+        insertSourceLink();
     }
-
-    /**
-     * @return the hashcode of the City
-     */
-    public long getHashCode() { return (long)node.getProperty(City.CityAttribute.hash); }
-
-    /**
-     * @return the title of the City's article from Wikipedia (the name of the City)
-     */
-    public String getTitle() { return (String)node.getProperty(City.CityAttribute.title); }
-
-    /**
-     * @return the source of the City
-     */
-    public Page getSource() {
-        return super.getSource(this.node);
-    }
-
-    @Override
-    public int hashCode() { return super.hashCode(getTitle(), ownNamespaceID); }
-
-    /**
-     * Calculates the hash.
-     *
-     * @param title of the page
-     * @return the hash
-     */
-    private int hashCode(String title) { return super.hashCode(title, ownNamespaceID);}
 
     /**
      * Compares City object to another Object
@@ -81,23 +52,6 @@ public class City extends EntityBase {
 
         if (getHashCode() != city.getHashCode()) return false;
         return getTitle() != null ? getTitle().equals(city.getTitle()) : city.getTitle() == null;
-    }
-
-    /**
-     * Inserts the sourceLink from the City to his Page by calling the super class method.
-     *
-     * @param page Source of the Wikidata
-     * @return Title of the source
-     */
-    public String insertSourceLink(Page page) { return super.insertSourceLink(node, page);}
-
-    /**
-     * Inserts the EntityLinks from the City to his Pages Persons, Cities and Monuments.
-     *
-     * @return the Titles of the linking Persons, Cities and Monuments.
-     */
-    public Stream<String> insertEntityLinks() {
-        return super.insertEntityLinks(node, getSource());
     }
 
 }

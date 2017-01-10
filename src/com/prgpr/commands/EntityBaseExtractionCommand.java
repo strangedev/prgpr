@@ -6,6 +6,7 @@ import com.prgpr.commands.arguments.DatabaseDirectoryArgument;
 import com.prgpr.data.*;
 import com.prgpr.exceptions.InvalidArgument;
 import com.prgpr.exceptions.InvalidNumberOfArguments;
+import com.prgpr.exceptions.NotInTransactionException;
 import com.prgpr.framework.command.Command;
 import com.prgpr.framework.command.CommandArgument;
 import com.prgpr.framework.database.EmbeddedDatabase;
@@ -101,7 +102,11 @@ public class EntityBaseExtractionCommand extends Command {
                 log.catching(e);
             }
         });
-
+        try {
+            graphDb.success();
+        } catch (NotInTransactionException e) {
+            e.printStackTrace();
+        }
         log.info(getName() + " took " + time / 1000 + " seconds");
     }
 }
