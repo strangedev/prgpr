@@ -2,12 +2,6 @@ package com.prgpr.data;
 
 import com.prgpr.framework.database.*;
 
-import java.security.MessageDigest;
-import java.security.NoSuchAlgorithmException;
-import java.util.Arrays;
-import java.util.LinkedHashSet;
-import java.util.Set;
-import java.util.stream.Collectors;
 import java.util.stream.Stream;
 
 import org.apache.logging.log4j.LogManager;
@@ -22,7 +16,6 @@ public class Person extends EntityBase {
 
     private static final Logger log = LogManager.getFormatterLogger(Person.class);
     private static final String indexName = "Persons";
-    private static final String stringHashFunction = "SHA-1";
     private static final int ownNamespaceID = 16; // As wiki namespaces hasn't got the namespaceid 16, lets take this.
     private Element node;
 
@@ -43,22 +36,25 @@ public class Person extends EntityBase {
         insertSourceLink(page);
     }
 
+    /**
+     * @return the hashcode of the Person
+     */
     public long getHashCode() { return (long)node.getProperty(PersonAttribute.hash); }
 
+    /**
+     * @return the title of the Persons article from Wikipedia (the name of the Person)
+     */
     public String getTitle() { return (String)node.getProperty(PersonAttribute.title); }
 
-    public Set<Page> getSource() {
-        return SearchProvider.findImmediateOutgoing(
-            this.node,
-            RelationshipTypes.sourceLink
-        )
-            .stream()
-            .map(Page::new)
-            .collect(Collectors.toSet());
+    /**
+     * @return the source of the Person
+     */
+    public Page getSource() {
+        return super.getSource(this.node);
     }
 
     @Override
-    public int hashCode() { return hashCode(getTitle()); }
+    public int hashCode() { return super.hashCode(getTitle(), ownNamespaceID); }
 
     /**
      * Calculates the hash.
@@ -70,18 +66,7 @@ public class Person extends EntityBase {
      * @param title of the page
      * @return the hash
      */
-    private static int hashCode(String title) {
-        byte[] titleHash;
-        try {
-            final MessageDigest messageDigest = MessageDigest.getInstance(stringHashFunction);
-            messageDigest.update(title.getBytes());
-            titleHash = messageDigest.digest();
-        } catch (NoSuchAlgorithmException e) {
-            titleHash = title.getBytes();
-        }
-
-        return (ownNamespaceID * 31) + Arrays.hashCode(titleHash);
-    }
+    private int hashCode(String title) { return super.hashCode(title, ownNamespaceID);}
 
     /**
      * Compares Person object to another Object
@@ -101,46 +86,21 @@ public class Person extends EntityBase {
     }
 
     /**
-     * Inserts the sourceLink from the Person to his Page.
+     * Inserts the sourceLink from the Person to his Page by calling the super class method.
      *
      * @param page Source of the Wikidata
      * @return Title of the source
      */
-    public String insertSourceLink(Page page) {
-        node.getDatabase().transaction(() -> {
-            Element elem = node.getDatabase().getNodeFromIndex("Pages", page.getHashCode());
-            if(elem != null) { node.createUniqueRelationshipTo(elem, RelationshipTypes.sourceLink); }
-        });
+    public String insertSourceLink(Page page) { return super.insertSourceLink(node, page);}
 
-        return page.getTitle();
-    }
-
+    /**
+     * Inserts the EntityLinks from the Person to his Pages Persons, Cities and Monuments.
+     *
+     * @return the Titles of the linking Persons, Cities and Monuments.
+     */
     public Stream<String> insertEntityLinks() {
-        Set<Page> pages = getSource();
-
-        Set<String> related = new LinkedHashSet<>();
-
-        for (Page source : pages) {
-            Set<Page> elements = source.getLinkedArticles();
-            node.getDatabase().transaction(() -> {
-                for (Page page : elements) {
-
-                    Set<Element> equivalentNode = page.getSourcing();
-
-                    for (Element elem : equivalentNode) {
-
-                        if (elem == null) {
-                            continue;
-                        }
-
-                        node.createUniqueRelationshipTo(elem, RelationshipTypes.entityLink);
-                    }
-
-                    related.add(page.getTitle());
-                }
-            });
+        return super.insertEntityLinks(node, getSource());
         }
-        return related.stream();
-    }
+
 
 }
