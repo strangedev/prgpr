@@ -39,13 +39,17 @@ public class TypeExtraction {
         // Logging the type of a Page
         entityTypes.forEach(cat ->
         {   switch(cat.getTitle()) {
-                case "Person":
-                    log.info(page.getTitle() + " is a person.");
+            case "Person":
+                    log.info(" -------------------- " + page.getTitle() + " is a person.");
+                    break;
                 case "Ort":
-                    log.info(page.getTitle() + " is a city.");
+                    log.info(" -------------------- " + page.getTitle() + " is a city.");
+                    break;
                 case "Denkmal":
-                    log.info(page.getTitle() + " is a monument.");
-                default: break;
+                    log.info(" -------------------- " + page.getTitle() + " is a monument.");
+                    break;
+                default:
+                    break;
             }
         });
 
