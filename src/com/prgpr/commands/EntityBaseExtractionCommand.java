@@ -70,7 +70,7 @@ public class EntityBaseExtractionCommand extends Command {
 
     @Override
     public void run() {
-        EmbeddedDatabase graphDb = EmbeddedDatabaseFactory.newEmbeddedDatabase(arguments[0].get());
+        EmbeddedDatabase graphDb = EmbeddedDatabaseFactory.newEmbeddedDatabase(arguments[0].get(), batchSize);
         PageFinder.setDatabase(graphDb);
 
         long time = Benchmark.run(() -> {

@@ -70,16 +70,18 @@ public class CategoryLinksCommand extends Command{
 
         long time = Benchmark.run(() -> {
             try {
-                graphDb.getAllElements()
-                        .map(Page::new)
-                        .map((page) -> {
-                            log.info("------------------------------------");
-                            log.info("Creating relationships of type Category for " + page.getTitle());
-                            log.info("------------------------------------");
-                            return page.insertCategoryLinks();
-                        })
-                        .flatMap(BaseStream::sequential)
-                        .forEach(log::info);
+                graphDb.transaction(() ->
+                    graphDb.getAllElements()
+                            .map(Page::new)
+                            .map((page) -> {
+                                log.info("------------------------------------");
+                                log.info("Creating relationships of type Category for " + page.getTitle());
+                                log.info("------------------------------------");
+                                return page.insertCategoryLinks();
+                            })
+                            .flatMap(BaseStream::sequential)
+                            .forEach(log::info)
+                );
             } catch (Exception e){
                 log.catching(e);
             }

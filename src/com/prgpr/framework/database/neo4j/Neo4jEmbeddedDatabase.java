@@ -16,9 +16,12 @@ import org.neo4j.graphdb.index.ReadableIndex;
 import org.neo4j.graphdb.index.UniqueFactory;
 
 import java.io.File;
+import java.util.LinkedHashSet;
 import java.util.Map;
+import java.util.Set;
 import java.util.concurrent.Callable;
 import java.util.stream.Stream;
+import java.util.stream.Collectors;
 
 /**
  * Created by kito on 21.11.16.
@@ -72,7 +75,7 @@ public class Neo4jEmbeddedDatabase implements EmbeddedDatabase {
 
     @Override
     public TraversalProvider getTraversalProvider() {
-        return transaction(() -> this.traversalProvider );
+        return this.traversalProvider;
 
     }
 
@@ -129,13 +132,6 @@ public class Neo4jEmbeddedDatabase implements EmbeddedDatabase {
         });
     }
 
-    @Override
-    public Stream<Element> getAllElements() {
-        return transaction(() -> graphDb.getAllNodes()
-                                            .stream()
-                                            .map(n -> new Neo4jElement(this, n)));
-    }
-
     public Relationship createUniqueRelationshipTo(Element start, Element end, com.prgpr.framework.database.RelationshipType relType) {
         long hash = relationshipHash(start, end, relType);
         return transaction(() -> {
@@ -183,10 +179,17 @@ public class Neo4jEmbeddedDatabase implements EmbeddedDatabase {
     }
 
     @Override
+    public Stream<Element> getAllElements() {
+        return graphDb.getAllNodes()
+                .stream()
+                .map(n -> new Neo4jElement(this, n));
+    }
+
+    @Override
     public Stream<Element> findElements(Label label, PropertyValuePair property) {
-        return transaction(() -> graphDb
+        return graphDb
                 .findNodes(org.neo4j.graphdb.Label.label(label.name()), property.property.name(), property.value)
                 .stream()
-                .map(n -> new Neo4jElement(this, n)));
+                .map(n -> new Neo4jElement(this, n));
     }
 }

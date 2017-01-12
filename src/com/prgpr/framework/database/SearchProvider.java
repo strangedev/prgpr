@@ -33,10 +33,12 @@ public class SearchProvider {
             Label label,
             Set<PropertyValuePair> properties){
 
-        return db.getAllElements()
+        return db.transaction(() ->
+            db.getAllElements()
                 .filter(n -> NodePredicates.matchesLabel(n, label))
                 .filter(n -> NodePredicates.matchesAnyProperties(n, properties))
-                .collect(Collectors.toCollection(LinkedHashSet::new));
+                .collect(Collectors.toCollection(LinkedHashSet::new))
+        );
     }
 
     /**
@@ -50,8 +52,10 @@ public class SearchProvider {
      * @return The first matching Element
      */
     public static <E> Element findNode(EmbeddedDatabase db, Label label, Property property, E val){
-        return db.findElements(label, new PropertyValuePair<>(property, val))
-                .findFirst().orElse(null);
+        return db.transaction(() ->
+                db.findElements(label, new PropertyValuePair<>(property, val))
+                .findFirst().orElse(null)
+        );
     }
 
     // *****************************************************************************************************************
@@ -69,11 +73,13 @@ public class SearchProvider {
             Element start,
             RelationshipType relType
     ){
-        return start
-                .getDatabase()
+        EmbeddedDatabase db = start.getDatabase();
+        return db.transaction(() ->
+            start.getDatabase()
                 .getTraversalProvider()
                 .traverseUniqueToDepth(start, relType, TraversalProvider.Direction.OUTGOING, 1)
-                .collect(Collectors.toCollection(LinkedHashSet::new));
+                .collect(Collectors.toCollection(LinkedHashSet::new))
+        );
     }
 
     /**
@@ -87,11 +93,13 @@ public class SearchProvider {
             Element start,
             RelationshipType relType
     ){
-        return start
-                .getDatabase()
+        EmbeddedDatabase db = start.getDatabase();
+        return db.transaction(() ->
+            start.getDatabase()
                 .getTraversalProvider()
                 .traverseUniqueToDepth(start, relType, TraversalProvider.Direction.INCOMING, 1)
-                .collect(Collectors.toCollection(LinkedHashSet::new));
+                .collect(Collectors.toCollection(LinkedHashSet::new))
+        );
     }
 
     // *****************************************************************************************************************
@@ -110,11 +118,13 @@ public class SearchProvider {
         Element start,
         RelationshipType relType
     ){
-        return  start
-                .getDatabase()
+        EmbeddedDatabase db = start.getDatabase();
+        return db.transaction(() ->
+                start.getDatabase()
                 .getTraversalProvider()
                 .traverseUnique(start, relType, TraversalProvider.Direction.OUTGOING)
-                .collect(Collectors.toCollection(LinkedHashSet::new));
+                .collect(Collectors.toCollection(LinkedHashSet::new))
+        );
     }
 
 }

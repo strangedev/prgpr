@@ -68,16 +68,18 @@ public class ArticleLinksCommand extends Command {
 
         long time = Benchmark.run(() -> {
             try {
-                graphDb.getAllElements()
-                        .map(Page::new)
-                        .map((page) -> {
-                            log.info("------------------------------------");
-                            log.info("Creating relationships of type Article for " + page.getTitle());
-                            log.info("------------------------------------");
-                            return page.insertArticleLinks();
-                        })
-                        .flatMap(BaseStream::sequential)
-                        .forEach(log::info);
+                graphDb.transaction(() ->
+                    graphDb.getAllElements()
+                            .map(Page::new)
+                            .map((page) -> {
+                                log.info("------------------------------------");
+                                log.info("Creating relationships of type Article for " + page.getTitle());
+                                log.info("------------------------------------");
+                                return page.insertArticleLinks();
+                            })
+                            .flatMap(BaseStream::sequential)
+                            .forEach(log::info)
+                );
             } catch (Exception e){
                 log.catching(e);
             }
