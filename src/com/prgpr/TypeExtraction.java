@@ -27,6 +27,10 @@ public class TypeExtraction {
     public static Set<Page> discoverTypes(Page page) {
 
         Set<Page> categories = new LinkedHashSet<>();
+
+        // filtering the lists, so that only Persons, Cities and Monuments are left and not lists of them
+        if (page.getTitle().contains("Liste") || page.getTitle().contains("Stammliste")) {return categories; }
+
         categories = page.getAllRelatedCategories();
 
         Set<Page> entityTypes = categories
@@ -35,6 +39,8 @@ public class TypeExtraction {
                                         || cat.getTitle().equals("Ort")
                                         || cat.getTitle().equals("Denkmal"))
                  .collect(Collectors.toSet());
+
+
 
         // Logging the type of a Page
         entityTypes.forEach(cat ->
