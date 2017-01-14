@@ -119,7 +119,7 @@ public class SimpleTransactionManager implements TransactionManager {
     }
 
     @Override
-    public void shutdown(){
+    public void closeOpenTransactions(){
         if(queue.isEmpty()){
             return;
         }

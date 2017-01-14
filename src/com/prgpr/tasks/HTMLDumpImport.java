@@ -1,6 +1,11 @@
 package com.prgpr.tasks;
 
+import com.prgpr.PageFactory;
+import com.prgpr.PageProducer;
+import com.prgpr.data.Page;
 import com.prgpr.framework.tasks.Task;
+import com.prgpr.framework.tasks.TaskContext;
+import com.prgpr.helpers.ProducerLogger;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 
@@ -29,12 +34,13 @@ public class HTMLDumpImport extends Task {
 
     @Override
     public void run() {
-        log.info("test");
-        /*
-        PageProducer pageProducer = new PageProducer(arguments[1].get());
+        PageFactory.setDatabase(this.context.getDb());
+
+        PageProducer pageProducer = new PageProducer(this.context.getArgs()[0].get());
 
         ProducerLogger<Page> producerLogger = new ProducerLogger<>(true);
         producerLogger.subscribeTo(pageProducer);
-        */
+
+        pageProducer.run();
     }
 }

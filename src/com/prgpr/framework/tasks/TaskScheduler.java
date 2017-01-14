@@ -2,6 +2,11 @@ package com.prgpr.framework.tasks;
 
 import com.prgpr.exceptions.CircularDependencyException;
 import com.prgpr.exceptions.MissingDependencyException;
+import com.prgpr.framework.command.CommandArgument;
+import com.prgpr.framework.database.EmbeddedDatabase;
+import com.prgpr.tasks.HTMLDumpImport;
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
 
 import java.util.*;
 
@@ -9,8 +14,25 @@ import java.util.*;
  * Created by kito on 13/01/17.
  */
 public class TaskScheduler implements Runnable {
+    private static final Logger log = LogManager.getFormatterLogger(TaskScheduler.class);
     private Set<Task> registeredTasks = new LinkedHashSet<>();
     private HashMap<String, Set<Task>> productsArray = new HashMap<>();
+    private CommandArgument[] arguments;
+
+    private static EmbeddedDatabase db;
+
+    public TaskScheduler(CommandArgument[] arguments){
+        this.arguments = arguments;
+    }
+
+    /**
+     * A function to set the database as the used by this instance.
+     *
+     * @param graphDb An embedded database which is used at runtime
+     */
+    public static void setDatabase(EmbeddedDatabase graphDb){
+        TaskScheduler.db = graphDb;
+    }
 
     /**
      * Adds a new command to the set of known tasks.
@@ -44,16 +66,21 @@ public class TaskScheduler implements Runnable {
     }
 
     public void run(){
-        Task[] sortedTasks = new Task[0];
+        Task[] sortedTasks;
 
         try {
             sortedTasks = getTopologicallySortedTasks();
-        } catch (CircularDependencyException | MissingDependencyException e) {
-            e.printStackTrace();
-        }
 
-        Arrays.stream(sortedTasks)
-                .forEach(Task::run);
+            Arrays.stream(sortedTasks)
+                    .forEach((task) -> {
+                        log.info(task.getClass().getSimpleName());
+                        task.setContext(new TaskContext(db, arguments));
+                        task.run();
+                        db.getTransactionManager().closeOpenTransactions();
+                    });
+        } catch (CircularDependencyException | MissingDependencyException e) {
+            log.catching(e);
+        }
     }
 
     private Task[] getTopologicallySortedTasks() {
@@ -81,7 +108,6 @@ public class TaskScheduler implements Runnable {
         );
 
         Deque<Task> sortedTasks = new ArrayDeque<>();
-
         Set<Task> seenTasks = new HashSet<>();
 
         while (seenTasks.size() < registeredTasks.size()){

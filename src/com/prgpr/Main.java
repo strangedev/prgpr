@@ -8,9 +8,15 @@ import com.prgpr.exceptions.InvalidNumberOfArguments;
 import com.prgpr.framework.command.Command;
 import com.prgpr.framework.command.CommandBroker;
 import com.prgpr.framework.command.CommandBrokerFactory;
+import com.prgpr.framework.database.EmbeddedDatabase;
+import com.prgpr.framework.database.EmbeddedDatabaseFactory;
+import com.prgpr.framework.tasks.TaskScheduler;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
+import org.neo4j.io.fs.FileUtils;
 
+import java.io.File;
+import java.io.IOException;
 import java.util.Arrays;
 
 /**
@@ -45,10 +51,14 @@ public class Main {
                 throw new InvalidNumberOfArguments();
 
             dbdir.set(args[0]);
-        } catch (InvalidArgument | InvalidNumberOfArguments e) {
+            FileUtils.deleteRecursively(new File(dbdir.get()));
+        } catch (InvalidArgument | InvalidNumberOfArguments | IOException e) {
             log.catching(e);
             System.exit(1);
         }
+
+        EmbeddedDatabase graphDb = EmbeddedDatabaseFactory.newEmbeddedDatabase(dbdir.get());
+        TaskScheduler.setDatabase(graphDb);
 
         CommandBroker commandBroker = CommandBrokerFactory.getCommandBroker();
 

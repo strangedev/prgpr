@@ -13,6 +13,8 @@ import com.prgpr.framework.database.EmbeddedDatabaseFactory;
 import com.prgpr.framework.tasks.Task;
 import com.prgpr.framework.tasks.TaskScheduler;
 import com.prgpr.helpers.Benchmark;
+import com.prgpr.tasks.ArticleLinkExtraction;
+import com.prgpr.tasks.CategoryLinkExtraction;
 import com.prgpr.tasks.HTMLDumpImport;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
@@ -60,9 +62,11 @@ public class CreateDBCommand extends Command{
 
     @Override
     public void run() {
-        TaskScheduler scheduler = new TaskScheduler();
+        TaskScheduler scheduler = new TaskScheduler(arguments);
         scheduler.register(new Task[]{
-                new HTMLDumpImport()
+                new CategoryLinkExtraction(),
+                new HTMLDumpImport(),
+                new ArticleLinkExtraction()
         });
         scheduler.run();
     }

@@ -58,11 +58,11 @@ public class BatchTransactionManager implements TransactionManager {
     }
 
     @Override
-    public void shutdown(){
+    public void closeOpenTransactions(){
         if(accumulator > 0) {
             success();
         }
-        tm.shutdown();
+        tm.closeOpenTransactions();
     }
 
     @Override

@@ -16,12 +16,9 @@ import org.neo4j.graphdb.index.ReadableIndex;
 import org.neo4j.graphdb.index.UniqueFactory;
 
 import java.io.File;
-import java.util.LinkedHashSet;
 import java.util.Map;
-import java.util.Set;
 import java.util.concurrent.Callable;
 import java.util.stream.Stream;
-import java.util.stream.Collectors;
 
 /**
  * Created by kito on 21.11.16.
@@ -44,23 +41,18 @@ public class Neo4jEmbeddedDatabase implements EmbeddedDatabase {
         this.graphDb = db;
     }
 
-    private static void registerShutdownHook(final GraphDatabaseService graphDb, final TransactionManager tm)
+    private static void registerShutdownHook(Runnable runnable)
     {
-        // Registers a shutdown hook for the Neo4j instance so that it
+        // Registers a closeOpenTransactions hook for the Neo4j instance so that it
         // shuts down nicely when the VM exits (even if you "Ctrl-C" the
         // running application).
 
-        Runtime.getRuntime().addShutdownHook( new Thread()
-        {
-            @Override
-            public void run()
-            {
-                log.info("Shutdown hook triggered, closing database connection");
-                tm.shutdown();
-                graphDb.shutdown();
-            }
-        } );
-        log.info("Registered jvm shutdown hook for database connection");
+        Runtime.getRuntime().addShutdownHook(new Thread(() -> {
+            log.info("Shutdown hook triggered, closing database connection");
+            runnable.run();
+        }));
+
+        log.info("Registered jvm closeOpenTransactions hook for database connection");
     }
 
     public Neo4jEmbeddedDatabase(String path) {
@@ -69,7 +61,7 @@ public class Neo4jEmbeddedDatabase implements EmbeddedDatabase {
         this.traversalProvider = new Neo4jTraversalProvider(graphDb);
         this.transactionFactory = new Neo4jTransactionFactory(graphDb);
         this.transactionManager = new SimpleTransactionManager(this.transactionFactory);
-        registerShutdownHook(graphDb, transactionManager);
+        registerShutdownHook(this::shutdown);
         log.info("Database connection established.");
     }
 
@@ -92,6 +84,12 @@ public class Neo4jEmbeddedDatabase implements EmbeddedDatabase {
     @Override
     public void setTransactionManager(TransactionManager tm) {
         this.transactionManager = tm;
+    }
+
+    @Override
+    public void shutdown() {
+        transactionManager.closeOpenTransactions();
+        graphDb.shutdown();
     }
 
     @Override

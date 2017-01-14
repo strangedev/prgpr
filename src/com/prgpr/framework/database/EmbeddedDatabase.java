@@ -95,4 +95,6 @@ public interface EmbeddedDatabase {
      * @param tm the transaction manager to be used
      */
     void setTransactionManager(TransactionManager tm);
+
+    void shutdown();
 }

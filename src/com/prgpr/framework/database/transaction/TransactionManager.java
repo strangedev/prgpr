@@ -37,7 +37,7 @@ public interface TransactionManager {
     /**
      * Close all open transactions
      */
-    void shutdown();
+    void closeOpenTransactions();
 
     /**
      * @return a boolean stating if we are currently in a transaction.
