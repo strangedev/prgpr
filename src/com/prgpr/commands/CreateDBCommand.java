@@ -65,8 +65,8 @@ public class CreateDBCommand extends Command{
         TaskScheduler scheduler = new TaskScheduler(arguments);
         scheduler.register(new Task[]{
                 new CategoryLinkExtraction(),
+                new ArticleLinkExtraction(),
                 new HTMLDumpImport(),
-                new ArticleLinkExtraction()
         });
         scheduler.run();
     }

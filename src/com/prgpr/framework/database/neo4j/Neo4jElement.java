@@ -42,7 +42,10 @@ public class Neo4jElement implements Element {
 
     @Override
     public void addLabel(com.prgpr.framework.database.Label label){
-        db.transaction(()-> node.addLabel(org.neo4j.graphdb.Label.label(label.name())));
+        db.transaction(() -> {
+            node.addLabel(org.neo4j.graphdb.Label.label(label.name()));
+            return null;
+        });
     }
 
     @Override
@@ -59,12 +62,18 @@ public class Neo4jElement implements Element {
 
     @Override
     public <E> void setProperty(Property property, E val){
-        db.transaction(() -> node.setProperty(property.name(), val));
+        db.transaction(() -> {
+            node.setProperty(property.name(), val);
+            return null;
+        });
     }
 
     @Override
     public void update(Callback<Element> callback) {
-        db.transaction(()-> callback.call(this));
+        db.transaction(() -> {
+            callback.call(this);
+            return null;
+        });
     }
 
     @Override

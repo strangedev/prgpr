@@ -137,7 +137,11 @@ public abstract class EntityBase {
     protected String insertSourceLink() {
         node.getDatabase().transaction(() -> {
             Element elem = node.getDatabase().getNodeFromIndex("Pages", getSource().getHashCode());
-            if(elem != null) { node.createUniqueRelationshipTo(elem, RelationshipTypes.sourceLink); }
+            if(elem != null) {
+                node.createUniqueRelationshipTo(elem, RelationshipTypes.sourceLink);
+            }
+
+            return null;
         });
 
         return getSource().getTitle();
@@ -170,6 +174,8 @@ public abstract class EntityBase {
                     related.add(page.getTitle());
                 }
             }
+
+            return null;
         });
 
         return related.stream();

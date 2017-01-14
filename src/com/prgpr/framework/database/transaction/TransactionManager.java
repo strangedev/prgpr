@@ -19,12 +19,6 @@ public interface TransactionManager {
     <T> T execute(Callable<T> callable);
 
     /**
-     * Run code block in the current transaction
-     * @param runnable the code block to be executed
-     */
-    void execute(Runnable runnable);
-
-    /**
      * The transaction was successful
      */
     void success();
@@ -40,7 +34,13 @@ public interface TransactionManager {
     void closeOpenTransactions();
 
     /**
-     * @return a boolean stating if we are currently in a transaction.
+     * @return the current batch size as int
      */
-    boolean isInTransaction();
+    int getBatchSize();
+
+    /**
+     * Set the current batch size. A value of -1 disables batching
+     * @param batchSize the transaction batch size
+     */
+    void setBatchSize(int batchSize);
 }

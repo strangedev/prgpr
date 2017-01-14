@@ -4,6 +4,7 @@ import com.prgpr.exceptions.CircularDependencyException;
 import com.prgpr.exceptions.MissingDependencyException;
 import com.prgpr.framework.command.CommandArgument;
 import com.prgpr.framework.database.EmbeddedDatabase;
+import com.prgpr.helpers.Benchmark;
 import com.prgpr.tasks.HTMLDumpImport;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
@@ -73,10 +74,12 @@ public class TaskScheduler implements Runnable {
 
             Arrays.stream(sortedTasks)
                     .forEach((task) -> {
+                        String taskName = task.getClass().getSimpleName();
                         log.info(task.getClass().getSimpleName());
                         task.setContext(new TaskContext(db, arguments));
-                        task.run();
+                        long timeImport = Benchmark.run(task);
                         db.getTransactionManager().closeOpenTransactions();
+                        log.info("(" + taskName + ") Time taken: " + (timeImport / 1000) + " seconds");
                     });
         } catch (CircularDependencyException | MissingDependencyException e) {
             log.catching(e);

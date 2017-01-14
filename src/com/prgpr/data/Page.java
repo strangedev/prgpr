@@ -288,6 +288,8 @@ public class Page {
 
                 related.add(title);
             }
+
+            return null;
         });
 
         return related.stream();

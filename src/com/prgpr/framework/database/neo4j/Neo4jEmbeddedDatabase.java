@@ -3,7 +3,7 @@ package com.prgpr.framework.database.neo4j;
 import com.prgpr.data.Page;
 import com.prgpr.exceptions.NotInTransactionException;
 import com.prgpr.framework.database.*;
-import com.prgpr.framework.database.transaction.SimpleTransactionManager;
+import com.prgpr.framework.database.transaction.DefaultTransactionManager;
 import com.prgpr.framework.database.transaction.TransactionFactory;
 import com.prgpr.framework.database.transaction.TransactionManager;
 import org.apache.logging.log4j.LogManager;
@@ -60,7 +60,7 @@ public class Neo4jEmbeddedDatabase implements EmbeddedDatabase {
         this.graphDb = new GraphDatabaseFactory().newEmbeddedDatabase(dbf);
         this.traversalProvider = new Neo4jTraversalProvider(graphDb);
         this.transactionFactory = new Neo4jTransactionFactory(graphDb);
-        this.transactionManager = new SimpleTransactionManager(this.transactionFactory);
+        this.transactionManager = new DefaultTransactionManager(this.transactionFactory);
         registerShutdownHook(this::shutdown);
         log.info("Database connection established.");
     }
@@ -90,12 +90,6 @@ public class Neo4jEmbeddedDatabase implements EmbeddedDatabase {
     public void shutdown() {
         transactionManager.closeOpenTransactions();
         graphDb.shutdown();
-    }
-
-    @Override
-    public void transaction(Runnable runnable)
-    {
-        transactionManager.execute(runnable);
     }
 
     @Override

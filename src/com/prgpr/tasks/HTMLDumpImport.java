@@ -2,10 +2,10 @@ package com.prgpr.tasks;
 
 import com.prgpr.PageFactory;
 import com.prgpr.PageProducer;
-import com.prgpr.data.Page;
+import com.prgpr.framework.database.EmbeddedDatabase;
+import com.prgpr.framework.database.transaction.DefaultTransactionManager;
 import com.prgpr.framework.tasks.Task;
-import com.prgpr.framework.tasks.TaskContext;
-import com.prgpr.helpers.ProducerLogger;
+import com.prgpr.helpers.Benchmark;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 
@@ -14,6 +14,7 @@ import org.apache.logging.log4j.Logger;
  */
 public class HTMLDumpImport extends Task {
     private static final Logger log = LogManager.getFormatterLogger(HTMLDumpImport.class);
+    private static final int batchSize = 1000;  // Specifies the batch size for batched transactions
 
     @Override
     public String getDescription() {
@@ -34,12 +35,13 @@ public class HTMLDumpImport extends Task {
 
     @Override
     public void run() {
-        PageFactory.setDatabase(this.context.getDb());
+        EmbeddedDatabase db = this.context.getDb();
+
+        PageFactory.setDatabase(db);
+
+        db.getTransactionManager().setBatchSize(batchSize);
 
         PageProducer pageProducer = new PageProducer(this.context.getArgs()[0].get());
-
-        ProducerLogger<Page> producerLogger = new ProducerLogger<>(true);
-        producerLogger.subscribeTo(pageProducer);
 
         pageProducer.run();
     }
