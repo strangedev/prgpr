@@ -166,9 +166,9 @@ public abstract class EntityBase {
                     }
 
                     node.createUniqueRelationshipTo(elem, RelationshipTypes.entityLink);
-                }
 
-                related.add(page.getTitle());
+                    related.add(page.getTitle());
+                }
             }
         });
 
