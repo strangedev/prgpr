@@ -63,17 +63,17 @@ public class Main {
         CommandBroker commandBroker = CommandBrokerFactory.getCommandBroker();
 
         //@TODO: fix help
-        Command help = new HelpCommand();
+        //Command help = new HelpCommand();
 
         // Initializes the possible commands which can be executed.
         commandBroker.register(new Command[] {
-                help,
+                //help,
                 new CreateDBCommand(),
         });
 
         try {
             args = Arrays.copyOfRange(args, 1, args.length);
-            commandBroker.setDefaultCommand(help.getName());
+            //commandBroker.setDefaultCommand(help.getName());
             commandBroker.process(args);
         } catch (CommandNotFound | InvalidNumberOfArguments | InvalidArgument e) {
             log.catching(e);

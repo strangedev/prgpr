@@ -72,15 +72,22 @@ public class TaskScheduler implements Runnable {
         try {
             sortedTasks = getTopologicallySortedTasks();
 
+            final long[] totalTimeTaken = {0};
             Arrays.stream(sortedTasks)
                     .forEach((task) -> {
                         String taskName = task.getClass().getSimpleName();
                         log.info(task.getClass().getSimpleName());
+
                         task.setContext(new TaskContext(db, arguments));
+
                         long timeImport = Benchmark.run(task);
                         db.getTransactionManager().closeOpenTransactions();
+
+                        totalTimeTaken[0] += timeImport;
                         log.info("(" + taskName + ") Time taken: " + (timeImport / 1000) + " seconds");
                     });
+
+            log.info("Total time taken: " + (totalTimeTaken[0] / 1000) + " seconds");
         } catch (CircularDependencyException | MissingDependencyException e) {
             log.catching(e);
         }

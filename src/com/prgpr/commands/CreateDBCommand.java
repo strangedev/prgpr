@@ -15,6 +15,7 @@ import com.prgpr.framework.tasks.TaskScheduler;
 import com.prgpr.helpers.Benchmark;
 import com.prgpr.tasks.ArticleLinkExtraction;
 import com.prgpr.tasks.CategoryLinkExtraction;
+import com.prgpr.tasks.EntityBaseExtraction;
 import com.prgpr.tasks.HTMLDumpImport;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
@@ -65,6 +66,7 @@ public class CreateDBCommand extends Command{
         TaskScheduler scheduler = new TaskScheduler(arguments);
         scheduler.register(new Task[]{
                 new CategoryLinkExtraction(),
+                new EntityBaseExtraction(),
                 new ArticleLinkExtraction(),
                 new HTMLDumpImport(),
         });

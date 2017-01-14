@@ -42,6 +42,7 @@ public class TypeExtraction {
 
 
 
+        /*
         // Logging the type of a Page
         entityTypes.forEach(cat ->
         {   switch(cat.getTitle()) {
@@ -58,6 +59,7 @@ public class TypeExtraction {
                     break;
             }
         });
+        */
 
         return entityTypes;
 
