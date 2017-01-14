@@ -78,6 +78,10 @@ public class CommandBroker {
             Command command = getCommandByName(args[0]);
             command.execute(Arrays.copyOfRange(args, 1, args.length));
         } catch (CommandNotFound | InvalidNumberOfArguments | InvalidArgument e){
+            if(defaultCommand == null){
+                throw e;
+            }
+
             args = new String[] {
                     Arrays.stream(args).reduce((s1, s2) -> s1 + " " + s2).orElse(""),
                     e.getClass().getSimpleName(),
@@ -97,7 +101,7 @@ public class CommandBroker {
      */
     private void executeDefaultCommand(String[] args) throws InvalidNumberOfArguments, CommandNotFound, InvalidArgument {
         if(defaultCommand == null){
-            throw new CommandNotFound();
+            throw new CommandNotFound("default");
         }
 
         defaultCommand.execute(args);
@@ -114,7 +118,7 @@ public class CommandBroker {
         Command command = commandMap.get(name.toLowerCase());  // Use only lowercase names.
 
         if(command == null){
-            throw new CommandNotFound();
+            throw new CommandNotFound(name);
         }
 
         return command;
