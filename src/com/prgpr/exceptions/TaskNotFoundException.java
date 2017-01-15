@@ -1,23 +1,19 @@
 package com.prgpr.exceptions;
 
 /**
- *
- * An Exception thrown when an unknown command was requested from CommandBroker
- *
- * @author Kyle Rinfreschi
+ * Created by kito on 15/01/17.
  */
-public class CommandNotFound extends RuntimeException
-{
+public class TaskNotFoundException extends RuntimeException {
     /**
      * A function to trow an exception.
      */
-    public CommandNotFound(){}
+    public TaskNotFoundException(){}
 
     /**
      * A function to trow an exception with a message.
      * @param message the message to be displayed
      */
-    public CommandNotFound(String message)
+    public TaskNotFoundException(String message)
     {
         super(message);
     }

@@ -47,8 +47,6 @@ public class EntityBaseExtraction extends Task {
     @SuppressWarnings("Duplicates")
     @Override
     public void run() {
-        EmbeddedDatabase db = this.context.getDb();
-
         PageFinder.setDatabase(db);
 
         db.getTransactionManager().setBatchSize(batchSize);

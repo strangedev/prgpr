@@ -69,6 +69,7 @@ public class Main {
         commandBroker.register(new Command[] {
                 //help,
                 new CreateDBCommand(),
+                new ExecuteTasksCommand(),
         });
 
         try {

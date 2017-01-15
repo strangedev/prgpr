@@ -7,7 +7,7 @@ package com.prgpr.exceptions;
  * @author Kyle Rinfreschi
  */
 
-public class InvalidNumberOfArguments extends Exception
+public class InvalidNumberOfArguments extends RuntimeException
 {
     /**
      * A function to trow an exception.

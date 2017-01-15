@@ -7,5 +7,5 @@ package com.prgpr.exceptions;
  *
  * @author Kyle Rinfreschi
  */
-public class NotInTransactionException extends Exception {
+public class NotInTransactionException extends RuntimeException {
 }

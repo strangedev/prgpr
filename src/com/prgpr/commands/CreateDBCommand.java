@@ -32,7 +32,6 @@ public class CreateDBCommand extends Command{
 
     private static final Logger log = LogManager.getFormatterLogger(CreateDBCommand.class);
 
-
     protected final CommandArgument[] arguments = new CommandArgument[]{
             new HtmlInputFileArgument()
     };
@@ -63,13 +62,19 @@ public class CreateDBCommand extends Command{
 
     @Override
     public void run() {
-        TaskScheduler scheduler = new TaskScheduler(arguments);
+        TaskScheduler scheduler = new TaskScheduler();
         scheduler.register(new Task[]{
                 new CategoryLinkExtraction(),
                 new EntityBaseExtraction(),
                 new ArticleLinkExtraction(),
-                new HTMLDumpImport(),
         });
+
+        HTMLDumpImport htmlDumpImport = new HTMLDumpImport();
+
+        htmlDumpImport.setArguments(new String[] { arguments[0].get() });
+
+        scheduler.register(htmlDumpImport);
+
         scheduler.run();
     }
 

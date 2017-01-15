@@ -38,8 +38,6 @@ public class ArticleLinkExtraction extends Task {
     @SuppressWarnings("Duplicates")
     @Override
     public void run() {
-        EmbeddedDatabase db = this.context.getDb();
-
         PageFactory.setDatabase(db);
 
         db.getTransactionManager().setBatchSize(batchSize);

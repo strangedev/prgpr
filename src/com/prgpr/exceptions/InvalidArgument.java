@@ -6,7 +6,7 @@ package com.prgpr.exceptions;
  *
  * @author Kyle Rinfreschi
  */
-public class InvalidArgument extends Exception
+public class InvalidArgument extends RuntimeException
 {
     /**
      * A function to trow an exception.
