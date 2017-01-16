@@ -10,6 +10,8 @@ import com.prgpr.framework.tasks.Task;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 
+import java.util.List;
+
 /**
  * Created by kito on 13/01/17.
  */
@@ -39,11 +41,11 @@ public class HTMLDumpImport extends Task {
     }
 
     @Override
-    protected void handleArguments(String[] args) throws InvalidNumberOfArguments, InvalidArgument {
-        if(args.length != 1)
+    protected void handleArguments(List<String> args) throws InvalidNumberOfArguments, InvalidArgument {
+        if(args.size() != 1)
             throw new InvalidNumberOfArguments();
 
-        arguments[0].set(args[0]);
+        arguments[0].set(args.get(0));
     }
 
     @Override

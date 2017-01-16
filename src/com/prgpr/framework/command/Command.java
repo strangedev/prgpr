@@ -44,13 +44,16 @@ public abstract class Command implements Runnable {
         return Arrays.asList(arguments);
     }
 
-    /**
-     * @return A list of human readable descriptions for each required argument. Used to display help messages.
-     */
-    public String getArgumentsAsString(){
-        return getArgumentsList().stream()
-                .map((arg) -> String.format("<%s>", arg.getName()))
+    @Override
+    public String toString() {
+        String argsStr = getArgumentsList().stream()
+                .map(CommandArgument::toString)
                 .reduce((a1, a2) -> String.format("%s %s", a1, a2)).orElse(null);
+
+        if(argsStr == null)
+            return getName();
+
+        return getName() + " " + argsStr;
     }
 
     /**
@@ -63,7 +66,7 @@ public abstract class Command implements Runnable {
      * @throws InvalidNumberOfArguments When an incorrect number of arguments was given.
      * @throws InvalidArgument When an incorrect type of arguments was given.
      */
-    public void handleArguments(String[] args) throws InvalidNumberOfArguments, InvalidArgument {}
+    public void handleArguments(List<String> args) throws InvalidNumberOfArguments, InvalidArgument {}
 
     /**
      * Method used to run the command.
@@ -75,7 +78,7 @@ public abstract class Command implements Runnable {
      * @throws InvalidNumberOfArguments When an incorrect number of arguments was given.
      * @throws InvalidArgument When an incorrect type of arguments was given.
      */
-    public void execute(String[] args) throws InvalidNumberOfArguments, InvalidArgument {
+    public void execute(List<String> args) throws InvalidNumberOfArguments, InvalidArgument {
         handleArguments(args);
         run();
     }
@@ -93,7 +96,7 @@ public abstract class Command implements Runnable {
      * @throws InvalidArgument When an incorrect type of arguments was given.
      */
     public void execute() throws InvalidNumberOfArguments, InvalidArgument {
-        handleArguments(new String[]{});
+        handleArguments(Collections.emptyList());
         run();
     }
 

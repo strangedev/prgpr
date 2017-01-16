@@ -44,37 +44,20 @@ public class Main {
             WikiXtractor <Database-Directory> queryentity <Artikel-Title>
         */
 
-        DatabaseDirectoryArgument dbdir = new DatabaseDirectoryArgument();
-
-        try {
-            if(args.length < 1)
-                throw new InvalidNumberOfArguments();
-
-            dbdir.set(args[0]);
-            FileUtils.deleteRecursively(new File(dbdir.get()));
-        } catch (InvalidArgument | InvalidNumberOfArguments | IOException e) {
-            log.catching(e);
-            System.exit(1);
-        }
-
-        EmbeddedDatabase graphDb = EmbeddedDatabaseFactory.newEmbeddedDatabase(dbdir.get());
-        TaskScheduler.setDatabase(graphDb);
-
         CommandBroker commandBroker = CommandBrokerFactory.getCommandBroker();
 
-        //@TODO: fix help
-        //Command help = new HelpCommand();
+        Command help = new HelpCommand();
 
         // Initializes the possible commands which can be executed.
         commandBroker.register(new Command[] {
-                //help,
+                help,
+                new VersionCommand(),
                 new CreateDBCommand(),
                 new ExecuteTasksCommand(),
         });
 
         try {
-            args = Arrays.copyOfRange(args, 1, args.length);
-            //commandBroker.setDefaultCommand(help.getName());
+            commandBroker.setDefaultCommand(help.getName());
             commandBroker.process(args);
         } catch (CommandNotFound | InvalidNumberOfArguments | InvalidArgument e) {
             log.catching(e);

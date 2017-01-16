@@ -14,6 +14,7 @@ import org.neo4j.graphdb.GraphDatabaseService;
 import org.neo4j.graphdb.factory.GraphDatabaseFactory;
 
 import java.io.File;
+import java.util.List;
 
 /**
  * Created by strange on 11/25/16.
@@ -43,12 +44,12 @@ public class TestDBCommand extends Command{
     }
 
     @Override
-    public void handleArguments(String[] args) throws InvalidNumberOfArguments, InvalidArgument {
-        if (args.length != 1) {
+    public void handleArguments(List<String> args) throws InvalidNumberOfArguments, InvalidArgument {
+        if (args.size() != 1) {
             throw new InvalidNumberOfArguments();
         }
 
-        arguments[0].set(args[0]);
+        arguments[0].set(args.get(0));
     }
 
     @Override
