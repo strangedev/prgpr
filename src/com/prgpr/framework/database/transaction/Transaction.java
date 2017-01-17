@@ -14,7 +14,7 @@ public interface Transaction  extends AutoCloseable {
     void success();
 
     /**
-     * The transaction was not successful
+     * The transaction was not failureful
      */
     void failure();
 }

@@ -1,12 +1,11 @@
 package com.prgpr.data;
 
-import com.prgpr.framework.database.Element;
-import com.prgpr.framework.database.EmbeddedDatabase;
-import com.prgpr.framework.database.Property;
-import com.prgpr.framework.database.SearchProvider;
+import com.prgpr.Metadata.CityDataExtractor;
+import com.prgpr.framework.database.*;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 
+import java.util.Set;
 import java.util.stream.Stream;
 
 /**
@@ -20,10 +19,18 @@ public class City extends EntityBase {
     private static final Logger log = LogManager.getFormatterLogger(City.class);
     private static final String indexName = "Cities";
 
-    public enum CityAttribute implements Property { }
+    public enum CityAttribute implements Property {
+        NAME,
+        COUNTRY,
+        POPULATION,
+        EARLIEST_MENTION
+    }
 
     public City(Element node) {
         this.node = node;
+        Set<Element> sources = SearchProvider.findImmediateOutgoing(node, RelationshipTypes.sourceLink);
+        assert !sources.isEmpty();
+        this.source = (Element) sources.toArray()[0];
     }
 
     public City(EmbeddedDatabase db, Page page) {
@@ -52,6 +59,31 @@ public class City extends EntityBase {
 
         if (getHashCode() != city.getHashCode()) return false;
         return getTitle() != null ? getTitle().equals(city.getTitle()) : city.getTitle() == null;
+    }
+
+    public void extractMetadata() {
+        this.node.setProperty(CityAttribute.NAME, CityDataExtractor.extractName(this));
+
+        if (this.node.getProperty(EntityAttribute.entityId) == null) return;  // just give up
+        this.node.setProperty(CityAttribute.COUNTRY, CityDataExtractor.extractCountry(this));
+        this.node.setProperty(CityAttribute.POPULATION, CityDataExtractor.extractPopulation(this));
+        this.node.setProperty(CityAttribute.EARLIEST_MENTION, CityDataExtractor.extractEarliestMention(this));
+    }
+
+    public String getName() {
+        return (String)this.node.getProperty(CityAttribute.NAME);
+    }
+
+    public String getCountry() {
+        return (String)this.node.getProperty(CityAttribute.COUNTRY);
+    }
+
+    public String getPopulation() {
+        return (String)this.node.getProperty(CityAttribute.POPULATION);
+    }
+
+    public String getEarliestMention() {
+        return (String)this.node.getProperty(CityAttribute.EARLIEST_MENTION);
     }
 
 }
