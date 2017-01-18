@@ -74,6 +74,7 @@ public class EntityBaseExtraction extends Task {
     private void insertEntityBaseLinks(Set<EntityBase> toAdd) {
         for (EntityBase adding : toAdd) {
             adding.insertEntityLinks();
+            adding.insertEntityId();
         }
     }
 }

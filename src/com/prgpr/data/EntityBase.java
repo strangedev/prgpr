@@ -62,7 +62,7 @@ public abstract class EntityBase {
      * @param title of the page
      * @return the hash
      */
-    protected static int hashCode(String title, int namespaceID) {
+    public static int hashCode(String title, int namespaceID) {
         byte[] titleHash;
         try {
             final MessageDigest messageDigest = MessageDigest.getInstance(stringHashFunction);
