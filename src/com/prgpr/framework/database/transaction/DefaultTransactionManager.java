@@ -7,7 +7,7 @@ import org.apache.logging.log4j.Logger;
 import java.util.concurrent.Callable;
 
 /**
- * Created by kito on 14/01/17.
+ * @author Kyle Rinfreschi
  */
 public class DefaultTransactionManager implements TransactionManager {
 

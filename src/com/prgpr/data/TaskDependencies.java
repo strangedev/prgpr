@@ -1,7 +1,7 @@
 package com.prgpr.data;
 
 /**
- * Created by kito on 18/01/17.
+ * @author Kyle Rinfreschi
  */
 public enum TaskDependencies {
     Pages,

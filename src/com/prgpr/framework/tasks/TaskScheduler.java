@@ -13,7 +13,7 @@ import org.apache.logging.log4j.Logger;
 import java.util.*;
 
 /**
- * Created by kito on 13/01/17.
+ * @author Kyle Rinfreschi
  */
 public class TaskScheduler implements Runnable {
     private static final Logger log = LogManager.getFormatterLogger(TaskScheduler.class);
@@ -62,6 +62,10 @@ public class TaskScheduler implements Runnable {
         Arrays.stream(tasks).forEach(this::register);
     }
 
+    /**
+     * Try and sort all registered tasks in order to fulfill all their dependencies
+     * during execution and execute them.
+     */
     public void run() {
         Task[] sortedTasks;
 
@@ -73,9 +77,14 @@ public class TaskScheduler implements Runnable {
         }
     }
 
-    public void executeTasks(Task[] sortedTasks) {
+    /**
+     * Execute a list of tasks.
+     *
+     * @param tasks a list of tasks to execute.
+     */
+    public void executeTasks(Task[] tasks) {
         final long[] totalTimeTaken = {0};
-        Arrays.stream(sortedTasks)
+        Arrays.stream(tasks)
                 .forEach((task) -> {
                     String taskName = task.getClass().getSimpleName();
                     log.info(task.getClass().getSimpleName());
@@ -92,6 +101,12 @@ public class TaskScheduler implements Runnable {
         log.info("Total time taken: " + (totalTimeTaken[0] / 1000) + " seconds");
     }
 
+    /**
+     * Sort all registered tasks by their dependencies using topological sorting.
+     * https://en.wikipedia.org/wiki/Topological_sorting
+     *
+     * @return a list of sorted tasks
+     */
     private Task[] getTopologicallySortedTasks() {
         // initialization of graph representation
         HashMap<Task, Set<Task>> parentArray = new HashMap<>();

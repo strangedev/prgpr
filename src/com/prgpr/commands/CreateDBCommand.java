@@ -25,7 +25,7 @@ import java.util.Collections;
 import java.util.List;
 
 /**
- * Created by lissie on 1/10/17.
+ * @author Kyle Rinfreschi
  */
 public class CreateDBCommand extends Command{
 
@@ -81,7 +81,7 @@ public class CreateDBCommand extends Command{
 
         HTMLDumpImport htmlDumpImport = new HTMLDumpImport();
 
-        htmlDumpImport.setArguments(Collections.singletonList(arguments[1].get()));
+        htmlDumpImport.setArguments(arguments[1].get());
 
         scheduler.register(htmlDumpImport);
 

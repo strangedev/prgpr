@@ -2,14 +2,14 @@ package com.prgpr.exceptions;
 
 /**
  *
- * An Exception thrown when an invalid argument was passed to a command
+ * An Exception thrown when an invalid argument was passed to a command.
  *
  * @author Kyle Rinfreschi
  */
 public class InvalidArgument extends RuntimeException
 {
     /**
-     * A function to trow an exception.
+     * A function to throw an exception.
      */
     public InvalidArgument(){}
 

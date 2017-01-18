@@ -13,7 +13,7 @@ import java.util.Set;
 import static com.prgpr.PageFinder.findAllByNamespace;
 
 /**
- * Created by kito on 13/01/17.
+ * @author Kyle Rinfreschi
  */
 public class EntityBaseExtraction extends Task {
     private static final Logger log = LogManager.getFormatterLogger(EntityBaseExtraction.class);

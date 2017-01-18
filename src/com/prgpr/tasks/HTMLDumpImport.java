@@ -14,7 +14,7 @@ import org.apache.logging.log4j.Logger;
 import java.util.List;
 
 /**
- * Created by kito on 13/01/17.
+ * @author Kyle Rinfreschi
  */
 public class HTMLDumpImport extends Task {
     private static final Logger log = LogManager.getFormatterLogger(HTMLDumpImport.class);

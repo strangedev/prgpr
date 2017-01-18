@@ -31,7 +31,7 @@ import java.util.stream.Collectors;
 import java.util.stream.Stream;
 
 /**
- * Created by lissie on 1/10/17.
+ * @author Kyle Rinfreschi
  */
 public class ExecuteTasksCommand extends Command {
 
@@ -118,7 +118,7 @@ public class ExecuteTasksCommand extends Command {
         }
 
         String[] taskArgs = Arrays.copyOfRange(lineParts, 1, lineParts.length);
-        current.setArguments(Arrays.asList(taskArgs));
+        current.setArguments(taskArgs);
         requestedTasks.add(current);
         taskProducts.addAll(Arrays.stream(current.produces()).collect(Collectors.toSet()));
     }

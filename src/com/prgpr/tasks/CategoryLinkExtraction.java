@@ -8,7 +8,7 @@ import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 
 /**
- * Created by kito on 13/01/17.
+ * @author Kyle Rinfreschi
  */
 public class CategoryLinkExtraction extends Task {
     private static final Logger log = LogManager.getFormatterLogger(CategoryLinkExtraction.class);
