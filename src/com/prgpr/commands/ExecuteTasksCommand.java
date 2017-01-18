@@ -59,7 +59,7 @@ public class ExecuteTasksCommand extends Command {
 
     @Override
     public String getDescription() {
-        return "";
+        return "Runs all tasks from a task file.";
     }
 
     @Override

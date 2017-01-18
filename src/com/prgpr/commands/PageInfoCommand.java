@@ -3,7 +3,7 @@ package com.prgpr.commands;
 import com.prgpr.PageFinder;
 import com.prgpr.commands.arguments.DatabaseDirectoryArgument;
 import com.prgpr.commands.arguments.NamespaceIDArgument;
-import com.prgpr.commands.arguments.PageTitleArgument;
+import com.prgpr.commands.arguments.ArticleTitleArgument;
 import com.prgpr.data.Page;
 import com.prgpr.exceptions.InvalidArgument;
 import com.prgpr.exceptions.InvalidNumberOfArguments;
@@ -39,7 +39,7 @@ public class PageInfoCommand extends Command {
     protected static final CommandArgument[] arguments = new CommandArgument[]{
             new DatabaseDirectoryArgument(),
             new NamespaceIDArgument(),
-            new PageTitleArgument()
+            new ArticleTitleArgument()
     };
 
     @Override

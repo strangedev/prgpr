@@ -54,6 +54,8 @@ public class Main {
                 new VersionCommand(),
                 new CreateDBCommand(),
                 new ExecuteTasksCommand(),
+                new QueryEntityCommand(),
+                new TestDBCommand()
         });
 
         try {
