@@ -14,7 +14,7 @@ plugins {
 }
 
 group 'com.prgpr'
-version 'milestone-2'
+version 'milestone-3'
 
 sourceSets {
     main {
