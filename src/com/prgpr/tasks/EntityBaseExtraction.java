@@ -35,7 +35,7 @@ public class EntityBaseExtraction extends Task {
     @Override
     public TaskDependencies[] produces() {
         return new TaskDependencies[]{
-                TaskDependencies.EntityLinks
+                TaskDependencies.Entities
         };
     }
 
@@ -45,6 +45,7 @@ public class EntityBaseExtraction extends Task {
         PageFinder.setDatabase(db);
 
         db.getTransactionManager().setBatchSize(batchSize);
+        int count = 0; // FIXME remove
 
         try {
             Set<Page> pages = findAllByNamespace(0);
@@ -55,15 +56,19 @@ public class EntityBaseExtraction extends Task {
                     switch (entity.getTitle()){
                         case "Person":
                             entities.add(new Person(db, page));
+                            count++; // FIXME remove
                             break;
                         case "Ort":
                             entities.add(new City(db, page));
+                            count++; // FIXME remove
                             break;
                         case "Denkmal":
                             entities.add(new Monument(db, page));
+                            count++; // FIXME remove
                             break;
                     }
                 }
+                if (count > 300) break; // FIXME remove
             }
             insertEntityBaseLinks(entities);
         } catch (Exception e){

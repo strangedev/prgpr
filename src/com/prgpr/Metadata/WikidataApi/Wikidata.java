@@ -39,6 +39,8 @@ public class Wikidata {
      */
     public static String getEntityId(String articleName, int namespaceId) {
 
+        final String NOT_FOUND = "NOT_FOUND";
+
         log.info("Looking up wikidata entity id for " + articleName);
         String result = "";
         List<String> entityIds = new LinkedList<>();
@@ -49,7 +51,7 @@ public class Wikidata {
         } catch (UnsupportedEncodingException e) {
             log.catching(e);
             log.error("The article name contained symbols not encodable by UTF-8. This should be damned near impossible.");
-            return "";
+            return NOT_FOUND;
         }
 
         try {
@@ -57,7 +59,7 @@ public class Wikidata {
         } catch (Exception e) {
             log.catching(e);
             log.error("The HTTP request died.");
-            return "";
+            return NOT_FOUND;
         }
 
         JsonObject jsonRoot = JsonObject.readFrom(result);
@@ -65,11 +67,11 @@ public class Wikidata {
 
         if (entities == null) {
             log.error("Received malformed json.");
-            return "";
+            return NOT_FOUND;
         }
         if (entities.get("-1") != null) {
             log.warn("Entity for article " + articleName + " wasn't found.");
-            return "";
+            return NOT_FOUND;
         }
 
         entities.forEach(entity -> {
@@ -85,7 +87,7 @@ public class Wikidata {
 
         if (entityIds.isEmpty()) {
             log.warn("No matching entity with correct namespace for " +  articleName + " was found.");
-            return "";
+            return NOT_FOUND;
         }
         return entityIds.get(0);
 
@@ -100,7 +102,7 @@ public class Wikidata {
     public static String getPageTitle(String entityId) {
         log.info("Looking up article name for wikidata entity with id " + entityId);
         String result = "";
-        String baseRequest = "https://www.wikidata.org/w/api.php?action=wbsearchentities&language=de&search=";
+        String baseRequest = "https://www.wikidata.org/w/api.php?format=json&action=wbsearchentities&language=de&search=";
         try {
             baseRequest += URLEncoder.encode(entityId, "UTF-8");
         } catch (UnsupportedEncodingException e) {

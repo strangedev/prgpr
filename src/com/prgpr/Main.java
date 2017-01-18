@@ -56,6 +56,7 @@ public class Main {
                 new ExecuteTasksCommand(),
                 new QueryEntityCommand(),
                 new TestDBCommand()
+                new EvaluationCommand()
         });
 
         try {

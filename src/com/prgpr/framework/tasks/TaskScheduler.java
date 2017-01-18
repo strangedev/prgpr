@@ -92,6 +92,7 @@ public class TaskScheduler implements Runnable {
                     task.setDatabase(db);
 
                     long timeImport = Benchmark.run(task);
+                    db.success();
                     db.getTransactionManager().closeOpenTransactions();
 
                     totalTimeTaken[0] += timeImport;

@@ -7,5 +7,8 @@ public enum TaskDependencies {
     Pages,
     ArticleLinks,
     CategoryLinks,
-    EntityLinks
+    Entities,
+    PersonMetadata,
+    CityMetadata,
+    MonumentMetadata
 }

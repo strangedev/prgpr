@@ -25,18 +25,35 @@ public class EntityFinder {
         EntityFinder.db = graphDb;
     }
 
+    /**
+     * Returns all person entities in the DB as a stream.
+     * @return A stream of all known person entities
+     */
     public static Stream<Person> getAllPersons() {
         return SearchProvider.findAnyWithLabel(EntityFinder.db, EntityTypes.Person, null).stream().map(Person::new);
     }
 
+    /**
+     * Returns all city entities in the DB as a stream.
+     * @return A stream of all known city entities
+     */
     public static Stream<City> getAllCities() {
         return SearchProvider.findAnyWithLabel(EntityFinder.db, EntityTypes.City, null).stream().map(City::new);
     }
 
+    /**
+     * Returns all monument entities in the DB as a stream.
+     * @return A stream of all known monument entities
+     */
     public static Stream<Monument> getAllMonuments() {
         return SearchProvider.findAnyWithLabel(EntityFinder.db, EntityTypes.Monument, null).stream().map(Monument::new);
     }
 
+    /**
+     * Returns a Person entity by it's wikidata entity id if found. Returns null otherwise.
+     * @param entityId The wikidata
+     * @return
+     */
     public static Person getPersonByEnitityId(String entityId) {
         Element node = SearchProvider.findNode(EntityFinder.db, EntityTypes.Person, EntityBase.EntityAttribute.entityId, entityId);
         if (node != null) return new Person(node);
@@ -75,7 +92,7 @@ public class EntityFinder {
                 .filter(e -> e instanceof Person)
                 .map(e -> (Person)e)
                 .findFirst()
-                .orElseGet(null);
+                .orElse(null);
     }
 
     public static City getCityByPageTitle(String pageTitle) {
@@ -84,7 +101,7 @@ public class EntityFinder {
                 .filter(e -> e instanceof City)
                 .map(e -> (City)e)
                 .findFirst()
-                .orElseGet(null);
+                .orElse(null);
     }
 
     public static Monument getMonumentByPageTitle(String pageTitle) {
@@ -93,7 +110,7 @@ public class EntityFinder {
                 .filter(e -> e instanceof Monument)
                 .map(e -> (Monument)e)
                 .findFirst()
-                .orElseGet(null);
+                .orElse(null);
     }
 
 }

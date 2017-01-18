@@ -65,7 +65,7 @@ public class City extends EntityBase {
     public void extractMetadata() {
         this.node.setProperty(CityAttribute.NAME, CityDataExtractor.extractName(this));
 
-        if (this.node.getProperty(EntityAttribute.entityId) == null) return;  // just give up
+        if (this.getEntityId().equals("NOT_FOUND")) return;  // just give up
         this.node.setProperty(CityAttribute.COUNTRY, CityDataExtractor.extractCountry(this));
         this.node.setProperty(CityAttribute.POPULATION, CityDataExtractor.extractPopulation(this));
         this.node.setProperty(CityAttribute.EARLIEST_MENTION, CityDataExtractor.extractEarliestMention(this));

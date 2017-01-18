@@ -188,10 +188,11 @@ public abstract class EntityBase {
      */
     public void insertEntityId() {
         this.node.setProperty(EntityAttribute.entityId, Wikidata.getEntityId(this.getTitle(), this.getSource().getNamespaceID()));
-    } // TODO: call in baseExtraction
+    }
 
     public String getEntityId() {
-        return (String)this.node.getProperty(EntityAttribute.entityId);
+        Object result = this.node.getProperty(EntityAttribute.entityId);
+        return result != null? (String)result : "NOT_FOUND";
     }
 
     @Override
