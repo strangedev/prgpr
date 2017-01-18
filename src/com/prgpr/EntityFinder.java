@@ -55,12 +55,45 @@ public class EntityFinder {
         return null;
     }
 
-    public static Set<EntityBase> getEntityByPageTitle(String pageTitle) {
+    public static Set<EntityBase> getEntitiesByPageTitle(String pageTitle) {
         Set<EntityBase> matches = new LinkedHashSet<>();
-        EntityFinder.getAllPersons().filter(p -> p.getTitle().equalsIgnoreCase(pageTitle)).forEach(matches::add);
-        EntityFinder.getAllCities().filter(c -> c.getTitle().equalsIgnoreCase(pageTitle)).forEach(matches::add);
-        EntityFinder.getAllMonuments().filter(m -> m.getTitle().equalsIgnoreCase(pageTitle)).forEach(matches::add);
+        EntityFinder.getAllPersons()
+                .filter(p -> p.getTitle().equalsIgnoreCase(pageTitle))
+                .forEach(matches::add);
+        EntityFinder.getAllCities()
+                .filter(c -> c.getTitle().equalsIgnoreCase(pageTitle))
+                .forEach(matches::add);
+        EntityFinder.getAllMonuments()
+                .filter(m -> m.getTitle().equalsIgnoreCase(pageTitle))
+                .forEach(matches::add);
         return matches;
+    }
+
+    public static Person getPersonByPageTitle(String pageTitle) {
+        Set<EntityBase> matches = EntityFinder.getEntitiesByPageTitle(pageTitle);
+        return matches.stream()
+                .filter(e -> e instanceof Person)
+                .map(e -> (Person)e)
+                .findFirst()
+                .orElseGet(null);
+    }
+
+    public static City getCityByPageTitle(String pageTitle) {
+        Set<EntityBase> matches = EntityFinder.getEntitiesByPageTitle(pageTitle);
+        return matches.stream()
+                .filter(e -> e instanceof City)
+                .map(e -> (City)e)
+                .findFirst()
+                .orElseGet(null);
+    }
+
+    public static Monument getMonumentByPageTitle(String pageTitle) {
+        Set<EntityBase> matches = EntityFinder.getEntitiesByPageTitle(pageTitle);
+        return matches.stream()
+                .filter(e -> e instanceof Monument)
+                .map(e -> (Monument)e)
+                .findFirst()
+                .orElseGet(null);
     }
 
 }
