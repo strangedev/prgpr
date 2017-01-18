@@ -78,17 +78,22 @@ What adventures should it else bring?
                     * Date of death
                     * Place of birth
                     * Place of death
+                    * Linked Persons, Cities, Monuments
 
                 City:
                     * Name of the city
                     * Country
                     * Population
                     * Earliest mention
+                    * Linked Persons, Cities, Monuments
 
                 Monument:
                     * Name of the monument
                     * Creation date
                     * Inauguration date
+                    * Honored Persons
+                    * Linked Persons, Cities, Monuments
+
 
     1.3 Database-Directory
     ----------------------
