@@ -14,7 +14,6 @@ import java.util.stream.Collectors;
 import static com.prgpr.LinkExtraction.extractArticles;
 import static com.prgpr.LinkExtraction.extractCategories;
 import java.security.MessageDigest;
-import java.util.stream.Stream;
 
 /**
  *
@@ -242,7 +241,7 @@ public class Page {
      * A function which calls addRelationship() to insert category relationships into the database
      * @return the list of titles for created relationships
      */
-    public Stream<String> insertCategoryLinks() {
+    public int insertCategoryLinks() {
         return addRelationships(WikiNamespaces.PageLabel.Category, RelationshipTypes.categoryLink, () -> extractCategories(this.getHtml()));
     }
 
@@ -250,7 +249,7 @@ public class Page {
      * A function which calls addRelationship() to insert article relationships into the database
      * @return the list of titles for created relationships
      */
-    public Stream<String> insertArticleLinks() {
+    public int insertArticleLinks() {
         return addRelationships(WikiNamespaces.PageLabel.Article, RelationshipTypes.articleLink, () -> extractArticles(this.getHtml()));
     }
 
@@ -262,7 +261,7 @@ public class Page {
      * @param callable a function to extract the Pages to create the relation to
      * @return the list of titles for created relationships
      */
-    private Stream<String> addRelationships(WikiNamespaces.PageLabel label, RelationshipType relType, Callable<Set<String>> callable) {
+    private int addRelationships(WikiNamespaces.PageLabel label, RelationshipType relType, Callable<Set<String>> callable) {
         Set<String> titles;
         List<String> related = new LinkedList<>();
 
@@ -270,7 +269,7 @@ public class Page {
             titles = callable.call();
         } catch (Exception e) {
             log.catching(e);
-            return related.stream();
+            return related.size();
         }
 
         int namespace = WikiNamespaces.fromPageLabel(label);
@@ -292,7 +291,7 @@ public class Page {
             return null;
         });
 
-        return related.stream();
+        return related.size();
     }
 
 

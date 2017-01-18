@@ -1,7 +1,5 @@
-package com.prgpr.helpers;
+package com.prgpr.framework.tasks;
 
-import com.prgpr.PageFactory;
-import com.prgpr.data.Page;
 import com.prgpr.framework.consumer.Consumer;
 import com.prgpr.framework.consumer.Producer;
 import org.apache.logging.log4j.LogManager;
@@ -19,9 +17,9 @@ import java.util.concurrent.atomic.LongAdder;
  *
  * @author Noah Hummel
  */
-public class ProducerLogger<T> implements Consumer<T> {
+public class TaskProgressLogger implements Consumer<Integer> {
 
-    private static final Logger log = LogManager.getFormatterLogger(ProducerLogger.class);
+    private static final Logger log = LogManager.getFormatterLogger(TaskProgressLogger.class);
 
     private boolean logAll = false;
     private long consumed = 0;
@@ -36,7 +34,7 @@ public class ProducerLogger<T> implements Consumer<T> {
      * The logger will only log statistics once the producer has finished
      * producing consumables.
      */
-    public ProducerLogger(){
+    public TaskProgressLogger(){
 
     }
 
@@ -47,7 +45,7 @@ public class ProducerLogger<T> implements Consumer<T> {
      * Warning: Logging each consumable costs CPU time.
      * @param logAll Whether to log each consumable individually.
      */
-    public ProducerLogger(boolean logAll){
+    public TaskProgressLogger(boolean logAll){
         this.logAll = logAll;
     }
 
@@ -59,11 +57,11 @@ public class ProducerLogger<T> implements Consumer<T> {
      * @param consumable A consumable to be logged and counted.
      */
     @Override
-    public void consume(T consumable) {
-        this.consumed++;  // count all the consumables.
-
-        if(this.consumed % 1000 == 0){
-            PageFactory.commit();
+    public void consume(Integer consumable) {
+        if(consumable > 1){
+            this.consumed += consumable;
+        } else {
+            this.consumed++;  // count all the consumables.
         }
 
         long timeNow = System.currentTimeMillis();
@@ -88,7 +86,7 @@ public class ProducerLogger<T> implements Consumer<T> {
      * @param producer The producer this is subscribed to.
      */
     @Override
-    public void onSubscribe(Producer<T> producer) {
+    public void onSubscribe(Producer<Integer> producer) {
         this.lastTime = System.currentTimeMillis();
         this.consumablesPerSecond = new LinkedHashSet<>();
         this.producerName = producer.getClass().getName();
@@ -101,7 +99,7 @@ public class ProducerLogger<T> implements Consumer<T> {
      * @param producer The producer this was subscribed to.
      */
     @Override
-    public void onUnsubscribed(Producer<T> producer) {
+    public void onUnsubscribed(Producer<Integer> producer) {
 
         LongAdder adder = new LongAdder();
         int numConsumablesPerSecond = consumablesPerSecond.size();

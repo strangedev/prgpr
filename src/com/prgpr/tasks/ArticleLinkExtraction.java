@@ -3,7 +3,9 @@ package com.prgpr.tasks;
 import com.prgpr.PageFactory;
 import com.prgpr.data.Page;
 import com.prgpr.data.TaskDependencies;
+import com.prgpr.framework.consumer.Consumer;
 import com.prgpr.framework.tasks.Task;
+import com.prgpr.framework.tasks.TaskProgressLogger;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 
@@ -36,6 +38,8 @@ public class ArticleLinkExtraction extends Task {
     @SuppressWarnings("Duplicates")
     @Override
     public void run() {
+        this.subscribe(new TaskProgressLogger(true));
+
         PageFactory.setDatabase(db);
 
         db.getTransactionManager().setBatchSize(batchSize);
@@ -44,11 +48,15 @@ public class ArticleLinkExtraction extends Task {
             db.transaction(() -> {
                 db.getAllElements()
                         .map(Page::new)
-                        .forEach(Page::insertArticleLinks);
+                        .forEach(page ->
+                                this.emit(page.insertArticleLinks())
+                        );
                 return null;
             });
         } catch (Exception e) {
             log.catching(e);
         }
+
+        this.done();
     }
 }
