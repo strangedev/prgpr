@@ -65,7 +65,7 @@ public class Monument extends EntityBase {
     public void extractMetadata() {
         this.node.setProperty(MonumentAttribute.NAME, MonumentDataExtractor.extractName(this));
 
-        if (this.node.getProperty(EntityAttribute.entityId) == null) return;  // just give up
+        if (this.getEntityId().equals("NOT_FOUND")) return;  // just give up
         this.node.setProperty(MonumentAttribute.CREATION_DATE, MonumentDataExtractor.extractCreationDate(this));
         this.node.setProperty(MonumentAttribute.INAUGURATION_DATE, MonumentDataExtractor.extractDateOfInauguration(this));
 

@@ -5,6 +5,10 @@ import java.util.regex.Pattern;
 
 /**
  * Created by strange on 1/17/17.
+ * This but a crude Date thingy.
+ *
+ * Parses ISO date string foo and does comparison bar.
+ * Used for putting data from the wiki api into context. Deep stuff.
  */
 public class Date {
 
@@ -18,6 +22,15 @@ public class Date {
     private final Pattern isoDatePatternFull = Pattern.compile("\\+(\\d+)-(\\d+)-(\\d+)T(\\d+):(\\d+):(\\d+)Z");
     private final Pattern isoDatePatternJustDate = Pattern.compile("\\+(\\d+)-(\\d+)-(\\d+)T");
 
+    /**
+     * A constructor, most complicated.
+     * @param year (exactly what it states here)
+     * @param month (exactly what it states here)
+     * @param day (exactly what it states here)
+     * @param hour (exactly what it states here)
+     * @param minute (exactly what it states here)
+     * @param second (exactly what it states here)
+     */
     public Date(int year, int month, int day, int hour, int minute, int second) {
         this.year = year;
         this.month = month;
@@ -27,6 +40,16 @@ public class Date {
         this.second = second;
     }
 
+    /**
+     * Constructs this Date instance from an ISO style date string.
+     * ISO style means:
+     *
+     * 1. Jan. 2016 - 19:30:10
+     * becomes
+     * +2016-01-01T19:30:10Z
+     *
+     * @param isoDateString ^ read the goddamn text above
+     */
     public Date(String isoDateString) {
 
         Matcher m = isoDatePatternFull.matcher(isoDateString);
@@ -57,6 +80,11 @@ public class Date {
         }
     }
 
+    /**
+     * Checks whether this Date is greater than another Date
+     * @param other Another Date.
+     * @return Reading comprehension skills are of utmost importance.
+     */
     public boolean greaterThan(Date other) {
         if (this.year > other.year) return true;
         else if (this.year < other.year) return false;

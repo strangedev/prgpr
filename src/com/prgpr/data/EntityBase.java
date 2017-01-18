@@ -60,6 +60,7 @@ public abstract class EntityBase {
      * http://stackoverflow.com/questions/1867191/probability-of-sha1-collisions
      *
      * @param title of the page
+     * @param namespaceID the namespace id of the entity
      * @return the hash
      */
     public static int hashCode(String title, int namespaceID) {
@@ -188,10 +189,11 @@ public abstract class EntityBase {
      */
     public void insertEntityId() {
         this.node.setProperty(EntityAttribute.entityId, Wikidata.getEntityId(this.getTitle(), this.getSource().getNamespaceID()));
-    } // TODO: call in baseExtraction
+    }
 
     public String getEntityId() {
-        return (String)this.node.getProperty(EntityAttribute.entityId);
+        Object result = this.node.getProperty(EntityAttribute.entityId);
+        return result != null? (String)result : "NOT_FOUND";
     }
 
     @Override

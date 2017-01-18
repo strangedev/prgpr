@@ -35,7 +35,7 @@ public class EntityBaseExtraction extends Task {
     @Override
     public TaskDependencies[] produces() {
         return new TaskDependencies[]{
-                TaskDependencies.EntityLinks
+                TaskDependencies.Entities
         };
     }
 

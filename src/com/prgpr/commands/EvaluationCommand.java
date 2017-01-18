@@ -1,5 +1,7 @@
 package com.prgpr.commands;
 
+import com.prgpr.EntityFinder;
+import com.prgpr.Evaluation;
 import com.prgpr.commands.arguments.DatabaseDirectoryArgument;
 import com.prgpr.commands.arguments.HtmlInputFileArgument;
 import com.prgpr.exceptions.InvalidArgument;
@@ -8,23 +10,16 @@ import com.prgpr.framework.command.Command;
 import com.prgpr.framework.command.CommandArgument;
 import com.prgpr.framework.database.EmbeddedDatabase;
 import com.prgpr.framework.database.EmbeddedDatabaseFactory;
-import com.prgpr.framework.tasks.Task;
-import com.prgpr.framework.tasks.TaskScheduler;
-import com.prgpr.tasks.*;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
-import org.neo4j.io.fs.FileUtils;
 
-import java.io.File;
-import java.io.IOException;
-import java.util.Arrays;
-import java.util.Collections;
 import java.util.List;
 
 /**
- * @author Kyle Rinfreschi
+ * Created by strange on 1/18/17.
+ * @author Noah Hummel
  */
-public class CreateDBCommand extends Command{
+public class EvaluationCommand extends Command {
 
     private static final Logger log = LogManager.getFormatterLogger(CreateDBCommand.class);
 
@@ -35,12 +30,12 @@ public class CreateDBCommand extends Command{
 
     @Override
     public String getName() {
-        return "createdb";
+        return "evaluation";
     }
 
     @Override
     public String getDescription() {
-        return "creates a database given an html input file";
+        return "Runs the evaluation required by milestone 3";
     }
 
     @Override
@@ -50,42 +45,19 @@ public class CreateDBCommand extends Command{
 
     @Override
     public void handleArguments(List<String> args) throws InvalidNumberOfArguments, InvalidArgument {
-        if(args.size() < 2){
+        if(args.size() < 1){
             throw new InvalidNumberOfArguments();
         }
 
         arguments[0].set(args.get(0));
-        arguments[1].set(args.get(1));
     }
 
     @Override
     public void run() {
-        try {
-            FileUtils.deleteRecursively(new File(arguments[0].get()));
-        } catch (IOException e) {
-            log.catching(e);
-        }
 
         EmbeddedDatabase graphDb = EmbeddedDatabaseFactory.newEmbeddedDatabase(arguments[0].get());
-        TaskScheduler.setDatabase(graphDb);
-
-        TaskScheduler scheduler = new TaskScheduler();
-
-        HTMLDumpImport htmlDumpImport = new HTMLDumpImport();
-
-        scheduler.register(new Task[]{
-                new CategoryLinkExtraction(),
-                new ArticleLinkExtraction(),
-                new EntityBaseExtraction(),
-                new PersonExtraction(),
-                new CityExtraction(),
-                new MonumentExtraction(),
-                htmlDumpImport
-        });
-
-        htmlDumpImport.setArguments(arguments[1].get());
-
-        scheduler.run();
+        EntityFinder.setDatabase(graphDb);
+        Evaluation e = new Evaluation();
+        e.run();
     }
-
 }

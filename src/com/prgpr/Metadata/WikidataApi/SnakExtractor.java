@@ -7,9 +7,9 @@ import com.eclipsesource.json.JsonValue;
  * Created by strange on 1/17/17.
  * @author Noah Hummel
  *
- * >> ENOUGH IS ENOUGH!
- * >> I'VE HAD IT WITH THESE MOTHER******* SNAKS
- * >> IN THIS MOTHER******* API!
+ * ENOUGH IS ENOUGH!
+ * I'VE HAD IT WITH THESE MOTHER******* SNAKS
+ * IN THIS MOTHER******* API!
  *
  * Makes extracting data from the json the Wikidata API returns bearable.
  * Sometimes I feel like it's boxes, all the way down.
@@ -55,12 +55,11 @@ public class SnakExtractor {
     }
 
     /**
-     * A method for extracting data of the "item" type from "snak"s.
-     * Items usually link to another entity by their id, so this is
-     * what we'll be extracting here.
+     * A method for extracting data of the "quantity" type from "snak"s.
+     * Quantities include an amount and some other foo, we only care for the amount.
      *
      * @param snak The glorious "snak"
-     * @return The entity id of a linked entity, if any
+     * @return The amount, if found, "" otherwise.
      */
     public static String parseQuantityAmount(JsonObject snak) {
         String amount = extractFromMainsnak(snak, "id");
@@ -69,12 +68,11 @@ public class SnakExtractor {
     }
 
     /**
-     * A method for extracting data of the "item" type from "snak"s.
-     * Items usually link to another entity by their id, so this is
-     * what we'll be extracting here.
+     * A method for extracting data of the "point in time" type from "snak"s.
+     * Points in time are stored as ISO style strings.
      *
      * @param snak The glorious "snak"
-     * @return The entity id of a linked entity, if any
+     * @return The ISO style string of the point in time, "" otherwise
      */
     public static String parsePointInTime(JsonObject snak) {
         String isoTimeString = extractFromMainsnak(snak, "time");
@@ -83,12 +81,12 @@ public class SnakExtractor {
     }
 
     /**
-     * A method for extracting data of the "item" type from "snak"s.
-     * Items usually link to another entity by their id, so this is
-     * what we'll be extracting here.
+     * A method for extracting metadata of the "point in time" type from "snak"s main data.
+     * Some data points reference a point in time, for example the population at a given
+     * point in time. This method extracts it from a snak.
      *
      * @param snak The glorious "snak"
-     * @return The entity id of a linked entity, if any
+     * @return The referenced point in time, otherwise ""
      */
     public static String parseReferencedPointInTime(JsonObject snak) {
         String pointInTime = parsePointInTimeQualifier(snak);
@@ -97,12 +95,11 @@ public class SnakExtractor {
     }
 
     /**
-     * A method for extracting data of the "item" type from "snak"s.
-     * Items usually link to another entity by their id, so this is
-     * what we'll be extracting here.
+     * Exactly the same as parseReferencedPointInTime, but for internal use
+     * as it returns null if no reference is found.
      *
      * @param snak The glorious "snak"
-     * @return The entity id of a linked entity, if any
+     * @return The referenced point in time, otherwise ""
      */
     public static String parsePointInTimeQualifier(JsonObject snak) {
         // Error handling - java style

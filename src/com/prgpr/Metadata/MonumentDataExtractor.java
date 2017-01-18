@@ -17,10 +17,20 @@ import com.prgpr.data.Person;
  */
 public class MonumentDataExtractor {
 
+    /**
+     * Extracts the name attribute from a monument.
+     * @param monument The Entity to extract from
+     * @return The attribute value or an empty string alternatively
+     */
     public static String extractName(Monument monument) {
         return monument.getTitle();
     }
 
+    /**
+     * Extracts the ate of inauguration attribute from a monument.
+     * @param monument The Entity to extract from
+     * @return The attribute value or an empty string alternatively
+     */
     public static String extractDateOfInauguration(Monument monument) {
         JsonObject snak = Wikidata.getSnak(monument.getEntityId(), "P793");
         String date = "";
@@ -28,6 +38,11 @@ public class MonumentDataExtractor {
         return date;
     }
 
+    /**
+     * Extracts the creation date attribute from a monument.
+     * @param monument The Entity to extract from
+     * @return The attribute value or an empty string alternatively
+     */
     public static String extractCreationDate(Monument monument) {
         JsonObject snak = Wikidata.getSnak(monument.getEntityId(), "P571");
         String creationDate = "";
@@ -35,6 +50,11 @@ public class MonumentDataExtractor {
         return creationDate;
     }
 
+    /**
+     * Extracts the nearest city attribute from a monument.
+     * @param monument The Entity to extract from
+     * @return The attribute value or null
+     */
     public static City extractNearestCity(Monument monument) {
         JsonObject snak = Wikidata.getSnak(monument.getEntityId(), "P276");
         String referencedEntityId = "";
@@ -43,6 +63,11 @@ public class MonumentDataExtractor {
         return EntityFinder.getCityByEnitityId(referencedEntityId);
     }
 
+    /**
+     * Extracts the commemorated person attribute from a monument.
+     * @param monument The Entity to extract from
+     * @return The attribute value or null
+     */
     public static Person extractCommemoratedPerson(Monument monument) {
         JsonObject snak = Wikidata.getSnak(monument.getEntityId(), "P547");
         String referencedEntityId = "";
