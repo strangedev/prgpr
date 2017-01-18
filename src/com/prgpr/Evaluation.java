@@ -592,7 +592,7 @@ public class Evaluation {
             t.addRow(
                     person_attrib_names[i],
                     person_attrib_correct_count[i],
-                    person_attrib_correct_count[i]/20);
+                    (float)person_attrib_correct_count[i]/20);
         }
         t.print();
     }
@@ -668,7 +668,7 @@ public class Evaluation {
             t.addRow(
                     city_attrib_names[i],
                     city_attrib_correct_count[i],
-                    city_attrib_correct_count[i]/20);
+                    (float)city_attrib_correct_count[i]/20);
         }
         t.print();
     }
@@ -754,7 +754,7 @@ public class Evaluation {
             t.addRow(
                     monument_attrib_names[i],
                     monument_attrib_correct_count[i],
-                    monument_attrib_correct_count[i]/20);
+                    (float)monument_attrib_correct_count[i]/20);
         }
         t.print();
     }

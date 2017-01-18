@@ -94,6 +94,26 @@ What adventures should it else bring?
                     * Honored Persons
                     * Linked Persons, Cities, Monuments
 
+         Example output:
+
++-----------+-----------+----------------+------------+---------------+----------------+---------------+----------------+
+| Raw Name  | Last Name | First Name     | Birth Name | Date of Birth | Place of Birth | Date of Death | Place of Death |
++-----------+-----------+----------------+------------+---------------+----------------+---------------+----------------+
+| Timm, Uwe | Timm      | Uwe Hans Heinz |            | 30. März 1940 | Hamburg        |               |                |
++-----------+-----------+----------------+------------+---------------+----------------+---------------+----------------+
+
+        Afterwards, the rate of correct extracted attributes can be evaluated.
+        Example output:
+
+        +---------------------+---------+-------+
+        | Attribute           | Correct | Ratio |
+        +---------------------+---------+-------+
+        | Name                | 2       | 0.1   |
+        | Nearest city        | 0       | 0     |
+        | Inauguration date   | 2       | 0.1   |
+        | Commemorated person | 0       | 0     |
+        +---------------------+---------+-------+
+
 
     1.3 Database-Directory
     ----------------------
@@ -107,6 +127,9 @@ What adventures should it else bring?
 
         The following commands exist:
 
+            help          | Gives information about the programm.
+                          | Use without database directory.
+
             createdb      | Creates a database given an html input file.
                           | required: <HTML-Input-File>
 
@@ -116,6 +139,7 @@ What adventures should it else bring?
             queryentity   | Returns all extracted information, if entity exists.
                           | required: <Article-Title>
 
+            evaluation    | Evaluates the articles to test.
 
         To list all of the commands and arguments, use the help command.
 
