@@ -1,6 +1,7 @@
 package com.prgpr.data;
 
 import com.prgpr.Metadata.Scraping.PersonMetadataScraper;
+import com.prgpr.framework.AsciiTable;
 import com.prgpr.framework.database.*;
 
 import java.util.HashMap;
@@ -108,6 +109,35 @@ public class Person extends EntityBase {
 
     public String getPlaceOfDeath() {
         return (String)this.node.getProperty(PersonAttribute.PLACE_OF_DEATH);
+    }
+
+    @Override
+    public String toString() {
+        AsciiTable t = new AsciiTable();
+
+        t.setColumns(
+                "Raw Name",
+                "Last Name",
+                "First Name",
+                "Birth Name",
+                "Date of Birth",
+                "Place of Birth",
+                "Date of Death",
+                "Place of Death"
+        );
+
+        t.addRow(
+                getRawName(),
+                getLastName(),
+                getFirstName(),
+                getBirthName(),
+                getDateOfBirth(),
+                getPlaceOfBirth(),
+                getDateOfDeath(),
+                getPlaceOfDeath()
+        );
+
+        return t.toString();
     }
 
 }

@@ -62,7 +62,20 @@ public class QueryEntityCommand extends Command{
 
         Set<EntityBase> entities = EntityFinder.getEntitiesByPageTitle(arguments[1].get());
 
-        entities.forEach(System.out::print);
+        entities.forEach(entity -> {
+            String title = "";
+
+            if(entity instanceof Person){
+                title = "Person";
+            } else if(entity instanceof City){
+                title = "City";
+            } else if(entity instanceof Monument){
+                title = "Monument";
+            }
+
+            System.out.println(title + ":");
+            System.out.println(entity);
+        });
     }
 
 }
