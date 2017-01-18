@@ -194,4 +194,7 @@ public abstract class EntityBase {
         return (String)this.node.getProperty(EntityAttribute.entityId);
     }
 
+    @Override
+    public abstract String toString();
+
 }

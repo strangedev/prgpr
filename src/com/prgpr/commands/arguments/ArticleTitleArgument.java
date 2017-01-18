@@ -10,15 +10,15 @@ import com.prgpr.framework.command.CommandArgument;
  *
  * @author Kyle Rinfreschi
  */
-public class PageTitleArgument extends CommandArgument {
+public class ArticleTitleArgument extends CommandArgument {
     @Override
     public String getName() {
-        return "page-title";
+        return "Artikel-Title";
     }
 
     @Override
     public String getDescription() {
-        return "The page title.";
+        return "The article title.";
     }
 
     @Override

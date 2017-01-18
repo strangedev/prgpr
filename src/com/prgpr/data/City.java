@@ -1,6 +1,7 @@
 package com.prgpr.data;
 
 import com.prgpr.Metadata.CityDataExtractor;
+import com.prgpr.framework.AsciiTable;
 import com.prgpr.framework.database.*;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
@@ -86,4 +87,24 @@ public class City extends EntityBase {
         return (String)this.node.getProperty(CityAttribute.EARLIEST_MENTION);
     }
 
+    @Override
+    public String toString() {
+        AsciiTable t = new AsciiTable();
+
+        t.setColumns(
+                "Name",
+                "Country",
+                "Population",
+                "Earliest Mention"
+        );
+
+        t.addRow(
+                getName(),
+                getCountry(),
+                getPopulation(),
+                getEarliestMention()
+        );
+
+        return t.toString();
+    }
 }
