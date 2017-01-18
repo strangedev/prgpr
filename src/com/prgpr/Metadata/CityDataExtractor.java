@@ -11,13 +11,24 @@ import com.prgpr.data.City;
  *
  * A class wrapping data extraction for City entities
  * neatly.
+ *
  */
 public class CityDataExtractor {
 
+    /**
+     * Extracts the name attribute from a city.
+     * @param city The Entity to extract from
+     * @return The attribute value or an empty string alternatively
+     */
     public static String extractName(City city) {
         return city.getTitle();
     }
 
+    /**
+     * Extracts the country attribute from a city.
+     * @param city The Entity to extract from
+     * @return The attribute value or an empty string alternatively
+     */
     public static String extractCountry(City city) {
         JsonObject snak = Wikidata.getSnak(city.getEntityId(), "P17");
         String countryEntityId = "";
@@ -26,6 +37,11 @@ public class CityDataExtractor {
         return Wikidata.getPageTitle(countryEntityId);
     }
 
+    /**
+     * Extracts the population attribute from a city.
+     * @param city The Entity to extract from
+     * @return The attribute value or an empty string alternatively
+     */
     public static String extractPopulation(City city) {
         JsonObject snak = Wikidata.getSnak(city.getEntityId(), "P1082");
         String populationSize = "";
@@ -33,6 +49,11 @@ public class CityDataExtractor {
         return populationSize;
     }
 
+    /**
+     * Extracts the earliest mention attribute from a city.
+     * @param city The Entity to extract from
+     * @return The attribute value or an empty string alternatively
+     */
     public static String extractEarliestMention(City city) {
         JsonObject snak = Wikidata.getSnak(city.getEntityId(), "P1249");
         String earliestMention = "";

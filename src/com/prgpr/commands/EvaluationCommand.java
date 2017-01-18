@@ -17,6 +17,7 @@ import java.util.List;
 
 /**
  * Created by strange on 1/18/17.
+ * @author Noah Hummel
  */
 public class EvaluationCommand extends Command {
 

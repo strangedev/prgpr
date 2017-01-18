@@ -92,11 +92,11 @@ public class ExecuteTasksCommand extends Command {
             System.exit(1);
         }
 
-        /*try {
+        try {
             FileUtils.deleteRecursively(new File(arguments[0].get()));
         } catch (IOException e) {
             log.catching(e);
-        }*/
+        }
 
         EmbeddedDatabase graphDb = EmbeddedDatabaseFactory.newEmbeddedDatabase(arguments[0].get());
         TaskScheduler.setDatabase(graphDb);
@@ -144,7 +144,7 @@ public class ExecuteTasksCommand extends Command {
                 .collect(Collectors.toSet());
 
         if (unfulfilledDependencies.size() > 0) {
-            //throw new MissingDependencyException();
+            throw new MissingDependencyException();
         }
     }
 

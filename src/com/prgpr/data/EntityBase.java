@@ -60,6 +60,7 @@ public abstract class EntityBase {
      * http://stackoverflow.com/questions/1867191/probability-of-sha1-collisions
      *
      * @param title of the page
+     * @param namespaceID the namespace id of the entity
      * @return the hash
      */
     public static int hashCode(String title, int namespaceID) {
