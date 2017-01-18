@@ -106,7 +106,8 @@ public class ExecuteTasksCommand extends Command {
     private void parseLine(String line) throws TaskNotFoundException, MissingDependencyException {
         String[] lineParts = line.split("\\s+");
         Task current = Arrays.stream(tasks)
-                .filter(task -> task.getClass().getSimpleName().equals(lineParts[0]))
+                .filter(task -> task.getClass().getSimpleName().toLowerCase()
+                                               .equals(lineParts[0].toLowerCase()))
                 .findFirst().orElse(null);
 
         if(current == null){
