@@ -47,8 +47,8 @@ What adventures should it else bring?
 
             Execute the script 'WikiXtractor' from within bash or similar:
 
-            "./WikiXtractor DATABASE-DIRECTORY COMMAND ARGUMENT"
-            "sh ./WikiXtractor DATABASE-DIRECTORY COMMAND ARGUMENT"
+            "./WikiXtractor COMMAND ARGUMENT"
+            "sh ./WikiXtractor COMMAND ARGUMENT"
 
 
         1.1.2 Manual invocation
@@ -56,7 +56,7 @@ What adventures should it else bring?
 
             Execute the following command from the command line of your choice:
 
-            "java -jar WikiXtractor.jar DATABASE-DIRECTORY COMMAND ARGUMENT"
+            "java -jar WikiXtractor.jar COMMAND ARGUMENT"
 
 
     1.2 Description
@@ -123,36 +123,46 @@ What adventures should it else bring?
 
 
     1.4 Commands
-    -------------
+    ------------
 
         The following commands exist:
 
-            help          | Gives information about the programm.
-                          | Use without database directory.
+            help          | Gives information about the program.
 
             createdb      | Creates a database given an html input file.
-                          | required: <HTML-Input-File>
+                          | required: <Database-Directory> <HTML-Input-File>
 
             executetasks  | Executes the tasks, taken from the taskfile.
-                          | required: <Task-File>
+                          | required: <Database-Directory> <Task-File>
 
             queryentity   | Returns all extracted information, if entity exists.
-                          | required: <Article-Title>
+                          | required: <Database-Directory> <Article-Title>
 
             evaluation    | Evaluates the articles to test.
+                          | required: <Database-Directory>
+
+            version       | Outputs the current version.
 
         To list all of the commands and arguments, use the help command.
 
 
+        * Also supports the command syntax given by the Milestone
+
+          For Example:
+             <Database-Directory> createdb <HTML-Input-File>
+
+          This is done thanks to checking all arguments for the first instance of a command name.
+
+
     1.5 Command Arguments
-    -------------------
+    ---------------------
 
         1.5.1 Option ordering
         ---------------------
 
-            [ARGUMENTS] :=   <HTML-Input-File>
-                           | <Task-File>
-                           | <Article-Title>
+            ARGUMENT :=   <Database-Directory> <HTML-Input-File>
+                        | <Database-Directory> <Task-File>
+                        | <Database-Directory> <Article-Title>
 
 
         1.5.2 HTML-Input-File
@@ -183,8 +193,7 @@ What adventures should it else bring?
         HTMLDumpImport <HTML-Input-File>
                 | Imports the HTML-File into the database.
                 | required: <HTML-Input-File>
-                | depends on: undepended
-
+                | depends on: independent
 
         CategoryLinkExtraction
                 | Inserts the links of the categories.
@@ -209,7 +218,6 @@ What adventures should it else bring?
         MonumentExtraction
                 | Extracts monument information from wikidata.
                 | depends on: EntityBaseExtraction
-
 
 
 -------------------------------------------------------------------------------
@@ -340,7 +348,7 @@ What adventures should it else bring?
         As somebody once tried to create data, which at the end should be
         readable by machine, did definitely never thought of making it readable
         by a human mind.
-        So to be able to write a programm extracting inconsequent formed data,
+        So to be able to write a program extracting inconsistent formed data,
         the data should be at least unambiguously understandable for a person.
 
 -------------------------------------------------------------------------------
