@@ -31,6 +31,7 @@ import java.util.stream.Collectors;
 import java.util.stream.Stream;
 
 /**
+ * A Class to execute the tasks read from a task file.
  * @author Kyle Rinfreschi
  */
 public class ExecuteTasksCommand extends Command {
@@ -103,6 +104,14 @@ public class ExecuteTasksCommand extends Command {
         scheduler.executeTasks(requestedTasks.toArray(new Task[requestedTasks.size()]));
     }
 
+    /**
+     * Reads the task from the line given from the file.
+     * Adds to the tasks to execute.
+     *
+     * @param line with the task from the task file.
+     * @throws TaskNotFoundException
+     * @throws MissingDependencyException
+     */
     private void parseLine(String line) throws TaskNotFoundException, MissingDependencyException {
         String[] lineParts = line.split("\\s+");
         Task current = Arrays.stream(tasks)
@@ -124,6 +133,11 @@ public class ExecuteTasksCommand extends Command {
         taskProducts.addAll(Arrays.stream(current.produces()).collect(Collectors.toSet()));
     }
 
+    /**
+     * Checks if the task can be executed.
+     *
+     * @param current the task to check
+     */
     private void checkDependencies(Task current) {
         Set<TaskDependencies> unfulfilledDependencies = Arrays.stream(current.getRequirements())
                 .filter(req -> !taskProducts.contains(req))

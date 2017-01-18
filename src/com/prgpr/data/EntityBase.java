@@ -183,6 +183,9 @@ public abstract class EntityBase {
         return related.stream();
     }
 
+    /**
+     * Inserts the entity id as a property of the node
+     */
     public void insertEntityId() {
         this.node.setProperty(EntityAttribute.entityId, Wikidata.getEntityId(this.getTitle(), this.getSource().getNamespaceID()));
     } // TODO: call in baseExtraction

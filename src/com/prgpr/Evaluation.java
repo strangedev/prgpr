@@ -24,6 +24,7 @@ public class Evaluation {
 
     private static final Logger log = LogManager.getFormatterLogger(Evaluation.class);
 
+    // Array of correct found attributes
     private int[] person_attrib_correct_count = {
             0, 0, 0, 0, 0, 0, 0
     };
@@ -38,6 +39,7 @@ public class Evaluation {
             "Place of death"
     };
 
+    // Extracted data by a human beeing
     private String[][] persons_stuff = {
             {"Vanessa Lynn",
                     "Williams",
@@ -200,6 +202,7 @@ public class Evaluation {
                     "Wien und München"}
     };
 
+    // Array of persons to test
     private String[] persons = {"Vanessa Lynn Wiliams",
             "Uwe Timm",
             "Karl der Große",
@@ -235,46 +238,46 @@ public class Evaluation {
     private String[][] cities_stuff = {
             {"Aurich (ostfr. Platt: Auerk)",
                     "Deutschland",
-                    "41.489",
+                    "41489",
                     "1276"},
 
             {"Frankfurt am Main",
                     "Deutschland",
-                    "732.688",
+                    "732688",
                     "794"},
 
             {"Perštejn (deutsch Pürstein)",
                     "Tschechien",
-                    "1.099"},
+                    "1099"},
 
             {"Tallinn",
                     "Estland",
-                    "429.899",
+                    "429899",
                     "1238"},
 
             {"Saint Petersburg",
                     "Vereinigte Staaten",
-                    "249.688",
+                    "249688",
                     "1876"},
 
             {"Frankfurt (Oder)",
                     "Deutschland",
-                    "58.092",
+                    "58092",
                     ""},
 
             {"Heidelberg",
                     "Deutschland",
-                    "156.267",
+                    "156267",
                     "1196"},
 
             {"Mannheim",
                     "Deutschland",
-                    "305.780",
+                    "305780",
                     "766"},
 
             {"Cuxhaven",
                     "Deutschland",
-                    "48.264",
+                    "48264",
                     ""},
 
             {"Bützow",
@@ -284,22 +287,22 @@ public class Evaluation {
 
             {"Waldkirchen",
                     "Deutschland",
-                    "10.283",
+                    "10283",
                     ""},
 
             {"Jabluniw",
                     "Westukraine",
-                    "2.032",
+                    "2032",
                     "1593"},
 
             {"Heilbronn",
                     "Deutschland",
-                    "122.567",
+                    "122567",
                     "741"},
 
             {"London",
                     "England",
-                    "8.538.689",
+                    "8538689",
                     "50"},
 
             {"Irdning",
@@ -309,17 +312,17 @@ public class Evaluation {
 
             {"Tours",
                     "Frankreich",
-                    "134.803",
+                    "134803",
                     ""},
 
             {"Frankfort",
                     "Vereinigte Staaten",
-                    "25.527",
+                    "25527",
                     "1786"},
 
             {"Weimar",
                     "Deutschland",
-                    "64.131",
+                    "64131",
                     "3. Juni 975"},
 
             {"Arendsee (Altmark)",
@@ -488,6 +491,14 @@ public class Evaluation {
             "Gustav-Selve-Denkmal",
             "Eenhana-Schrein"};
 
+    /**
+     * Goes through every attribute of a person and compares to the extracted data.
+     * Counts the right attributes.
+     * Calculates the rate of the right extracted attributes.
+     * Generates the table with results.
+     *
+     * @param db Database to compare the information in.
+     */
     private void evaluatePersons(EmbeddedDatabase db) {
 
         String realAttribute;
@@ -586,6 +597,14 @@ public class Evaluation {
         t.print();
     }
 
+    /**
+     * Goes through every attribute of a city and compares to the extracted data.
+     * Counts the right attributes.
+     * Calculates the rate of the right extracted attributes.
+     * Generates the table with results.
+     *
+     * @param db Database to compare the information in.
+     */
     private void evaluateCities(EmbeddedDatabase db) {
 
         String realAttribute;
@@ -654,6 +673,14 @@ public class Evaluation {
         t.print();
     }
 
+    /**
+     * Goes through every attribute of a monument and compares to the extracted data.
+     * Counts the right attributes.
+     * Calculates the rate of the right extracted attributes.
+     * Generates the table with results.
+     *
+     * @param db Database to compare the information in.
+     */
     private void evaluateMonuments(EmbeddedDatabase db) {
 
         String realAttribute;

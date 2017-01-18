@@ -93,6 +93,11 @@ public class Monument extends EntityBase {
         return (String)this.node.getProperty(MonumentAttribute.INAUGURATION_DATE);
     }
 
+    /**
+     * Get's the commemorated person by following the relation link.
+     *
+     * @return commemorated person by the monument
+     */
     public Person getCommemoratedPerson() {
         Set<Person> commemoratedPersons = SearchProvider.findImmediateOutgoing(this.node, RelationshipTypes.commemoratedPersonLink)
                 .stream()
@@ -102,6 +107,11 @@ public class Monument extends EntityBase {
         return null;
     }
 
+    /**
+     * Get's the nearest city by following the relation link.
+     *
+     * @return nearest city
+     */
     public City getNearestCity() {
         Set<City> nearestCities = SearchProvider.findImmediateOutgoing(this.node, RelationshipTypes.locationLink)
                 .stream()
