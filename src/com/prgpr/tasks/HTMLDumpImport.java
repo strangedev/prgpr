@@ -3,6 +3,7 @@ package com.prgpr.tasks;
 import com.prgpr.PageFactory;
 import com.prgpr.PageProducer;
 import com.prgpr.commands.arguments.HtmlInputFileArgument;
+import com.prgpr.data.TaskDependencies;
 import com.prgpr.exceptions.InvalidArgument;
 import com.prgpr.exceptions.InvalidNumberOfArguments;
 import com.prgpr.framework.command.CommandArgument;
@@ -29,14 +30,14 @@ public class HTMLDumpImport extends Task {
     }
 
     @Override
-    public String[] getRequirements() {
-        return new String[0];
+    public TaskDependencies[] getRequirements() {
+        return null;
     }
 
     @Override
-    public String[] produces() {
-        return new String[]{
-                "Pages"
+    public TaskDependencies[] produces() {
+        return new TaskDependencies[]{
+                TaskDependencies.Pages
         };
     }
 

@@ -1,5 +1,6 @@
 package com.prgpr.framework.tasks;
 
+import com.prgpr.data.TaskDependencies;
 import com.prgpr.exceptions.CircularDependencyException;
 import com.prgpr.exceptions.MissingDependencyException;
 import com.prgpr.framework.command.CommandArgument;
@@ -17,7 +18,7 @@ import java.util.*;
 public class TaskScheduler implements Runnable {
     private static final Logger log = LogManager.getFormatterLogger(TaskScheduler.class);
     private Set<Task> registeredTasks = new LinkedHashSet<>();
-    private HashMap<String, Set<Task>> productsArray = new HashMap<>();
+    private HashMap<TaskDependencies, Set<Task>> productsArray = new HashMap<>();
 
     private static EmbeddedDatabase db;
 
@@ -26,7 +27,7 @@ public class TaskScheduler implements Runnable {
      *
      * @param graphDb An embedded database which is used at runtime
      */
-    public static void setDatabase(EmbeddedDatabase graphDb){
+    public static void setDatabase(EmbeddedDatabase graphDb) {
         TaskScheduler.db = graphDb;
     }
 
@@ -36,10 +37,10 @@ public class TaskScheduler implements Runnable {
      * @param task An instance of a new task to be added.
      * @return boolean
      */
-    public boolean register(Task task){
-        boolean success =  registeredTasks.add(task);
+    public boolean register(Task task) {
+        boolean success = registeredTasks.add(task);
 
-        if(!success)
+        if (!success)
             return false;
 
         Arrays.stream(task.produces())
@@ -57,11 +58,11 @@ public class TaskScheduler implements Runnable {
      *
      * @param tasks A list of instances of new tasks to be added.
      */
-    public void register(Task[] tasks){
+    public void register(Task[] tasks) {
         Arrays.stream(tasks).forEach(this::register);
     }
 
-    public void run(){
+    public void run() {
         Task[] sortedTasks;
 
         try {
@@ -101,25 +102,29 @@ public class TaskScheduler implements Runnable {
         });
 
         // update graph representation
-        registeredTasks.forEach((task) ->
-                Arrays.stream(task.getRequirements())
-                        .flatMap((req) -> {
-                            Set<Task> providers = productsArray.getOrDefault(req, new LinkedHashSet<>());
+        registeredTasks.forEach((task) -> {
+                    if(task.getRequirements() == null)
+                        return;
 
-                            if(providers.isEmpty()){
-                                throw new MissingDependencyException();
-                            }
+                    Arrays.stream(task.getRequirements())
+                            .flatMap((req) -> {
+                                Set<Task> providers = productsArray.getOrDefault(req, new LinkedHashSet<>());
 
-                            return providers.stream();
-                        })
-                        .forEach((req) -> parentArray.get(req).add(task))
+                                if (providers.isEmpty()) {
+                                    throw new MissingDependencyException();
+                                }
+
+                                return providers.stream();
+                            })
+                            .forEach((req) -> parentArray.get(req).add(task));
+                }
         );
 
         Deque<Task> sortedTasks = new ArrayDeque<>();
         Set<Task> seenTasks = new HashSet<>();
 
-        while (seenTasks.size() < registeredTasks.size()){
-            for(Task task : registeredTasks) {
+        while (seenTasks.size() < registeredTasks.size()) {
+            for (Task task : registeredTasks) {
 
                 Stack<Task> lifo = new Stack<>();
                 Stack<Task> currentPath = new Stack<>();
@@ -134,7 +139,7 @@ public class TaskScheduler implements Runnable {
                     }
 
                     // task not seen yet
-                    if(seenTasks.contains(current))
+                    if (seenTasks.contains(current))
                         continue;
 
                     currentPath.push(current);

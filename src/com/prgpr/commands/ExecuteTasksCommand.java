@@ -2,6 +2,7 @@ package com.prgpr.commands;
 
 import com.prgpr.commands.arguments.DatabaseDirectoryArgument;
 import com.prgpr.commands.arguments.TaskFileArgument;
+import com.prgpr.data.TaskDependencies;
 import com.prgpr.exceptions.*;
 import com.prgpr.framework.command.Command;
 import com.prgpr.framework.command.CommandArgument;
@@ -48,7 +49,7 @@ public class ExecuteTasksCommand extends Command {
             new TaskFileArgument()
     };
 
-    private Set<String> taskProducts = new LinkedHashSet<>();
+    private Set<TaskDependencies> taskProducts = new LinkedHashSet<>();
     private Set<Task> requestedTasks = new LinkedHashSet<>();
 
     @Override
@@ -112,18 +113,24 @@ public class ExecuteTasksCommand extends Command {
             throw new TaskNotFoundException(lineParts[0]);
         }
 
-        Set<String> unfulfilledDependencies = Arrays.stream(current.getRequirements())
-                .filter(req -> !taskProducts.contains(req))
-                .collect(Collectors.toSet());
-
-        if(unfulfilledDependencies.size() > 0){
-            throw new MissingDependencyException();
+        if(current.getRequirements() != null) {
+            checkDependencies(current);
         }
 
         String[] taskArgs = Arrays.copyOfRange(lineParts, 1, lineParts.length);
         current.setArguments(Arrays.asList(taskArgs));
         requestedTasks.add(current);
         taskProducts.addAll(Arrays.stream(current.produces()).collect(Collectors.toSet()));
+    }
+
+    private void checkDependencies(Task current) {
+        Set<TaskDependencies> unfulfilledDependencies = Arrays.stream(current.getRequirements())
+                .filter(req -> !taskProducts.contains(req))
+                .collect(Collectors.toSet());
+
+        if (unfulfilledDependencies.size() > 0) {
+            throw new MissingDependencyException();
+        }
     }
 
 }

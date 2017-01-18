@@ -2,10 +2,8 @@ package com.prgpr.tasks;
 
 import com.prgpr.PageFactory;
 import com.prgpr.data.Page;
-import com.prgpr.framework.database.EmbeddedDatabase;
-import com.prgpr.framework.database.transaction.DefaultTransactionManager;
+import com.prgpr.data.TaskDependencies;
 import com.prgpr.framework.tasks.Task;
-import com.prgpr.helpers.Benchmark;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 
@@ -22,16 +20,16 @@ public class CategoryLinkExtraction extends Task {
     }
 
     @Override
-    public String[] getRequirements() {
-        return new String[]{
-                "Pages"
+    public TaskDependencies[] getRequirements() {
+        return new TaskDependencies[]{
+                TaskDependencies.Pages
         };
     }
 
     @Override
-    public String[] produces() {
-        return new String[]{
-                "CategoryLinks"
+    public TaskDependencies[] produces() {
+        return new TaskDependencies[]{
+                TaskDependencies.CategoryLinks
         };
     }
 

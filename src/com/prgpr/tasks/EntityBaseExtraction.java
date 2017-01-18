@@ -1,14 +1,9 @@
 package com.prgpr.tasks;
 
-import com.prgpr.PageFactory;
 import com.prgpr.PageFinder;
 import com.prgpr.TypeExtraction;
 import com.prgpr.data.*;
-import com.prgpr.exceptions.NotInTransactionException;
-import com.prgpr.framework.database.EmbeddedDatabase;
-import com.prgpr.framework.database.EmbeddedDatabaseFactory;
 import com.prgpr.framework.tasks.Task;
-import com.prgpr.helpers.Benchmark;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 
@@ -30,17 +25,17 @@ public class EntityBaseExtraction extends Task {
     }
 
     @Override
-    public String[] getRequirements() {
-        return new String[]{
-                "CategoryLinks",
-                "ArticleLinks"
+    public TaskDependencies[] getRequirements() {
+        return new TaskDependencies[]{
+                TaskDependencies.CategoryLinks,
+                TaskDependencies.ArticleLinks
         };
     }
 
     @Override
-    public String[] produces() {
-        return new String[]{
-                "EntityLinks"
+    public TaskDependencies[] produces() {
+        return new TaskDependencies[]{
+                TaskDependencies.EntityLinks
         };
     }
 

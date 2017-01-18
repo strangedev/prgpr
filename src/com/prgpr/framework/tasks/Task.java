@@ -1,5 +1,6 @@
 package com.prgpr.framework.tasks;
 
+import com.prgpr.data.TaskDependencies;
 import com.prgpr.exceptions.InvalidArgument;
 import com.prgpr.exceptions.InvalidNumberOfArguments;
 import com.prgpr.framework.command.CommandArgument;
@@ -15,8 +16,8 @@ public abstract class Task implements Runnable {
     protected EmbeddedDatabase db;
 
     public abstract String getDescription();
-    public abstract String[] getRequirements();
-    public abstract String[] produces();
+    public abstract TaskDependencies[] getRequirements();
+    public abstract TaskDependencies[] produces();
 
     protected void handleArguments(List<String> arguments) throws InvalidNumberOfArguments, InvalidArgument {}
 
