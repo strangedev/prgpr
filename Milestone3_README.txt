@@ -24,16 +24,16 @@ As the death of motivation came by, the coders kept fighting.
 ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 -------------------------------------------------------------------------------
 -------------------------------------------------------------------------------
-So the break came clearly
-
-
-After a journey full of being late to the code review of the first mission
-was over, the passionate coders headed to a whole new island, said to be full
-of treasure, nodes and relationships. But when they arrived, panic ensued.
-The treasure was not and nobody had shipped even the most basic search
-functionality. Lacking their most basic tools, the coders began rebuilding
-everything they hoped they would find...
-The price discovering this mess was high, they even had to give up their name...
+So the break came clearly. The coders were at an eventing Chaos Congress of
+Communication. They learned, how code should not work and slept over it.
+Afterwards, the journal asked for exactly the tasks they learned not to use.
+Irony of life. Using not readable data to read information in between the
+words is definitely a good way to have some fun.
+They fought and fought and denied the traditional way.
+Clearly in between the lines, the MateData was found. So asking other wise
+and "fast" working DatabaseKings helped.
+Now they were bound to a bureaucracy called "Internet"...
+What adventures should it else bring?
 
 -------------------------------------------------------------------------------
 1. How to use
@@ -131,7 +131,7 @@ The price discovering this mess was high, they even had to give up their name...
 
             The path to the input file.
             This file should be readable.
-            The provided file should contain wikidata.
+            The provided file should contain Wikidata.
 
         1.5.3 Task-File
         ---------------
@@ -149,6 +149,37 @@ The price discovering this mess was high, they even had to give up their name...
 
     1.6 Tasks
     ---------
+
+
+        HTMLDumpImport <HTML-Input-File>
+                | Imports the HTML-File into the database.
+                | required: <HTML-Input-File>
+                | depends on: undepended
+
+
+        CategoryLinkExtraction
+                | Inserts the links of the categories.
+                | depends on: HTMLDumpImport
+
+        ArticleLinkExtraction
+                | Extracts links between articles.
+                | depends on: HTMLDumpImport
+
+        EntityBaseExtraction
+                | Extracts entities from articles.
+                | depends on: CategoryLinkExtraction, ArticleLinkExtraction
+
+        PersonExtraction
+                | Extracts person information from wikidata.
+                | depends on: EntityBaseExtraction
+
+        CityExtraction
+                | Extracts city information from wikidata.
+                | depends on: EntityBaseExtraction
+
+        MonumentExtraction
+                | Extracts monument information from wikidata.
+                | depends on: EntityBaseExtraction
 
 
 
@@ -189,13 +220,12 @@ The price discovering this mess was high, they even had to give up their name...
 
     Additional credits go to:
 
-        Kyle Rinfreschi:    For greatly improving the git2svn script used for
-                            pushing the release candidates to svn
+        Noah Hummel:    For finding DatabaseKing providing the Matedata.
 
-        Elizaveta Kovalevskaya: For generating a test set which greatly sped up
-                                the testing process, for testing the program
-                                countless times and writing many of the
-                                docstrings.
+        Kyle Rinfreschi:    For greatly improving the Internet.
+
+        Elizaveta Kovalevskaya: For generating a test set.
+
 
 -------------------------------------------------------------------------------
 5. Known issues
