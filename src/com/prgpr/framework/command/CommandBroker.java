@@ -4,9 +4,8 @@ import com.prgpr.exceptions.CommandNotFound;
 import com.prgpr.exceptions.InvalidArgument;
 import com.prgpr.exceptions.InvalidNumberOfArguments;
 
-import java.util.Arrays;
-import java.util.Collection;
-import java.util.HashMap;
+import java.util.*;
+import java.util.stream.Collectors;
 
 /**
  * Created by kito on 19.11.16.
@@ -48,7 +47,7 @@ public class CommandBroker {
      * @throws CommandNotFound If the command is not known to the command broker
      */
     public void setDefaultCommand(String name) throws CommandNotFound {
-        defaultCommand = getCommandByName(name);
+        defaultCommand = findCommandFromArgs(name);
     }
 
     /**
@@ -70,24 +69,29 @@ public class CommandBroker {
      */
     public void process(String[] args) throws CommandNotFound, InvalidNumberOfArguments, InvalidArgument {
         if(args.length == 0){  // If no command is specified, use the default command.
-            executeDefaultCommand(args);
+            executeDefaultCommand(Collections.emptyList());
             return;
         }
 
         try {
-            Command command = getCommandByName(args[0]);
-            command.execute(Arrays.copyOfRange(args, 1, args.length));
+            Command command = findCommandFromArgs(args);
+            List<String> cmdArgs = Arrays.stream(args)
+                                        .filter(arg -> !arg.equals(command.getName()))
+                                        .collect(Collectors.toList());
+
+            command.execute(cmdArgs);
         } catch (CommandNotFound | InvalidNumberOfArguments | InvalidArgument e){
             if(defaultCommand == null){
                 throw e;
             }
 
-            args = new String[] {
+            List<String> cmdArgs = Arrays.asList(
                     Arrays.stream(args).reduce((s1, s2) -> s1 + " " + s2).orElse(""),
                     e.getClass().getSimpleName(),
                     e.getMessage()
-            };
-            executeDefaultCommand(args);  // if an error occurred, execute the default command
+            );
+
+            executeDefaultCommand(cmdArgs);  // if an error occurred, execute the default command
         }
     }
 
@@ -99,7 +103,7 @@ public class CommandBroker {
      * @throws InvalidNumberOfArguments When a wrong number of arguments was passed.
      * @throws InvalidArgument When a malformed argument was passed.
      */
-    private void executeDefaultCommand(String[] args) throws InvalidNumberOfArguments, CommandNotFound, InvalidArgument {
+    private void executeDefaultCommand(List<String> args) throws InvalidNumberOfArguments, CommandNotFound, InvalidArgument {
         if(defaultCommand == null){
             throw new CommandNotFound("default");
         }
@@ -107,18 +111,30 @@ public class CommandBroker {
         defaultCommand.execute(args);
     }
 
+    private Command findCommandFromArgs(String name) {
+        return findCommandFromArgs(new String[]{name});
+    }
+
     /**
      * Looks up a command by it's name.
      *
-     * @param name The name of the command.
+     * @param args The name of the command.
      * @return The instance of the command.
      * @throws CommandNotFound When the command is not registered.
      */
-    private Command getCommandByName(String name) throws CommandNotFound {
-        Command command = commandMap.get(name.toLowerCase());  // Use only lowercase names.
+    private Command findCommandFromArgs(String[] args) throws CommandNotFound {
+        Command command = null;
 
-        if(command == null){
-            throw new CommandNotFound(name);
+        // Iterate through arguments to support new required syntax
+        for(String arg : args){
+            command = commandMap.get(arg.toLowerCase());
+
+            if(command != null)
+                break;
+        }
+
+        if (command == null) {
+            throw new CommandNotFound();
         }
 
         return command;

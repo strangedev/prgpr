@@ -18,13 +18,8 @@ public class TaskScheduler implements Runnable {
     private static final Logger log = LogManager.getFormatterLogger(TaskScheduler.class);
     private Set<Task> registeredTasks = new LinkedHashSet<>();
     private HashMap<String, Set<Task>> productsArray = new HashMap<>();
-    private CommandArgument[] arguments;
 
     private static EmbeddedDatabase db;
-
-    public TaskScheduler(CommandArgument[] arguments){
-        this.arguments = arguments;
-    }
 
     /**
      * A function to set the database as the used by this instance.
@@ -71,26 +66,29 @@ public class TaskScheduler implements Runnable {
 
         try {
             sortedTasks = getTopologicallySortedTasks();
-
-            final long[] totalTimeTaken = {0};
-            Arrays.stream(sortedTasks)
-                    .forEach((task) -> {
-                        String taskName = task.getClass().getSimpleName();
-                        log.info(task.getClass().getSimpleName());
-
-                        task.setContext(new TaskContext(db, arguments));
-
-                        long timeImport = Benchmark.run(task);
-                        db.getTransactionManager().closeOpenTransactions();
-
-                        totalTimeTaken[0] += timeImport;
-                        log.info("(" + taskName + ") Time taken: " + (timeImport / 1000) + " seconds");
-                    });
-
-            log.info("Total time taken: " + (totalTimeTaken[0] / 1000) + " seconds");
+            executeTasks(sortedTasks);
         } catch (CircularDependencyException | MissingDependencyException e) {
             log.catching(e);
         }
+    }
+
+    public void executeTasks(Task[] sortedTasks) {
+        final long[] totalTimeTaken = {0};
+        Arrays.stream(sortedTasks)
+                .forEach((task) -> {
+                    String taskName = task.getClass().getSimpleName();
+                    log.info(task.getClass().getSimpleName());
+
+                    task.setDatabase(db);
+
+                    long timeImport = Benchmark.run(task);
+                    db.getTransactionManager().closeOpenTransactions();
+
+                    totalTimeTaken[0] += timeImport;
+                    log.info("(" + taskName + ") Time taken: " + (timeImport / 1000) + " seconds");
+                });
+
+        log.info("Total time taken: " + (totalTimeTaken[0] / 1000) + " seconds");
     }
 
     private Task[] getTopologicallySortedTasks() {

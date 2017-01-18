@@ -34,14 +34,14 @@ public class HelpCommand extends Command {
     }
 
     @Override
-    public void handleArguments(String[] args) {
-        if(args.length == 0)
+    public void handleArguments(List<String> args) {
+        if(args.size() == 0)
             return;
 
-        System.out.println("Failed to execute command: '" + args[0] + "'");
-        System.out.println("Reason: " + args[1]);
-        if(args[2] != null) {
-            System.out.println('\t' + args[2]);
+        System.out.println("Failed to execute command: '" + args.get(0) + "'");
+        System.out.println("Reason: " + args.get(1));
+        if(args.get(2) != null) {
+            System.out.println('\t' + args.get(2));
         }
 
         System.out.println();
@@ -59,14 +59,14 @@ public class HelpCommand extends Command {
         output.add("-------------------------------------------------");
 
         AsciiTable t = new AsciiTable();
-        t.setColumns("Command", "Arguments", "Description");
-        t.addRow(this.getName(), this.getArgumentsAsString(), this.getDescription());
+        t.setColumns("Command", "Description");
+        t.addRow(this.toString(), this.getDescription());
 
         commandBroker.getRegisteredCommands()
                 .stream()
                 .filter(command -> !Objects.equals(command.getName(), getName()))                                               // don't display this command
                 .sorted((c1, c2) -> String.CASE_INSENSITIVE_ORDER.compare(c1.getName(), c2.getName()))                          // sort by name
-                .forEach((command) -> t.addRow(command.getName(), command.getArgumentsAsString(), command.getDescription()));   // add commands to table
+                .forEach((command) -> t.addRow(command.toString(), command.getDescription()));   // add commands to table
 
         output.add(t.toString());
 

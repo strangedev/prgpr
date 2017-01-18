@@ -78,4 +78,9 @@ public abstract class CommandArgument {
     public boolean equals(Object o) {
         return this == o || getClass() ==  o.getClass();
     }
+
+    @Override
+    public String toString() {
+        return String.format("<%s>", getName());
+    }
 }

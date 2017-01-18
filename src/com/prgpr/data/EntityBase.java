@@ -1,6 +1,7 @@
 package com.prgpr.data;
 
 
+import com.prgpr.Metadata.WikidataApi.Wikidata;
 import com.prgpr.PageFactory;
 import com.prgpr.framework.database.Element;
 import com.prgpr.framework.database.Property;
@@ -33,7 +34,8 @@ public abstract class EntityBase {
     public enum EntityAttribute implements Property {
         hash,
         title,
-        ownNamespaceID
+        ownNamespaceID,
+        entityId
         }
 
     @Override
@@ -84,7 +86,7 @@ public abstract class EntityBase {
      *
      * @return the source Page
      */
-    protected Page getSource() { return PageFactory.getPage(source); }
+    public Page getSource() { return PageFactory.getPage(source); }
 
 
     /**
@@ -179,6 +181,14 @@ public abstract class EntityBase {
         });
 
         return related.stream();
+    }
+
+    public void insertEntityId() {
+        this.node.setProperty(EntityAttribute.entityId, Wikidata.getEntityId(this.getTitle(), this.getSource().getNamespaceID()));
+    } // TODO: call in baseExtraction
+
+    public String getEntityId() {
+        return (String)this.node.getProperty(EntityAttribute.entityId);
     }
 
 }

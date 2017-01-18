@@ -15,6 +15,8 @@ import com.prgpr.framework.database.EmbeddedDatabaseFactory;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 
+import java.util.List;
+
 /**
  * Created by kito on 02.12.16.
  *
@@ -56,14 +58,14 @@ public class PageInfoCommand extends Command {
     }
 
     @Override
-    public void handleArguments(String[] args) throws InvalidNumberOfArguments, InvalidArgument {
-        if(args.length < 3){
+    public void handleArguments(List<String> args) throws InvalidNumberOfArguments, InvalidArgument {
+        if(args.size() < 3){
             throw new InvalidNumberOfArguments();
         }
 
-        arguments[0].set(args[0]);
-        arguments[1].set(args[1]);
-        arguments[2].set(args[2]);
+        arguments[0].set(args.get(0));
+        arguments[1].set(args.get(1));
+        arguments[2].set(args.get(2));
     }
 
     @Override
