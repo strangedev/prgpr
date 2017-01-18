@@ -5,6 +5,8 @@ import com.prgpr.framework.database.Element;
 import com.prgpr.framework.database.EmbeddedDatabase;
 import com.prgpr.framework.database.SearchProvider;
 
+import java.util.LinkedHashSet;
+import java.util.Set;
 import java.util.stream.Stream;
 
 /**
@@ -51,6 +53,14 @@ public class EntityFinder {
         Element node = SearchProvider.findNode(EntityFinder.db, EntityTypes.Monument, EntityBase.EntityAttribute.entityId, entityId);
         if (node != null) return new Monument(node);
         return null;
+    }
+
+    public static Set<EntityBase> getEntityByPageTitle(String pageTitle) {
+        Set<EntityBase> matches = new LinkedHashSet<>();
+        EntityFinder.getAllPersons().filter(p -> p.getTitle().equalsIgnoreCase(pageTitle)).forEach(matches::add);
+        EntityFinder.getAllCities().filter(c -> c.getTitle().equalsIgnoreCase(pageTitle)).forEach(matches::add);
+        EntityFinder.getAllMonuments().filter(m -> m.getTitle().equalsIgnoreCase(pageTitle)).forEach(matches::add);
+        return matches;
     }
 
 }
