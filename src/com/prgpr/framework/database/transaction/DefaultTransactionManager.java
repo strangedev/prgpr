@@ -99,7 +99,7 @@ public class DefaultTransactionManager implements TransactionManager {
 
         if(this.transactionCount >= this.batchSize){
             success();
-            log.debug("committing");
+            //log.debug("committing");
         }
     }
 

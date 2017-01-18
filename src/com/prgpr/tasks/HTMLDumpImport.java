@@ -3,11 +3,16 @@ package com.prgpr.tasks;
 import com.prgpr.PageFactory;
 import com.prgpr.PageProducer;
 import com.prgpr.commands.arguments.HtmlInputFileArgument;
+import com.prgpr.data.Page;
 import com.prgpr.data.TaskDependencies;
 import com.prgpr.exceptions.InvalidArgument;
 import com.prgpr.exceptions.InvalidNumberOfArguments;
 import com.prgpr.framework.command.CommandArgument;
+import com.prgpr.framework.consumer.Consumer;
+import com.prgpr.framework.consumer.ConsumerProducer;
+import com.prgpr.framework.consumer.Producer;
 import com.prgpr.framework.tasks.Task;
+import com.prgpr.framework.tasks.TaskProgressLogger;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 
@@ -51,12 +56,32 @@ public class HTMLDumpImport extends Task {
 
     @Override
     public void run() {
+        this.subscribe(new TaskProgressLogger(true));
+
         PageFactory.setDatabase(db);
 
         db.getTransactionManager().setBatchSize(batchSize);
 
         PageProducer pageProducer = new PageProducer(arguments[0].get());
-
+        pageProducer.subscribe(new PageConsumer(this));
         pageProducer.run();
+    }
+
+    private class PageConsumer extends ConsumerProducer<Page, Integer> {
+        private final Producer<Integer> parent;
+
+        PageConsumer(Producer<Integer> parent){
+            this.parent = parent;
+        }
+
+        @Override
+        public void consume(Page consumable) {
+            parent.emit(1);
+        }
+
+        @Override
+        public void onUnsubscribed(Producer<Page> producer) {
+            this.parent.done();
+        }
     }
 }

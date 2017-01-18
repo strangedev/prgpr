@@ -4,6 +4,7 @@ import com.prgpr.data.TaskDependencies;
 import com.prgpr.exceptions.InvalidArgument;
 import com.prgpr.exceptions.InvalidNumberOfArguments;
 import com.prgpr.framework.command.CommandArgument;
+import com.prgpr.framework.consumer.Producer;
 import com.prgpr.framework.database.EmbeddedDatabase;
 
 import java.util.Arrays;
@@ -14,7 +15,7 @@ import java.util.List;
  *
  * @author Kyle Rinfreschi
  */
-public abstract class Task implements Runnable {
+public abstract class Task extends Producer<Integer> implements Runnable {
     protected CommandArgument[] arguments = new CommandArgument[0];
     protected EmbeddedDatabase db;
 
