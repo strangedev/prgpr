@@ -69,4 +69,9 @@ public interface Element {
      */
     EmbeddedDatabase getDatabase();
 
+    /**
+     * @return The neo4j node id.
+     */
+    String getId();
+
 }

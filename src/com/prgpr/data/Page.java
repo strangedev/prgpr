@@ -294,6 +294,8 @@ public class Page {
         return related.size();
     }
 
-
+    public String getId() {
+        return node.getId();
+    }
 
 }

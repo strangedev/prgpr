@@ -196,6 +196,10 @@ public abstract class EntityBase {
         return result != null? (String)result : "NOT_FOUND";
     }
 
+    public String getId() {
+        return node.getId();
+    }
+
     @Override
     public abstract String toString();
 

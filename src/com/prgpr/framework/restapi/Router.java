@@ -1,5 +1,6 @@
 package com.prgpr.framework.restapi;
 
+import com.prgpr.EntityExport;
 import com.prgpr.EntityFinder;
 import com.prgpr.PageFinder;
 import com.prgpr.data.City;
@@ -64,8 +65,7 @@ public class Router {
                             .filter(p -> p.getLastName().equals(request.params(":arg")))
                             .findFirst()
                             .orElse(null);
-            // TODO: return EntityExport.export(match)
-            return "Not Implemented";
+            return EntityExport.export(match);
         });
 
         get("/person/name/first/:arg",  (request, response) -> {
@@ -73,8 +73,7 @@ public class Router {
                     .filter(p -> p.getFirstName().equals(request.params(":arg")))
                     .findFirst()
                     .orElse(null);
-            // TODO: return EntityExport.export(match)
-            return "Not Implemented";
+            return EntityExport.export(match);
         });
 
         get("/person/name/birth/:arg",  (request, response) -> {
@@ -82,8 +81,7 @@ public class Router {
                     .filter(p -> p.getBirthName().equals(request.params(":arg")))
                     .findFirst()
                     .orElse(null);
-            // TODO: return EntityExport.export(match)
-            return "Not Implemented";
+            return EntityExport.export(match);
         });
 
         get("/person/name/raw/:arg",  (request, response) -> {
@@ -91,8 +89,7 @@ public class Router {
                     .filter(p -> p.getRawName().equals(request.params(":arg")))
                     .findFirst()
                     .orElse(null);
-            // TODO: return EntityExport.export(match)
-            return "Not Implemented";
+            return EntityExport.export(match);
         });
 
 
@@ -108,8 +105,7 @@ public class Router {
                     .filter(c -> c.getName().equals(request.params(":arg")))
                     .findFirst()
                     .orElse(null);
-            // TODO: return EntityExport.export(match)
-            return "Not Implemented";
+            return EntityExport.export(match);
         });
 
 
@@ -125,10 +121,20 @@ public class Router {
                     .filter(c -> c.getName().equals(request.params(":arg")))
                     .findFirst()
                     .orElse(null);
-            // TODO: return EntityExport.export(match)
-            return "Not Implemented";
+            return EntityExport.export(match);
         });
 
+
+        /*
+        ___  ____ ____ _  _ ____ _  _    ___  _   _    ___  ____ ____ _ ____ _  _
+        |__] |__/ |  | |_/  |___ |\ |    |__]  \_/     |  \ |___ [__  | | __ |\ |
+        |__] |  \ |__| | \_ |___ | \|    |__]   |      |__/ |___ ___] | |__] | \|
+
+         */
+
+        get("/object/:arg",  (request, response) -> {
+            return "NotImplemented";  // TODO
+        });
 
     }
 }

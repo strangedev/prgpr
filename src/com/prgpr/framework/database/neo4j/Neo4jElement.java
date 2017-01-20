@@ -87,4 +87,9 @@ public class Neo4jElement implements Element {
         return db.createUniqueRelationshipTo(this, incoming, relation);
     }
 
+    @Override
+    public String getId() {
+        return String.valueOf(node.getId());
+    }
+
 }
