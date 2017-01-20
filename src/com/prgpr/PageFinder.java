@@ -1,10 +1,10 @@
 package com.prgpr;
 
+import com.prgpr.data.EntityTypes;
 import com.prgpr.data.Page;
 import com.prgpr.data.WikiNamespaces;
 import com.prgpr.framework.database.Element;
 import com.prgpr.framework.database.EmbeddedDatabase;
-import com.prgpr.framework.database.Label;
 import com.prgpr.framework.database.SearchProvider;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
@@ -70,7 +70,32 @@ public class PageFinder {
         Set<Element> es = SearchProvider.findAnyWithLabel(
                 db,
                 WikiNamespaces.fromID(namespaceID),
+                null,
                 null
+        );
+
+        if (!es.isEmpty()) {
+            ret = es.stream().map(PageFactory::getPage).collect(Collectors.toCollection(LinkedHashSet::new));
+        }
+
+        return ret;
+    }
+
+    /**
+     * Searches for all Pages with a given title
+     *
+     * @param pageTitle of the Pages to find
+     * @return A Set of all Page-Objects with given title
+     */
+    public static Set<Page> findAllByTitle(String pageTitle) {
+
+        Set<Page> ret = new LinkedHashSet<>();
+
+        Set<Element> es = SearchProvider.findAnyWithLabel(
+                db,
+                EntityTypes.Page,
+                Page.PageAttribute.title,
+                pageTitle
         );
 
         if (!es.isEmpty()) {

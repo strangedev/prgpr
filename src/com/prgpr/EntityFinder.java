@@ -36,7 +36,7 @@ public class EntityFinder {
      * @return A stream of all known person entities
      */
     public static Stream<Person> getAllPersons() {
-        return SearchProvider.findAnyWithLabel(EntityFinder.db, EntityTypes.Person, null).stream().map(Person::new);
+        return SearchProvider.findAnyWithLabel(EntityFinder.db, EntityTypes.Person, null, null).stream().map(Person::new);
     }
 
     /**
@@ -44,7 +44,7 @@ public class EntityFinder {
      * @return A stream of all known city entities
      */
     public static Stream<City> getAllCities() {
-        return SearchProvider.findAnyWithLabel(EntityFinder.db, EntityTypes.City, null).stream().map(City::new);
+        return SearchProvider.findAnyWithLabel(EntityFinder.db, EntityTypes.City, null, null).stream().map(City::new);
     }
 
     /**
@@ -52,7 +52,7 @@ public class EntityFinder {
      * @return A stream of all known monument entities
      */
     public static Stream<Monument> getAllMonuments() {
-        return SearchProvider.findAnyWithLabel(EntityFinder.db, EntityTypes.Monument, null).stream().map(Monument::new);
+        return SearchProvider.findAnyWithLabel(EntityFinder.db, EntityTypes.Monument, null, null).stream().map(Monument::new);
     }
 
     /**

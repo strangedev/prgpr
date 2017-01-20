@@ -1,9 +1,6 @@
 package com.prgpr.framework.database;
 
-import com.prgpr.framework.database.neo4j.Neo4jElement;
-
 import java.util.Set;
-import java.util.stream.StreamSupport;
 
 /**
  * Created by strange on 11/21/16.
@@ -65,16 +62,12 @@ public class NodePredicates {
 
     /**
      * @param n The Element to decide on.
-     * @param properties A set of properties to check against.
+     * @param property A set of properties to check against.
+     * @param value
      * @return Whether any of the given properties match the Element's properties.
      */
-    public static boolean matchesAnyProperties(Element n, Set<PropertyValuePair> properties){
-        return properties == null ||
-                properties.stream()
-                .anyMatch(p ->
-                        n.getProperty(p.property).equals(p.value)
-                )
-                || properties.isEmpty();
+    public static boolean matchesAnyProperties(Element n, Property property, Object value){
+        return property == null || n.getProperty(property).equals(value);
     }
 
     /**

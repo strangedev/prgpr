@@ -25,18 +25,19 @@ public class SearchProvider {
      *
      * @param db The database to search
      * @param label The label to filter with
-     * @param properties The set of properties to filter with
+     * @param property The set of properties to filter with
+     * @param value
      * @return The set of matching elements within the database
      */
     public static Set<Element> findAnyWithLabel(
             EmbeddedDatabase db,
             Label label,
-            Set<PropertyValuePair> properties){
+            Property property, Object value){
 
         return db.transaction(() ->
             db.getAllElements()
                 .filter(n -> NodePredicates.matchesLabel(n, label))
-                .filter(n -> NodePredicates.matchesAnyProperties(n, properties))
+                .filter(n -> NodePredicates.matchesAnyProperties(n, property, value))
                 .collect(Collectors.toCollection(LinkedHashSet::new))
         );
     }
