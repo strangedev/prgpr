@@ -37,6 +37,7 @@ public class Monument extends EntityBase {
     public Monument(EmbeddedDatabase db, Page page) {
         this.ownNamespaceID = 18; // As wiki namespaces hasn't got the namespaceid 18, lets take this.
         this.node = db.createElement(indexName, hashCode(page.getTitle(), ownNamespaceID), (node) -> {
+            node.addLabel(EntityTypes.Entity);
             node.addLabel(EntityTypes.Monument);
             node.setProperty(EntityAttribute.title, page.getTitle());
             node.setProperty(EntityAttribute.ownNamespaceID, ownNamespaceID);

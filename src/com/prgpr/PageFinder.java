@@ -105,4 +105,41 @@ public class PageFinder {
         return ret;
     }
 
+    /**
+     *
+     * @return
+     */
+    public static Set<Page> getAll() {
+        Set<Page> ret = new LinkedHashSet<>();
+
+        Set<Element> es = SearchProvider.findAnyWithLabel(
+                db,
+                EntityTypes.Page,
+                null,
+                null
+        );
+
+        if (!es.isEmpty()) {
+            ret = es.stream().map(PageFactory::getPage).collect(Collectors.toCollection(LinkedHashSet::new));
+        }
+
+        return ret;
+    }
+
+    /**
+     *
+     * @param databaseId
+     * @return
+     */
+    public static Page findByDatabaseId(String databaseId) {
+        long id = -1;
+        try {
+            id = Long.parseLong(databaseId);
+        } catch (Exception e) {
+            return null;
+        }
+        Element e = db.getNodeById(id);
+        if (e.getLabels().anyMatch(l -> l == EntityTypes.Page)) return new Page(e);
+        return null;
+    }
 }

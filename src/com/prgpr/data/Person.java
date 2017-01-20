@@ -42,6 +42,7 @@ public class Person extends EntityBase {
     public Person(EmbeddedDatabase db, Page page) {
         this.ownNamespaceID = 16; // As wiki namespaces hasn't got the namespaceid 16, lets take this.
         this.node = db.createElement(indexName, hashCode(page.getTitle(), ownNamespaceID), (node) -> {
+            node.addLabel(EntityTypes.Entity);
             node.addLabel(EntityTypes.Person);
             node.setProperty(EntityAttribute.title, page.getTitle());
             node.setProperty(EntityAttribute.ownNamespaceID, ownNamespaceID);

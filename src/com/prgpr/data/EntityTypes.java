@@ -9,6 +9,7 @@ import com.prgpr.framework.database.Label;
  */
 public enum EntityTypes implements Label {
     Page,
+    Entity,
     Person,
     City,
     Monument

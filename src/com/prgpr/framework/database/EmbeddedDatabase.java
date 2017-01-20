@@ -62,6 +62,13 @@ public interface EmbeddedDatabase {
     Element getNodeFromIndex(String indexName, long hash);
 
     /**
+     * Find a node by its internal id.
+     * @param id The node's id
+     * @return The node if its found, null otherwise
+     */
+    Element getNodeById(long id);
+
+    /**
      * Find all elements given their label and property value
      * @param label the label used for filtering
      * @param property the property value pair used for filtering

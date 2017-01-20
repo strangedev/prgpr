@@ -10,6 +10,7 @@ import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 import org.neo4j.graphdb.GraphDatabaseService;
 import org.neo4j.graphdb.Node;
+import org.neo4j.graphdb.NotFoundException;
 import org.neo4j.graphdb.Relationship;
 import org.neo4j.graphdb.factory.GraphDatabaseFactory;
 import org.neo4j.graphdb.index.ReadableIndex;
@@ -168,6 +169,17 @@ public class Neo4jEmbeddedDatabase implements EmbeddedDatabase {
 
             return new Neo4jElement(this, node);
         });
+    }
+
+    @Override
+    public Element getNodeById(long id) {
+        Node result;
+        try {
+            result = graphDb.getNodeById(id);
+        } catch (NotFoundException e) {
+            return null;
+        }
+        return new Neo4jElement(this, result);
     }
 
     @Override

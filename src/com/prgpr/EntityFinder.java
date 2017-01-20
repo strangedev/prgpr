@@ -32,6 +32,14 @@ public class EntityFinder {
     }
 
     /**
+     *
+     * @return
+     */
+    public static Stream<EntityBase> getAll() {
+        return Stream.concat(getAllPersons(), Stream.concat(getAllCities(), getAllMonuments()));
+    }
+
+    /**
      * Returns all person entities in the DB as a stream.
      * @return A stream of all known person entities
      */
@@ -147,6 +155,27 @@ public class EntityFinder {
                 .map(e -> (Monument)e)
                 .findFirst()
                 .orElse(null);
+    }
+
+    /**
+     *
+     * @param databaseId
+     * @return
+     */
+    public static EntityBase findByDatabaseId(String databaseId) {
+        long id = -1;
+        try {
+            id = Long.parseLong(databaseId);
+        } catch (Exception e) {
+            return null;
+        }
+        Element e = db.getNodeById(id);
+        if (e.getLabels().anyMatch(l -> l == EntityTypes.Entity)) {
+            if (e.getLabels().anyMatch(l -> l ==EntityTypes.City)) return new Person(e);
+            if (e.getLabels().anyMatch(l -> l ==EntityTypes.City)) return new City(e);
+            if (e.getLabels().anyMatch(l -> l ==EntityTypes.City)) return new Monument(e);
+        }
+        return null;
     }
 
 }
