@@ -1,6 +1,6 @@
 package com.prgpr.data;
 
-import com.prgpr.Metadata.Scraping.PersonMetadataScraper;
+import com.prgpr.metadata.scraping.PersonMetadataScraper;
 import com.prgpr.framework.AsciiTable;
 import com.prgpr.framework.database.*;
 

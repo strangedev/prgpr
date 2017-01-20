@@ -1,6 +1,6 @@
 package com.prgpr.data;
 
-import com.prgpr.Metadata.MonumentDataExtractor;
+import com.prgpr.metadata.MonumentDataExtractor;
 import com.prgpr.framework.AsciiTable;
 import com.prgpr.framework.database.*;
 import org.apache.logging.log4j.LogManager;

@@ -1,13 +1,12 @@
 package com.prgpr.data;
 
-import com.prgpr.Metadata.CityDataExtractor;
+import com.prgpr.metadata.CityDataExtractor;
 import com.prgpr.framework.AsciiTable;
 import com.prgpr.framework.database.*;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 
 import java.util.Set;
-import java.util.stream.Stream;
 
 /**
  * The City Class.

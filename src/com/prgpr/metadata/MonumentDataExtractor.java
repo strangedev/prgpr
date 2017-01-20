@@ -1,9 +1,9 @@
-package com.prgpr.Metadata;
+package com.prgpr.metadata;
 
 import com.eclipsesource.json.JsonObject;
 import com.prgpr.EntityFinder;
-import com.prgpr.Metadata.WikidataApi.SnakExtractor;
-import com.prgpr.Metadata.WikidataApi.Wikidata;
+import com.prgpr.metadata.wikidata.SnakExtractor;
+import com.prgpr.metadata.wikidata.Wikidata;
 import com.prgpr.data.City;
 import com.prgpr.data.Monument;
 import com.prgpr.data.Person;

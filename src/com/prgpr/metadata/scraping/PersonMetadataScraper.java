@@ -1,6 +1,5 @@
-package com.prgpr.Metadata.Scraping;
+package com.prgpr.metadata.scraping;
 
-import com.prgpr.data.Page;
 import com.prgpr.data.Person;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;

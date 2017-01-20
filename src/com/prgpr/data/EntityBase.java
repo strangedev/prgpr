@@ -1,7 +1,7 @@
 package com.prgpr.data;
 
 
-import com.prgpr.Metadata.WikidataApi.Wikidata;
+import com.prgpr.metadata.wikidata.Wikidata;
 import com.prgpr.PageFactory;
 import com.prgpr.framework.database.Element;
 import com.prgpr.framework.database.Property;

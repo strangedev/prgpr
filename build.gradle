@@ -51,6 +51,9 @@ dependencies {
     // https://mvnrepository.com/artifact/com.eclipsesource.minimal-json/minimal-json
     link group: 'com.eclipsesource.minimal-json', name: 'minimal-json', version: '0.9.1'
 
+    // https://mvnrepository.com/artifact/com.sparkjava/spark-core
+    compile group: 'com.sparkjava', name: 'spark-core', version: '2.5.4'
+
 }
 
 shadowJar {

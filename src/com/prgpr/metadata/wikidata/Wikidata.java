@@ -1,4 +1,4 @@
-package com.prgpr.Metadata.WikidataApi;
+package com.prgpr.metadata.wikidata;
 
 import com.eclipsesource.json.JsonArray;
 import com.eclipsesource.json.JsonObject;

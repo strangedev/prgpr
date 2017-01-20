@@ -1,4 +1,4 @@
-package com.prgpr.Metadata.WikidataApi;
+package com.prgpr.metadata.wikidata;
 
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
