@@ -1,0 +1,11 @@
+<component name="libraryTable">
+  <library name="Gradle: org.neo4j:neo4j-logging:3.1.0-M10">
+    <CLASSES>
+      <root url="jar://$USER_HOME$/.gradle/caches/modules-2/files-2.1/org.neo4j/neo4j-logging/3.1.0-M10/ef675b4a09c720e902d86d72c6643be64237105c/neo4j-logging-3.1.0-M10.jar!/" />
+    </CLASSES>
+    <JAVADOC />
+    <SOURCES>
+      <root url="jar://$USER_HOME$/.gradle/caches/modules-2/files-2.1/org.neo4j/neo4j-logging/3.1.0-M10/de3d74b7755dbe70236683a1c856b912f36abc3d/neo4j-logging-3.1.0-M10-sources.jar!/" />
+    </SOURCES>
+  </library>
+</component>

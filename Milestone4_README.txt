@@ -1,18 +1,23 @@
- _____             _         _    _ _ _    _                            _
-/  __ \           ( )       | |  | (_) |  (_)                          | |
-| /  \/ __ _ _ __ |/ _ __   | |  | |_| | ___  ___ _ __ _   _ _ __   ___| |__
-| |    / _` | '_ \  | '_ \  | |/\| | | |/ / |/ __| '__| | | | '_ \ / __| '_ \
-| \__/\ (_| | |_) | | | | | \  /\  / |   <| | (__| |  | |_| | | | | (__| | | |
- \____/\__,_| .__/  |_| |_|  \/  \/|_|_|\_\_|\___|_|   \__,_|_| |_|\___|_| |_|
-            | |
-            |_|
 
-If it doesn't work, the world is over...
+   (               (       (  (             )                                   )
+   )\      )       )\      )\))(   ' (   ( /( (       (      (               ( /(
+ (((_)  ( /(  `  )((_)(   ((_)()\ )  )\  )\()))\   (  )(    ))\   (      (   )\())
+ )\___  )(_)) /(/(    )\ )_(())\_)()((_)((_)\((_)  )\(()\  /((_)  )\ )   )\ ((_)\
+((/ __|((_)_ ((_)_\  _(_/(\ \((_)/ / (_)| |(_)(_) ((_)((_)(_))(  _(_/(  ((_)| |(_)
+ | (__ / _` || '_ \)| ' \))\ \/\/ /  | || / / | |/ _|| '_|| || || ' \))/ _| | ' \
+  \___|\__,_|| .__/ |_||_|  \_/\_/   |_||_\_\ |_|\__||_|   \_,_||_||_| \__| |_||_|
+             |_|
+
+                            THIS CODE IS ON FIRE
+
+                 ..no really, someone email the fire dept..
 
 
 -------------------------------------------------------------------------------
 1. How to use
 -------------------------------------------------------------------------------
+
+    Don't. It doesn't work.
 
     1.1 Invocation
     --------------
@@ -39,7 +44,9 @@ If it doesn't work, the world is over...
 
          WikiXtractor extracts and imports contained articles from an infile
          of well-formed Wikidata into a database. It provides several analyses
-         of the imported data:
+         of the imported data. It also has this really cool web server which
+         implements the much sought after request & die pattern meaning it'll
+         die on request. Any request.
 
          When the article ist about a person, a city or a monument, the
          following information will be extracted:
@@ -69,12 +76,6 @@ If it doesn't work, the world is over...
                     * Honored Persons
                     * Linked Persons, Cities, Monuments
 
-         Example output:
-
-
-
-
-
 
     1.3 Database-Directory
     ----------------------
@@ -101,6 +102,10 @@ If it doesn't work, the world is over...
 
             evaluation    | Evaluates the articles to test.
                           | required: <Database-Directory>
+
+            runserver     | Starts the webserver thingy, don't bother testing it,
+                          | it might kill fluffy bunnies and you wouldn't
+                          | want THAT to happen right?
 
             version       | Outputs the current version.
 
@@ -220,6 +225,14 @@ If it doesn't work, the world is over...
 5. Known issues
 -------------------------------------------------------------------------------
 
+    5.0 HOLY **** EVERYTHING IS ON FIRE
+    -----------------------------------
+
+        We put in the required classes, but the server keeps crashing when
+        accessing the db. Probably smth about the server using it's own
+        thread, but we didn't really bother checking.
+
+
     5.1 Required usage of subversion ಠ╭╮ಠ
     -------------------------------------
 
@@ -305,23 +318,21 @@ If it doesn't work, the world is over...
 
 -------------------------------------------------------------------------------
 -------------------------------------------------------------------------------
-                                                    _  _
-                                                   ' \/ '
-   _  _                        <|
-    \/              __'__     __'__      __'__
-                   /    /    /    /     /    /
-                  /\____\    \____\     \____\               _  _
-                 / ___!___   ___!___    ___!___               \/
-               // (      (  (      (   (      (
-             / /   \______\  \______\   \______\
-           /  /   ____!_____ ___!______ ____!_____
-         /   /   /         //         //         /
-      /    /   |         ||         ||         |
-     /_____/     \         \\         \\         \
-           \      \_________\\_________\\_________\
-            \         |          |         |
-             \________!__________!_________!________/
-              \|_|_|_|_|_|_|_|_|_|_|_|_|_|_|_|_|_|_/|
-               \    _______________                /
-^^^%%%^%^^^%^%%^\_"/_)/_)_/_)__)/_)/)/)_)_"_'_"_//)/)/)/)%%%^^^%^^%%%%^^%%%^^^!
-^!!^^"!%%!^^^!^^^!!^^^%%%%%!!!!^^^%%^^^!!%%%%^^^!!!!!!%%%^^^^%^^%%%^^^!^%%%^^^!
+
+                        ░░░░░▄▄▄▄▀▀▀▀▀▀▀▀▄▄▄▄▄▄░░░░░░░
+                        ░░░░░█░░░░▒▒▒▒▒▒▒▒▒▒▒▒░░▀▀▄░░░░
+                        ░░░░█░░░▒▒▒▒▒▒░░░░░░░░▒▒▒░░█░░░
+                        ░░░█░░░░░░▄██▀▄▄░░░░░▄▄▄░░░░█░░
+                        ░▄▀▒▄▄▄▒░█▀▀▀▀▄▄█░░░██▄▄█░░░░█░
+                        █░▒█▒▄░▀▄▄▄▀░░░░░░░░█░░░▒▒▒▒▒░█
+                        █░▒█░█▀▄▄░░░░░█▀░░░░▀▄░░▄▀▀▀▄▒█
+                        ░█░▀▄░█▄░█▀▄▄░▀░▀▀░▄▄▀░░░░█░░█░
+                        ░░█░░░▀▄▀█▄▄░█▀▀▀▄▄▄▄▀▀█▀██░█░░
+                        ░░░█░░░░██░░▀█▄▄▄█▄▄█▄████░█░░░
+                        ░░░░█░░░░▀▀▄░█░░░█░█▀██████░█░░
+                        ░░░░░▀▄░░░░░▀▀▄▄▄█▄█▄█▄█▄▀░░█░░
+                        ░░░░░░░▀▄▄░▒▒▒▒░░░░░░░░░░▒░░░█░
+                        ░░░░░░░░░░▀▀▄▄░▒▒▒▒▒▒▒▒▒▒░░░░█░
+                        ░░░░░░░░░░░░░░▀▄▄▄▄▄░░░░░░░░█░░
+
+For inquiries, please call 0118999881999119725-3

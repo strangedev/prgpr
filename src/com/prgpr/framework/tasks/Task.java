@@ -36,7 +36,13 @@ public abstract class Task extends Producer<Integer> implements Runnable {
 
     /**
      * Checks and validates arguments to be used by the task.
-     *
+     *          new CategoryLinkExtraction(),
+            new EntityBaseExtraction(),
+            new ArticleLinkExtraction(),
+            new HTMLDumpImport(),
+            new PersonExtraction(),
+            new CityExtraction(),
+            new MonumentExtraction()
      * @param arguments list of arguments to be used.
      * @throws InvalidNumberOfArguments An incorrect number of arguments are passed to the task.
      * @throws InvalidArgument An unexpected argument is passed.
