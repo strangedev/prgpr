@@ -8,6 +8,7 @@ import com.prgpr.data.Monument;
 import com.prgpr.data.Page;
 import com.prgpr.data.Person;
 import com.prgpr.export.SimpleXmlDocument;
+import com.prgpr.framework.database.EmbeddedDatabase;
 
 import java.util.Set;
 
@@ -21,6 +22,11 @@ import static spark.Spark.port;
 public class Router {
 
     private static final int PORT = 8080;  // TODO
+    private static EmbeddedDatabase db;
+
+    public static void setDatabase(EmbeddedDatabase db) {
+        Router.db = db;
+    }
 
     /*
         ___ _  _ ____    ____ _  _ ____ ___  _ _  _ ____    ____ ____ _  _ ___ ____ ____
@@ -52,6 +58,7 @@ public class Router {
          */
 
         get("/page/title/:arg",  (request, response) -> {
+            PageFinder.setDatabase(db);
             Set<Page> matches = PageFinder.findAllByTitle(request.params(":arg"));
             SimpleXmlDocument document = DataExport.newDocument();
             DataExport.appendPages(matches, document);
@@ -67,9 +74,10 @@ public class Router {
          */
 
         get("/person/name/last/:arg",  (request, response) -> {
+            EntityFinder.setDatabase(db);
             Person match = EntityFinder.getAllPersons()
                             .filter(p -> p.getLastName().equals(request.params(":arg")))
-                            .findFirst()
+                            .findFirst()  // TODO returns all matches
                             .orElse(null);
             SimpleXmlDocument document = DataExport.newDocument();
             DataExport.appendEntity(match, document);
@@ -77,9 +85,10 @@ public class Router {
         });
 
         get("/person/name/first/:arg",  (request, response) -> {
+            EntityFinder.setDatabase(db);
             Person match = EntityFinder.getAllPersons()
                     .filter(p -> p.getFirstName().equals(request.params(":arg")))
-                    .findFirst()
+                    .findFirst()  // TODO returns all matches
                     .orElse(null);
             SimpleXmlDocument document = DataExport.newDocument();
             DataExport.appendEntity(match, document);
@@ -87,9 +96,10 @@ public class Router {
         });
 
         get("/person/name/birth/:arg",  (request, response) -> {
+            EntityFinder.setDatabase(db);
             Person match = EntityFinder.getAllPersons()
                     .filter(p -> p.getBirthName().equals(request.params(":arg")))
-                    .findFirst()
+                    .findFirst()  // TODO returns all matches
                     .orElse(null);
             SimpleXmlDocument document = DataExport.newDocument();
             DataExport.appendEntity(match, document);
@@ -97,9 +107,10 @@ public class Router {
         });
 
         get("/person/name/raw/:arg",  (request, response) -> {
+            EntityFinder.setDatabase(db);
             Person match = EntityFinder.getAllPersons()
                     .filter(p -> p.getRawName().equals(request.params(":arg")))
-                    .findFirst()
+                    .findFirst()  // TODO returns all matches
                     .orElse(null);
             SimpleXmlDocument document = DataExport.newDocument();
             DataExport.appendEntity(match, document);
@@ -115,6 +126,7 @@ public class Router {
          */
 
         get("/city/name/:arg",  (request, response) -> {
+            EntityFinder.setDatabase(db);
             City match = EntityFinder.getAllCities()
                     .filter(c -> c.getName().equals(request.params(":arg")))
                     .findFirst()
@@ -133,6 +145,7 @@ public class Router {
          */
 
         get("/city/name/:arg",  (request, response) -> {
+            EntityFinder.setDatabase(db);
             Monument match = EntityFinder.getAllMonuments()
                     .filter(c -> c.getName().equals(request.params(":arg")))
                     .findFirst()
@@ -151,6 +164,8 @@ public class Router {
          */
 
         get("/object/:arg",  (request, response) -> {
+            EntityFinder.setDatabase(db);
+            PageFinder.setDatabase(db);
             SimpleXmlDocument document = DataExport.newDocument();
             DataExport.appendPage(PageFinder.findByDatabaseId(request.params(":arg")), document);
             DataExport.appendEntity(EntityFinder.findByDatabaseId(request.params(":arg")), document);
@@ -158,6 +173,8 @@ public class Router {
         });
 
         get("/all",  (request, response) -> {
+            EntityFinder.setDatabase(db);
+            PageFinder.setDatabase(db);
             SimpleXmlDocument document = DataExport.newDocument();
             DataExport.appendPages(PageFinder.getAll(), document);
             DataExport.appendEntityStream(EntityFinder.getAll(), document);
